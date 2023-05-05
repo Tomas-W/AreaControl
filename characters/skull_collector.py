@@ -1,13 +1,12 @@
 import math
 
-from interactives.skull import Skull
-
 from characters.base_enemy import Enemy
 from projectiles.fire_skull import FireSkull
-from settings.enemy_settings import SKULL_COLLECTOR
+from interactives.skull import Skull
 
 from utilities import get_distance
-from settings.enemy_projectile_settings import FIRE_SKULL
+
+from settings.enemy_settings import SKULL_COLLECTOR
 
 
 class SkullCollector(Enemy):
@@ -15,9 +14,6 @@ class SkullCollector(Enemy):
         super().__init__(player=player,
                          position=position,
                          character=character)
-
-        self.fire_skull_x_offset = FIRE_SKULL["hitbox_x_offset"]
-        self.fire_skull_y_offset = FIRE_SKULL["hitbox_y_offset"]
 
     def set_state(self):
         """
@@ -30,199 +26,136 @@ class SkullCollector(Enemy):
             self.death = True
             self.walk = False
             self.shoot = False
+            self.frame_ticks = 0
+            self.frame = 0
 
         elif distance_to_player < SKULL_COLLECTOR["shoot_distance"]:
             self.shoot = True
             self.walk = False
+            self.current_state = "shoot"
 
         elif distance_to_player > SKULL_COLLECTOR["shoot_distance"]:
             self.walk = True
             self.shoot = False
+            self.current_state = "walk"
 
     def manage_move_state(self):
         """
-        Applies SkullCollector move state properties.
+        Applies SkullCollector move state and image properties.
         """
         self.move_to_player()
         self.set_move_image()
-        self.move_ticks += 1
-        self.shoot_ticks = 0
 
     def manage_shoot_state(self):
         """
-        Applies SkullCollector shoot state properties.
+        Applies SkullCollector shoot state and image properties.
         """
+        if self.is_allowed_to_shoot():
+            self.shoot_player()
+
         self.set_shoot_image()
-        self.shoot_player()
-        self.shoot_ticks += 1
+
+    def is_allowed_to_shoot(self):
+        """
+        Checks if SkullCollector is allowed to shoot Player.
+
+        :return: Returns True if conditions are met (bool).
+        """
+        return self.frame == self.shoot_frame and self.frame_ticks == (self.shoot_ticks // 2)
 
     def shoot_player(self):
         """
-        Deal shoot towards Player if Player in range.
+        Shoot FireSkull towards Player.
         """
-        if self.shoot_ticks == SKULL_COLLECTOR["shoot_tick"]:
-            # Set projectile in right spot on the SkullCollector image
-            if self.flip_image:
-                projectile_x = self.rect.centerx - (2 * self.fire_skull_x_offset)
-            else:
-                projectile_x = self.rect.centerx + self.fire_skull_x_offset
-            projectile_y = self.rect.centery + self.fire_skull_y_offset
-            # Calculate angle to Player
-            dx = self.player.rect.centerx - projectile_x
-            dy = self.player.rect.centery - projectile_y
-            angle = math.degrees(math.atan2(dy, dx))
-            # Create projectile
-            FireSkull(x=projectile_x,
-                      y=projectile_y,
-                      angle=angle)
+        # Set projectile in right spot on the SkullCollector image
+        if self.flip_image:
+            projectile_x = self.rect.centerx - self.shoot_offset_x
+        else:
+            projectile_x = self.rect.centerx + self.shoot_offset_x
+        projectile_y = self.rect.centery + self.shoot_offset_y
+
+        # Calculate angle to Player
+        dx = self.player.rect.centerx - projectile_x
+        dy = self.player.rect.centery - projectile_y
+        angle = math.degrees(math.atan2(dy, dx))
+        # Create projectile
+        FireSkull(x=projectile_x,
+                  y=projectile_y,
+                  angle=angle)
 
     def manage_death_state(self):
+        """
+        Applies SkullCollector death state and image properties.
+        """
         self.set_death_image()
-        self.death_ticks += 1
 
-        if self.death_ticks == SKULL_COLLECTOR["death_tick"]:
+        self.frame_ticks += 1
+
+        if self.frame_ticks == self.death_ticks:
+            self.frame += 1
+            self.frame_ticks = 0
+
+        # Kill SkullCollector and place Skull
+        if self.frame == self.death_frame:
             Skull(position=self.hitbox.center)
             self.kill()
 
+    def manage_frames(self):
+        self.frame_ticks += 1
+
+        # Animation switch
+        if self.current_state != self.last_state:
+            self.frame_ticks = 0
+
+        self.last_state = self.current_state
+
     def update(self):
-        # Adjust hitbox position
-        self.set_hitbox()
-
-        self.set_state()
-
-        self.should_image_flip()
-
-        if self.move:
-            self.manage_move_state()
-
-        elif self.shoot:
-            self.manage_shoot_state()
-
-        elif self.death:
+        if self.death:
             self.manage_death_state()
 
+        else:
+            self.set_hitbox()
+
+            self.set_state()
+
+            self.manage_frames()
+
+            self.should_image_flip()
+
+            if self.walk:
+                self.manage_move_state()
+
+            elif self.shoot:
+                self.manage_shoot_state()
+
     def set_move_image(self):
-        """
-        Checks self.move_ticks value and loads corresponding image.
-        """
-        match self.move_ticks:
-            case 0:
-                self.image = self.move_sprites[0]
-                if self.flip_image:
-                    self.image = self.flipped_move_sprites[0]
-            case 5:
-                self.image = self.move_sprites[1]
-                if self.flip_image:
-                    self.image = self.flipped_move_sprites[1]
-            case 10:
-                self.image = self.move_sprites[2]
-                if self.flip_image:
-                    self.image = self.flipped_move_sprites[2]
-            case 15:
-                self.image = self.move_sprites[3]
-                if self.flip_image:
-                    self.image = self.flipped_move_sprites[3]
-            case 20:
-                self.image = self.move_sprites[4]
-                if self.flip_image:
-                    self.image = self.flipped_move_sprites[4]
-            case 25:
-                self.image = self.move_sprites[5]
-                if self.flip_image:
-                    self.image = self.flipped_move_sprites[5]
-            case 30:
-                self.image = self.move_sprites[6]
-                if self.flip_image:
-                    self.image = self.flipped_move_sprites[6]
-            case 35:
-                self.image = self.move_sprites[7]
-                if self.flip_image:
-                    self.image = self.flipped_move_sprites[7]
-            case 40:
-                self.move_ticks = 0
+        if self.frame_ticks == self.walk_ticks:
+            self.frame += 1
+            self.frame_ticks = 0
+
+        if self.frame > len(self.walk_sprites) - 1:
+            self.frame = 0
+
+        if self.flip_image:
+            self.image = self.walk_sprites_flipped[self.frame]
+        else:
+            self.image = self.walk_sprites[self.frame]
 
     def set_shoot_image(self):
-        """
-        Checks self.shoot_ticks value and loads corresponding image.
-        """
-        match self.shoot_ticks:
-            case 0:
-                self.image = self.shoot_sprites[0]
-                if self.flip_image:
-                    self.image = self.flipped_shoot_sprites[0]
-            case 5:
-                self.image = self.shoot_sprites[1]
-                if self.flip_image:
-                    self.image = self.flipped_shoot_sprites[1]
-            case 10:
-                self.image = self.shoot_sprites[2]
-                if self.flip_image:
-                    self.image = self.flipped_shoot_sprites[2]
-            case 15:
-                self.image = self.shoot_sprites[3]
-                if self.flip_image:
-                    self.image = self.flipped_shoot_sprites[3]
-            case 20:
-                self.image = self.shoot_sprites[4]
-                if self.flip_image:
-                    self.image = self.flipped_shoot_sprites[4]
-            case 25:
-                self.image = self.shoot_sprites[5]
-                if self.flip_image:
-                    self.image = self.flipped_shoot_sprites[5]
-            case 30:
-                self.image = self.shoot_sprites[6]
-                if self.flip_image:
-                    self.image = self.flipped_shoot_sprites[6]
-            case 35:
-                self.image = self.shoot_sprites[7]
-                if self.flip_image:
-                    self.image = self.flipped_shoot_sprites[7]
-            case 40:
-                self.image = self.shoot_sprites[8]
-                if self.flip_image:
-                    self.image = self.flipped_shoot_sprites[8]
-            case 45:
-                self.image = self.shoot_sprites[9]
-                if self.flip_image:
-                    self.image = self.flipped_shoot_sprites[9]
-            case 50:
-                self.image = self.shoot_sprites[10]
-                if self.flip_image:
-                    self.image = self.flipped_shoot_sprites[10]
-            case 55:
-                self.image = self.shoot_sprites[11]
-                if self.flip_image:
-                    self.image = self.flipped_shoot_sprites[11]
-            case 60:
-                self.image = self.shoot_sprites[12]
-                if self.flip_image:
-                    self.image = self.flipped_shoot_sprites[12]
-            case 75:
-                self.shoot_ticks = 0
+        if self.frame_ticks == self.shoot_ticks:
+            self.frame += 1
+            self.frame_ticks = 0
+
+        if self.frame > len(self.shoot_sprites) - 1:
+            self.frame = 0
+
+        if self.flip_image:
+            self.image = self.shoot_sprites_flipped[self.frame]
+        else:
+            self.image = self.shoot_sprites[self.frame]
 
     def set_death_image(self):
-        """
-        Checks self.death_ticks value and loads corresponding image.
-        """
-        match self.death_ticks:
-            case 5:
-                self.image = self.death_sprites[0]
-            case 10:
-                self.image = self.death_sprites[1]
-            case 15:
-                self.image = self.death_sprites[2]
-            case 20:
-                self.image = self.death_sprites[3]
-            case 25:
-                self.image = self.death_sprites[4]
-            case 30:
-                self.image = self.death_sprites[5]
-            case 35:
-                self.image = self.death_sprites[6]
-            case 40:
-                self.image = self.death_sprites[7]
-            case 45:
-                self.image = self.death_sprites[8]
-
-
+        if self.flip_image:
+            self.image = self.death_sprites_flipped[self.frame]
+        else:
+            self.image = self.death_sprites[self.frame]

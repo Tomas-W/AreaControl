@@ -1,3 +1,4 @@
+import math
 from math import atan2, sqrt, degrees
 
 import pygame
@@ -65,8 +66,8 @@ class Player(pygame.sprite.Sprite):
         """
         self.mouse_position = pygame.mouse.get_pos()  # noqa
         # Distance between player and mouse
-        self.dx_mouse_player = (self.mouse_position[0] - HALF_WIDTH)  # noqa
-        self.dy_mouse_player = (self.mouse_position[1] - HALF_HEIGHT)  # noqa
+        self.dx_mouse_player = (self.mouse_position[0] - GENERAL["half_width"])  # noqa
+        self.dy_mouse_player = (self.mouse_position[1] - GENERAL["half_height"])  # noqa
         # Pythagoras to get angle
         self.angle = degrees(atan2(self.dy_mouse_player,  # noqa
                                    self.dx_mouse_player))
@@ -156,9 +157,29 @@ class Player(pygame.sprite.Sprite):
         """
         self.shoot_cooldown = PLAYER["shoot_cooldown"]
         self.muzzle_flash_cooldown = PLAYER["muzzle_flash_cooldown"]
+
+        # Calculate the starting position of the bullet based on the player rect and direction
+        bullet_start_x = self.hitbox.centerx + ((214 * 0.4) / 2) * math.cos(
+            self.angle * math.pi / 180)
+        bullet_start_y = self.hitbox.centery + ((174 * 0.4) / 2) * math.sin(
+            self.angle * math.pi / 180)
+
+        # Adjust bullet location
+        if 120 < self.angle < 180:
+            bullet_start_y -= abs((120 + self.angle) * 0.03)
+
+        if -120 < self.angle < 0:
+            bullet_start_x -= abs((120 + self.angle) * 0.15)
+            bullet_start_y -= abs((120 + self.angle) * 0.05)
+
+        elif self.angle >= 0:
+            bullet_start_x -= abs(self.angle // 30)
+        else:
+            bullet_start_y -= abs(self.angle // 30)
+
         # Create projectile
-        Bullet(x=self.hitbox.centerx,
-               y=self.hitbox.centery,
+        Bullet(x=bullet_start_x,
+               y=bullet_start_y,
                angle=self.angle)
 
     def manage_teleport(self):

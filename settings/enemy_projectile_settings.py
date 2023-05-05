@@ -2,6 +2,7 @@
 # ############################ FIRE SKULL ############################ #
 FIRE_SKULL_SIZE = 1.5
 FIRE_SKULL = {
+    "size": FIRE_SKULL_SIZE,
     "speed": 4,
     "damage": 50,
 

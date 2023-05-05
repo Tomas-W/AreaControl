@@ -15,14 +15,10 @@ class Energy(pygame.sprite.Sprite):
         self.image = self.energy_sprites[0]
         # Rect
         self.rect = self.image.get_rect()
-        # Hitbox
-        self.hitbox = pygame.Rect(0, 0,
-                                  ENERGY["hitbox_width"], ENERGY["hitbox_height"])
-
         # Spawn location
         self.rect.center = position
-        self.hitbox.left = self.rect.left + ENERGY["hitbox_offset_x"]
-        self.hitbox.top = self.rect.top + ENERGY["hitbox_offset_y"]
+        # Hitbox
+        self.hitbox = pygame.Rect(ENERGY["hitbox"])
 
         # Attributes
         self.name = "energy"

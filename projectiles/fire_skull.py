@@ -3,6 +3,7 @@ import math
 import pygame
 
 from settings.enemy_projectile_settings import FIRE_SKULL
+from sprites.projectile_sprites import FIRE_SKULL_SPRITE
 from utilities import all_sprites, all_projectile_sprites, enemy_projectile_sprites
 
 
@@ -10,10 +11,7 @@ class FireSkull(pygame.sprite.Sprite):
     def __init__(self, x, y, angle):
         super().__init__(all_sprites, all_projectile_sprites, enemy_projectile_sprites)
         # Image
-        self.image = pygame.image.load("images/projectiles/fire_skull.png").convert_alpha()
-        self.image = pygame.transform.rotozoom(self.image,
-                                               False,
-                                               FIRE_SKULL["size"])
+        self.image = FIRE_SKULL_SPRITE
         # Rect
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)

@@ -9,7 +9,7 @@ from utilities import get_sprites
 # ######################################################################### #
 # ############################ SKULL COLLECTOR ############################ #
 skull_collector_walk_sheet = pygame.image.load(
-    "images/enemies/skull_collector/walk_sheet.png").convert_alpha()
+    "images/enemies/skull_collector/walk.png").convert_alpha()
 SKULL_COLLECTOR_WALK_SPRITES = get_sprites(sheet=skull_collector_walk_sheet,
                                            number_sprites=8,
                                            width=SKULL_COLLECTOR_SPRITE_WIDTH,
@@ -17,7 +17,7 @@ SKULL_COLLECTOR_WALK_SPRITES = get_sprites(sheet=skull_collector_walk_sheet,
                                            scale=SKULL_COLLECTOR_SIZE,
                                            color=GENERAL["black"])
 skull_collector_walk_sheet_flipped = pygame.image.load(
-    "images/enemies/skull_collector/walk_sheet_flipped.png").convert_alpha()
+    "images/enemies/skull_collector/walk_flipped.png").convert_alpha()
 SKULL_COLLECTOR_WALK_SPRITES_FLIPPED = get_sprites(sheet=skull_collector_walk_sheet_flipped,
                                                    number_sprites=8,
                                                    width=SKULL_COLLECTOR_SPRITE_WIDTH,
@@ -26,35 +26,43 @@ SKULL_COLLECTOR_WALK_SPRITES_FLIPPED = get_sprites(sheet=skull_collector_walk_sh
                                                    color=GENERAL["black"])
 
 skull_collector_shoot_sheet = pygame.image.load(
-    "images/enemies/skull_collector/shoot_sheet.png").convert_alpha()
+    "images/enemies/skull_collector/shoot.png").convert_alpha()
 SKULL_COLLECTOR_SHOOT_SPRITES = get_sprites(sheet=skull_collector_shoot_sheet,
-                                            number_sprites=13,
+                                            number_sprites=9,
                                             width=SKULL_COLLECTOR_SPRITE_WIDTH,
                                             height=SKULL_COLLECTOR_SPRITE_HEIGHT,
                                             scale=SKULL_COLLECTOR_SIZE,
                                             color=GENERAL["black"])
 skull_collector_shoot_sheet_flipped = pygame.image.load(
-    "images/enemies/skull_collector/shoot_sheet_flipped.png").convert_alpha()
+    "images/enemies/skull_collector/shoot_flipped.png").convert_alpha()
 SKULL_COLLECTOR_SHOOT_SPRITES_FLIPPED = get_sprites(sheet=skull_collector_shoot_sheet_flipped,
-                                                    number_sprites=13,
+                                                    number_sprites=9,
                                                     width=SKULL_COLLECTOR_SPRITE_WIDTH,
                                                     height=SKULL_COLLECTOR_SPRITE_HEIGHT,
                                                     scale=SKULL_COLLECTOR_SIZE,
                                                     color=GENERAL["black"])
 
 skull_collector_death_sheet = pygame.image.load(
-    "images/enemies/skull_collector/death_sheet.png").convert_alpha()
+    "images/enemies/skull_collector/death.png").convert_alpha()
 SKULL_COLLECTOR_DEATH_SPRITES = get_sprites(sheet=skull_collector_death_sheet,
                                             number_sprites=9,
                                             width=SKULL_COLLECTOR_SPRITE_WIDTH,
                                             height=SKULL_COLLECTOR_SPRITE_HEIGHT,
                                             scale=SKULL_COLLECTOR_SIZE,
                                             color=GENERAL["black"])
+skull_collector_death_sheet_flipped = pygame.image.load(
+    "images/enemies/skull_collector/death_flipped.png").convert_alpha()
+SKULL_COLLECTOR_DEATH_SPRITES_FLIPPED = get_sprites(sheet=skull_collector_death_sheet_flipped,
+                                                    number_sprites=9,
+                                                    width=SKULL_COLLECTOR_SPRITE_WIDTH,
+                                                    height=SKULL_COLLECTOR_SPRITE_HEIGHT,
+                                                    scale=SKULL_COLLECTOR_SIZE,
+                                                    color=GENERAL["black"])
 
 # ################################################################ #
 # ############################ RUSHER ############################ #
 rusher_idle_sheet = pygame.image.load(
-    "images/enemies/rusher/idle_sheet.png").convert_alpha()
+    "images/enemies/rusher/idle.png").convert_alpha()
 RUSHER_IDLE_SPRITES = get_sprites(sheet=rusher_idle_sheet,
                                   number_sprites=9,
                                   width=RUSHER_SPRITE_WIDTH,
@@ -62,7 +70,7 @@ RUSHER_IDLE_SPRITES = get_sprites(sheet=rusher_idle_sheet,
                                   scale=RUSHER_SIZE,
                                   color=GENERAL["black"])
 rusher_idle_sheet_flipped = pygame.image.load(
-    "images/enemies/rusher/idle_sheet_flipped.png").convert_alpha()
+    "images/enemies/rusher/idle_flipped.png").convert_alpha()
 RUSHER_IDLE_SPRITES_FLIPPED = get_sprites(sheet=rusher_idle_sheet_flipped,
                                           number_sprites=9,
                                           width=RUSHER_SPRITE_WIDTH,
@@ -71,7 +79,7 @@ RUSHER_IDLE_SPRITES_FLIPPED = get_sprites(sheet=rusher_idle_sheet_flipped,
                                           color=GENERAL["black"])
 
 rusher_run_sheet = pygame.image.load(
-    "images/enemies/rusher/run_sheet.png").convert_alpha()
+    "images/enemies/rusher/run.png").convert_alpha()
 RUSHER_RUN_SPRITES = get_sprites(sheet=rusher_run_sheet,
                                  number_sprites=6,
                                  width=RUSHER_SPRITE_WIDTH,
@@ -79,7 +87,7 @@ RUSHER_RUN_SPRITES = get_sprites(sheet=rusher_run_sheet,
                                  scale=RUSHER_SIZE,
                                  color=GENERAL["black"])
 rusher_run_sheet_flipped = pygame.image.load(
-    "images/enemies/rusher/run_sheet_flipped.png").convert_alpha()
+    "images/enemies/rusher/run_flipped.png").convert_alpha()
 RUSHER_RUN_SPRITES_FLIPPED = get_sprites(sheet=rusher_run_sheet_flipped,
                                          number_sprites=6,
                                          width=RUSHER_SPRITE_WIDTH,
@@ -88,7 +96,7 @@ RUSHER_RUN_SPRITES_FLIPPED = get_sprites(sheet=rusher_run_sheet_flipped,
                                          color=GENERAL["black"])
 
 rusher_strike_sheet = pygame.image.load(
-    "images/enemies/rusher/strike_sheet.png").convert_alpha()
+    "images/enemies/rusher/strike.png").convert_alpha()
 RUSHER_STRIKE_SPRITES = get_sprites(sheet=rusher_strike_sheet,
                                     number_sprites=12,
                                     width=RUSHER_SPRITE_WIDTH,
@@ -96,7 +104,7 @@ RUSHER_STRIKE_SPRITES = get_sprites(sheet=rusher_strike_sheet,
                                     scale=RUSHER_SIZE,
                                     color=GENERAL["black"])
 rusher_strike_sheet_flipped = pygame.image.load(
-    "images/enemies/rusher/strike_sheet_flipped.png").convert_alpha()
+    "images/enemies/rusher/strike_flipped.png").convert_alpha()
 RUSHER_STRIKE_SPRITES_FLIPPED = get_sprites(sheet=rusher_strike_sheet_flipped,
                                             number_sprites=12,
                                             width=RUSHER_SPRITE_WIDTH,
@@ -105,13 +113,21 @@ RUSHER_STRIKE_SPRITES_FLIPPED = get_sprites(sheet=rusher_strike_sheet_flipped,
                                             color=GENERAL["black"])
 
 rusher_death_sheet = pygame.image.load(
-    "images/enemies/rusher/death_sheet.png").convert_alpha()
+    "images/enemies/rusher/death.png").convert_alpha()
 RUSHER_DEATH_SPRITES = get_sprites(sheet=rusher_death_sheet,
-                                   number_sprites=23,
+                                   number_sprites=19,
                                    width=RUSHER_SPRITE_WIDTH,
                                    height=RUSHER_SPRITE_HEIGHT,
                                    scale=RUSHER_SIZE,
                                    color=GENERAL["black"])
+rusher_death_sheet_flipped = pygame.image.load(
+    "images/enemies/rusher/death_flipped.png").convert_alpha()
+RUSHER_DEATH_SPRITES_FLIPPED = get_sprites(sheet=rusher_death_sheet_flipped,
+                                           number_sprites=19,
+                                           width=RUSHER_SPRITE_WIDTH,
+                                           height=RUSHER_SPRITE_HEIGHT,
+                                           scale=RUSHER_SIZE,
+                                           color=GENERAL["black"])
 
 # ############################################################### #
 # ############################ GOLEM ############################ #

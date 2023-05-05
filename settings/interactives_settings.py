@@ -26,10 +26,15 @@ PORTAL = {
 
 # ##################################################### #
 # ####################### SKULL ####################### #
-SKULL_SIZE = 1
+SKULL_SIZE = 0.4
 SKULL = {
     "size": SKULL_SIZE,
     "transparency": None,
+
+    "hitbox": ((20 * SKULL_SIZE), (25 * SKULL_SIZE),
+               (35 * SKULL_SIZE), (50 * SKULL_SIZE)),
+    "hitbox_offset_x": 20,
+    "hitbox_offset_y": 25,
 
     "sprite_width": 75,
     "sprite_height": 100,
@@ -50,5 +55,3 @@ ENERGY = {
     "sprite_width": 100,
     "sprite_height": 100,
 }
-
-

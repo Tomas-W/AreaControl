@@ -8,7 +8,7 @@ PLAYER = {
     "speed": 10,
     "health": 1000,
 
-    "shoot_cooldown": 6,
+    "shoot_cooldown": 24,
     "muzzle_flash_cooldown": 20,
 
     "left_portal": None,
@@ -18,16 +18,16 @@ PLAYER = {
     "invincibility_ticks": 240,
 
     "hitbox": (0, 0,
-               (212 * PLAYER_SIZE), (172 * PLAYER_SIZE)),
+               (214 * PLAYER_SIZE), (174 * PLAYER_SIZE)),
 }
 
 # ################################################################ #
 # ############################ BULLET ############################ #
 BULLET_SIZE = 1
 BULLET = {
-    "speed": 20,
-    "damage": 40,
-    "invisibility_time": 250,
+    "size": BULLET_SIZE,
+    "speed": 4,
+    "damage": 400,
 
     "hitbox": (0, 0,
                (212 * PLAYER_SIZE), (172 * PLAYER_SIZE)),

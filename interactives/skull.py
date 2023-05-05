@@ -1,5 +1,6 @@
 import pygame
 
+from settings.interactives_settings import ENERGY
 from sprites.interactives_sprites import SKULL_SPRITES
 from utilities import all_sprites, skull_sprites
 
@@ -14,14 +15,16 @@ class Skull(pygame.sprite.Sprite):
         self.image = self.skull_sprites[0]
         # Rect
         self.rect = self.image.get_rect()
-        # Hitbox
-        self.hitbox = self.rect.copy()
-
         # Spawn location
         self.rect.center = position
+        # Hitbox
+        self.hitbox = pygame.Rect(ENERGY["hitbox"])
 
         # Attributes
         self.name = "skull"
+        self.image.set_alpha(155)
+
+        # Trackers
         self.skull_ticks = 0
 
     def update(self):

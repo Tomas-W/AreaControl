@@ -15,6 +15,7 @@ enemy_projectile_sprites = pygame.sprite.Group()
 
 skull_sprites = pygame.sprite.Group()
 energy_sprites = pygame.sprite.Group()
+portal_sprites = pygame.sprite.Group()
 
 
 def handle_outgoing_projectiles():
@@ -31,8 +32,8 @@ def handle_outgoing_projectiles():
             # Check collision with walls
             if projectile.rect.left < GENERAL["level_left_x"] or projectile.rect.right > GENERAL[
                 "level_right_x"] or \
-                    projectile.rect.top < GENERAL["level_top_x"] or projectile.rect.bottom > \
-                    GENERAL["level_bottom_x"]:
+                    projectile.rect.top < GENERAL["level_top_y"] or projectile.rect.bottom > \
+                    GENERAL["level_bottom_y"]:
                 projectile.kill()
 
 
@@ -51,8 +52,8 @@ def handle_incoming_projectiles():
         # Check collision with walls
         if projectile.rect.left < GENERAL["level_left_x"] or projectile.rect.right > GENERAL[
             "level_right_x"] or \
-                projectile.rect.top < GENERAL["level_top_x"] or projectile.rect.bottom > \
-                GENERAL["level_bottom_x"]:
+                projectile.rect.top < GENERAL["level_top_y"] or projectile.rect.bottom > \
+                GENERAL["level_bottom_y"]:
             projectile.kill()
 
 

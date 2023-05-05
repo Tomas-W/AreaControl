@@ -23,9 +23,10 @@ class Enemy(pygame.sprite.Sprite):
         self.strike_sprites_flipped = character["strike_sprites_flipped"]
 
         self.shoot_sprites = character["shoot_sprites"]
-        self.shoot_sprites_flipped = character["shoot_sprites"]
+        self.shoot_sprites_flipped = character["shoot_sprites_flipped"]
 
         self.death_sprites = character["death_sprites"]
+        self.death_sprites_flipped = character["death_sprites_flipped"]
 
         # Image
         self.image = character["image"]
@@ -34,8 +35,13 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.center = position
         # Hitbox
         self.hitbox = pygame.Rect(character["hitbox"])
+        self.hitbox.center = position
+
+        # Offsets
         self.hitbox_offset_x = character["hitbox_offset_x"]
         self.hitbox_offset_y = character["hitbox_offset_y"]
+        self.shoot_offset_x = character["shoot_offset_x"]
+        self.shoot_offset_y = character["shoot_offset_y"]
 
         # States
         self.idle = character["idle"]
@@ -45,36 +51,44 @@ class Enemy(pygame.sprite.Sprite):
         self.shoot = character["shoot"]
         self.death = character["death"]
 
+        self.current_state = character["current_state"]
+        self.last_state = character["last_state"]
+
         # Attributes
         self.position = pygame.math.Vector2(position)
         self.health = character["health"]
         self.damage = character["damage"]
         self.walk_speed = character["walk_speed"]
         self.run_speed = character["run_speed"]
-        self.speed = self.walk_speed
+        self.speed = character["speed"]
+        self.direction = pygame.math.Vector2()
+        self.velocity = pygame.math.Vector2()
 
+        # State attributes
+        self.idle_duration = character["idle_duration"]
         self.walk_duration = character["walk_duration"]
         self.run_duration = character["run_duration"]
+
         self.walk_distance = character["walk_distance"]
         self.run_distance = character["run_distance"]
         self.strike_distance = character["strike_distance"]
         self.shoot_distance = character["shoot_distance"]
 
-        self.strike_tick = character["strike_tick"]
-        self.shoot_tick = character["shoot_tick"]
-        self.death_tick = character["death_tick"]
-
-        self.direction = pygame.math.Vector2()
-        self.velocity = pygame.math.Vector2()
-
+        # Frame attributes
+        self.frame = 0
+        self.frame_ticks = 0
+        # how ticks frames per frame
+        self.idle_ticks = character["idle_ticks"]
+        self.walk_ticks = character["walk_ticks"]
+        self.run_ticks = character["run_ticks"]
+        self.strike_ticks = character["strike_ticks"]
+        self.shoot_ticks = character["shoot_ticks"]
+        self.death_ticks = character["death_ticks"]
+        # Action at what frame
+        self.strike_frame = character["strike_frame"]
+        self.shoot_frame = character["shoot_frame"]
+        self.death_frame = character["death_frame"]
         self.flip_image = character["flip_image"]
-
-        self.idle_ticks = 0
-        self.walk_ticks = 0
-        self.run_ticks = 0
-        self.strike_ticks = 0
-        self.shoot_ticks = 0
-        self.death_ticks = 0
 
     def set_hitbox(self):
         """
@@ -105,4 +119,3 @@ class Enemy(pygame.sprite.Sprite):
         self.position += self.velocity
         self.rect.centerx = self.position.x
         self.rect.centery = self.position.y
-

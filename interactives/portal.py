@@ -1,10 +1,9 @@
 import pygame
 
-from settings.interactives_settings import PORTAL_HITBOX, PORTAL_HITBOX_LEFT_OFFSET, \
-    PORTAL_HITBOX_TOP_OFFSET, PORTAL_VISIBLE_TICK, PORTAL_TRANSPARENCY, PORTAL_ACTIVE_TRANSPARENCY
-from settings.player_settings import PLAYER_NEW_LOCATION_TICK
+from settings.interactives_settings import PORTAL
+from settings.player_settings import PLAYER
 from sprites.interactives_sprites import PORTAL_SPRITES
-from utilities import portal_sprites, all_sprites, get_new_portal_center
+from utilities import all_sprites, get_new_portal_center, portal_sprites
 
 
 class Portal(pygame.sprite.Sprite):
@@ -23,7 +22,7 @@ class Portal(pygame.sprite.Sprite):
         # Rect
         self.rect = self.image.get_rect()
         # Hitbox
-        self.hitbox = pygame.Rect(PORTAL_HITBOX)
+        self.hitbox = pygame.Rect(PORTAL["hitbox"])
 
         # Spawn location
         self.rect.center = get_new_portal_center(side)
@@ -43,16 +42,16 @@ class Portal(pygame.sprite.Sprite):
         """
         Aligns hitbox with Portal rect.
         """
-        self.hitbox.left = self.rect.left + PORTAL_HITBOX_LEFT_OFFSET
-        self.hitbox.top = self.rect.top + PORTAL_HITBOX_TOP_OFFSET
+        self.hitbox.left = self.rect.left + PORTAL["hitbox_left_offset"]
+        self.hitbox.top = self.rect.top + PORTAL["hitbox_right_offset"]
 
     def set_visibility(self):
         """
         Makes the Portal visible after certain time.
         """
-        if self.spawn_ticks == PORTAL_VISIBLE_TICK:
+        if self.spawn_ticks == PORTAL["visible_tick"]:
             self.is_visible = True
-            self.image.set_alpha(PORTAL_TRANSPARENCY)
+            self.image.set_alpha(PORTAL["transparency"])
 
     def check_portal_collision(self):
         """
@@ -92,7 +91,7 @@ class Portal(pygame.sprite.Sprite):
 
         :return: New Portal instance.
         """
-        if self.portal_ticks == PLAYER_NEW_LOCATION_TICK - 1:
+        if self.portal_ticks == PLAYER["new_location_tick"] - 1:
             Portal(player=self.player,
                    side=self.side)
             self.kill()
@@ -103,7 +102,7 @@ class Portal(pygame.sprite.Sprite):
         """
         if self.this_portal_was_used:
             self.rect.center = self.player.hitbox.center
-            self.image.set_alpha(PORTAL_ACTIVE_TRANSPARENCY)
+            self.image.set_alpha(PORTAL["active_transparency"])
         self.spawn_ticks += 1
 
     def update(self):
