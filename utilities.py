@@ -3,7 +3,6 @@ from random import randint
 import pygame
 
 from settings.general_settings import GENERAL
-from settings.interactives_settings import PORTAL
 
 all_sprites = pygame.sprite.Group()
 player_sprite = pygame.sprite.GroupSingle()
@@ -16,6 +15,21 @@ enemy_projectile_sprites = pygame.sprite.Group()
 skull_sprites = pygame.sprite.Group()
 energy_sprites = pygame.sprite.Group()
 portal_sprites = pygame.sprite.Group()
+
+
+def handle_pickups():
+    """
+    Checks all PickUps and Player location and applies PickUp stats if collision.
+    """
+    for energy in energy_sprites:
+        if energy.hitbox.colliderect(player_sprite.sprite.hitbox):
+            player_sprite.sprite.energy_level += energy.boost
+            energy.kill()
+
+    for skull in skull_sprites:
+        if skull.hitbox.colliderect(player_sprite.sprite.hitbox):
+            player_sprite.sprite.skull_level += skull.boost
+            skull.kill()
 
 
 def handle_outgoing_projectiles():
@@ -93,13 +107,13 @@ def get_new_portal_center(side):
         depending on the portals side.
     """
     if side == "left":
-        x = randint(PORTAL["left_x_min"],
-                    PORTAL["left_x_max"])
+        x = randint(GENERAL["left_x_min"],
+                    GENERAL["left_x_max"])
     else:
-        x = randint(PORTAL["right_x_min"],
-                    PORTAL["right_x_max"])
-    y = randint(PORTAL["y_min"],
-                PORTAL["y_max"])
+        x = randint(GENERAL["right_x_min"],
+                    GENERAL["right_x_max"])
+    y = randint(GENERAL["y_min"],
+                GENERAL["y_max"])
 
     return x, y
 

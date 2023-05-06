@@ -3,7 +3,9 @@ from math import atan2, sqrt, degrees
 
 import pygame
 
+from projectiles.base_projectile import Projectile
 from projectiles.bullet import Bullet
+from settings.projectile_settings import BULLET
 
 from utilities import player_sprite, all_sprites
 
@@ -19,11 +21,11 @@ class Player(pygame.sprite.Sprite):
 
         # Create sprites
         self.image = pygame.transform.rotozoom(
-            pygame.image.load("images/player/player_pistol.png").convert_alpha(),
+            pygame.image.load("./images/player/player_pistol.png").convert_alpha(),
             False,
             PLAYER["size"])
         self.image_shoot = pygame.transform.rotozoom(
-            pygame.image.load("images/player/player_pistol_fire.png").convert_alpha(),
+            pygame.image.load("./images/player/player_pistol_fire.png").convert_alpha(),
             False,
             PLAYER["size"])
 
@@ -42,6 +44,10 @@ class Player(pygame.sprite.Sprite):
         self.new_location = None
         self.teleport_location = None
         self.is_invincible = False
+
+        # power levels
+        self.energy_level = 0
+        self.skull_level = 0
 
         # Trackers
         self.shoot_cooldown = 0
@@ -177,10 +183,15 @@ class Player(pygame.sprite.Sprite):
         else:
             bullet_start_y -= abs(self.angle // 30)
 
+        Projectile(x=bullet_start_x,
+                   y=bullet_start_y,
+                   angle=self.angle,
+                   projectile_name=BULLET)
+
         # Create projectile
-        Bullet(x=bullet_start_x,
-               y=bullet_start_y,
-               angle=self.angle)
+        # Bullet(x=bullet_start_x,
+        #        y=bullet_start_y,
+        #        angle=self.angle)
 
     def manage_teleport(self):
         """

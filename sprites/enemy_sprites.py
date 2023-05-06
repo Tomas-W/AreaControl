@@ -188,3 +188,11 @@ GOLEM_DEATH_SPRITES = get_sprites(sheet=golem_death_sheet,
                                   height=GOLEM_SPRITE_HEIGHT,
                                   scale=GOLEM_SIZE,
                                   color=GENERAL["black"])
+golem_death_sheet_flipped = pygame.image.load(
+    "images/enemies/golem/jump_sheet_flipped.png").convert_alpha()
+GOLEM_DEATH_SPRITES_FLIPPED = get_sprites(sheet=golem_death_sheet_flipped,
+                                          number_sprites=16,
+                                          width=GOLEM_SPRITE_WIDTH,
+                                          height=GOLEM_SPRITE_HEIGHT,
+                                          scale=GOLEM_SIZE,
+                                          color=GENERAL["black"])

@@ -1,6 +1,7 @@
 from characters.base_enemy import Enemy
+from interactives.base_pickup import PickUp
 
-from interactives.energy import Energy
+from settings.interactives_settings import ENERGY
 
 from utilities import get_distance
 
@@ -58,7 +59,7 @@ class Rusher(Enemy):
         Applies Rusher move state and image properties.
         """
         self.move_to_player()
-        self.set_move_image()
+        self.set_run_image()
 
     def manage_strike_state(self):
         """
@@ -98,17 +99,9 @@ class Rusher(Enemy):
 
         # Kill Rusher and place Energy
         if self.frame == self.death_frame:
-            Energy(position=self.rect.center)
+            PickUp(position=self.rect.center,
+                   pickup_name=ENERGY)
             self.kill()
-
-    def manage_frames(self):
-        self.frame_ticks += 1
-
-        # Animation switch
-        if self.current_state != self.last_state:
-            self.frame_ticks = 0
-
-        self.last_state = self.current_state
 
     def update(self):
         if self.death:
@@ -131,48 +124,3 @@ class Rusher(Enemy):
 
             elif self.strike:
                 self.manage_strike_state()
-
-    def set_idle_image(self):
-        if self.frame_ticks == self.idle_ticks:
-            self.frame += 1
-            self.frame_ticks = 0
-
-        if self.frame > len(self.idle_sprites) - 1:
-            self.frame = 0
-
-        if self.flip_image:
-            self.image = self.idle_sprites_flipped[self.frame]
-        else:
-            self.image = self.idle_sprites[self.frame]
-
-    def set_move_image(self):
-        if self.frame_ticks == self.run_ticks:
-            self.frame += 1
-            self.frame_ticks = 0
-
-        if self.frame > len(self.run_sprites) - 1:
-            self.frame = 0
-
-        if self.flip_image:
-            self.image = self.run_sprites_flipped[self.frame]
-        else:
-            self.image = self.run_sprites[self.frame]
-
-    def set_strike_image(self):
-        if self.frame_ticks == self.strike_ticks:
-            self.frame += 1
-            self.frame_ticks = 0
-
-        if self.frame > len(self.strike_sprites) - 1:
-            self.frame = 0
-
-        if self.flip_image:
-            self.image = self.strike_sprites_flipped[self.frame]
-        else:
-            self.image = self.strike_sprites[self.frame]
-
-    def set_death_image(self):
-        if self.flip_image:
-            self.image = self.death_sprites_flipped[self.frame]
-        else:
-            self.image = self.death_sprites[self.frame]

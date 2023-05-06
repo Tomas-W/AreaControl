@@ -35,7 +35,6 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.center = position
         # Hitbox
         self.hitbox = pygame.Rect(character["hitbox"])
-        self.hitbox.center = position
 
         # Offsets
         self.hitbox_offset_x = character["hitbox_offset_x"]
@@ -54,16 +53,6 @@ class Enemy(pygame.sprite.Sprite):
         self.current_state = character["current_state"]
         self.last_state = character["last_state"]
 
-        # Attributes
-        self.position = pygame.math.Vector2(position)
-        self.health = character["health"]
-        self.damage = character["damage"]
-        self.walk_speed = character["walk_speed"]
-        self.run_speed = character["run_speed"]
-        self.speed = character["speed"]
-        self.direction = pygame.math.Vector2()
-        self.velocity = pygame.math.Vector2()
-
         # State attributes
         self.idle_duration = character["idle_duration"]
         self.walk_duration = character["walk_duration"]
@@ -74,9 +63,19 @@ class Enemy(pygame.sprite.Sprite):
         self.strike_distance = character["strike_distance"]
         self.shoot_distance = character["shoot_distance"]
 
+        # Attributes
+        self.position = pygame.math.Vector2(position)
+        self.direction = pygame.math.Vector2()
+        self.velocity = pygame.math.Vector2()
+        self.health = character["health"]
+        self.damage = character["damage"]
+        self.walk_speed = character["walk_speed"]
+        self.run_speed = character["run_speed"]
+        self.speed = character["speed"]
+
         # Frame attributes
-        self.frame = 0
-        self.frame_ticks = 0
+        self.frame = character["frame"]
+        self.frame_ticks = character["frame_ticks"]
         # how ticks frames per frame
         self.idle_ticks = character["idle_ticks"]
         self.walk_ticks = character["walk_ticks"]
@@ -119,3 +118,83 @@ class Enemy(pygame.sprite.Sprite):
         self.position += self.velocity
         self.rect.centerx = self.position.x
         self.rect.centery = self.position.y
+
+    def manage_frames(self):
+        self.frame_ticks += 1
+
+        # Animation switch
+        if self.current_state != self.last_state:
+            self.frame_ticks = 0
+
+        self.last_state = self.current_state
+
+    def set_idle_image(self):
+        if self.frame_ticks == self.idle_ticks:
+            self.frame += 1
+            self.frame_ticks = 0
+
+        if self.frame > len(self.idle_sprites) - 1:
+            self.frame = 0
+
+        if self.flip_image:
+            self.image = self.idle_sprites_flipped[self.frame]
+        else:
+            self.image = self.idle_sprites[self.frame]
+
+    def set_walk_image(self):
+        if self.frame_ticks == self.walk_ticks:
+            self.frame += 1
+            self.frame_ticks = 0
+
+        if self.frame > len(self.walk_sprites) - 1:
+            self.frame = 0
+
+        if self.flip_image:
+            self.image = self.walk_sprites_flipped[self.frame]
+        else:
+            self.image = self.walk_sprites[self.frame]
+
+    def set_run_image(self):
+        if self.frame_ticks == self.run_ticks:
+            self.frame += 1
+            self.frame_ticks = 0
+
+        if self.frame > len(self.run_sprites) - 1:
+            self.frame = 0
+
+        if self.flip_image:
+            self.image = self.run_sprites_flipped[self.frame]
+        else:
+            self.image = self.run_sprites[self.frame]
+
+    def set_strike_image(self):
+        if self.frame_ticks == self.strike_ticks:
+            self.frame += 1
+            self.frame_ticks = 0
+
+        if self.frame > len(self.strike_sprites) - 1:
+            self.frame = 0
+
+        if self.flip_image:
+            self.image = self.strike_sprites_flipped[self.frame]
+        else:
+            self.image = self.strike_sprites[self.frame]
+
+    def set_shoot_image(self):
+        if self.frame_ticks == self.shoot_ticks:
+            self.frame += 1
+            self.frame_ticks = 0
+
+        if self.frame > len(self.shoot_sprites) - 1:
+            self.frame = 0
+
+        if self.flip_image:
+            self.image = self.shoot_sprites_flipped[self.frame]
+        else:
+            self.image = self.shoot_sprites[self.frame]
+
+    def set_death_image(self):
+        if self.flip_image:
+            self.image = self.death_sprites_flipped[self.frame]
+        else:
+            self.image = self.death_sprites[self.frame]

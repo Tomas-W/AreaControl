@@ -1,8 +1,9 @@
 import math
 
 from characters.base_enemy import Enemy
+from interactives.base_pickup import PickUp
 from projectiles.fire_skull import FireSkull
-from interactives.skull import Skull
+from settings.interactives_settings import SKULL
 
 from utilities import get_distance
 
@@ -44,7 +45,7 @@ class SkullCollector(Enemy):
         Applies SkullCollector move state and image properties.
         """
         self.move_to_player()
-        self.set_move_image()
+        self.set_walk_image()
 
     def manage_shoot_state(self):
         """
@@ -97,17 +98,9 @@ class SkullCollector(Enemy):
 
         # Kill SkullCollector and place Skull
         if self.frame == self.death_frame:
-            Skull(position=self.hitbox.center)
+            PickUp(position=self.rect.center,
+                   pickup_name=SKULL)
             self.kill()
-
-    def manage_frames(self):
-        self.frame_ticks += 1
-
-        # Animation switch
-        if self.current_state != self.last_state:
-            self.frame_ticks = 0
-
-        self.last_state = self.current_state
 
     def update(self):
         if self.death:
@@ -127,35 +120,3 @@ class SkullCollector(Enemy):
 
             elif self.shoot:
                 self.manage_shoot_state()
-
-    def set_move_image(self):
-        if self.frame_ticks == self.walk_ticks:
-            self.frame += 1
-            self.frame_ticks = 0
-
-        if self.frame > len(self.walk_sprites) - 1:
-            self.frame = 0
-
-        if self.flip_image:
-            self.image = self.walk_sprites_flipped[self.frame]
-        else:
-            self.image = self.walk_sprites[self.frame]
-
-    def set_shoot_image(self):
-        if self.frame_ticks == self.shoot_ticks:
-            self.frame += 1
-            self.frame_ticks = 0
-
-        if self.frame > len(self.shoot_sprites) - 1:
-            self.frame = 0
-
-        if self.flip_image:
-            self.image = self.shoot_sprites_flipped[self.frame]
-        else:
-            self.image = self.shoot_sprites[self.frame]
-
-    def set_death_image(self):
-        if self.flip_image:
-            self.image = self.death_sprites_flipped[self.frame]
-        else:
-            self.image = self.death_sprites[self.frame]

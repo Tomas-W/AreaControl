@@ -1,18 +1,20 @@
-# ################################################################ #
-# ############################ PORTAL ############################ #
 import pygame
 
-from settings.general_settings import GENERAL
-from settings.interactives_settings import SKULL, ENERGY, PORTAL
+from settings.general_settings import GENERAL, ENERGY_SIZE, PORTAL_SIZE, PORTAL_SPRITE_WIDTH, \
+    SKULL_SPRITE_WIDTH, SKULL_SPRITE_HEIGHT, ENERGY_SPRITE_HEIGHT, ENERGY_SPRITE_WIDTH, \
+    PORTAL_SPRITE_HEIGHT, SKULL_SIZE
 from utilities import get_sprites
 
+
+# ################################################################ #
+# ############################ PORTAL ############################ #
 portal_sheet = pygame.image.load(
     "images/interactives/portal/portal_sheet.png").convert_alpha()
 PORTAL_SPRITES = get_sprites(sheet=portal_sheet,
                              number_sprites=17,
-                             width=PORTAL["sprite_width"],
-                             height=PORTAL["sprite_height"],
-                             scale=PORTAL["size"],
+                             width=PORTAL_SPRITE_WIDTH,
+                             height=PORTAL_SPRITE_HEIGHT,
+                             scale=PORTAL_SIZE,
                              color=GENERAL["black"])
 
 # ################################################################ #
@@ -21,9 +23,9 @@ energy_sheet = pygame.image.load(
     "images/interactives/energy/energy_sheet.png").convert_alpha()
 ENERGY_SPRITES = get_sprites(sheet=energy_sheet,
                              number_sprites=11,
-                             width=ENERGY["sprite_width"],
-                             height=ENERGY["sprite_height"],
-                             scale=ENERGY["size"],
+                             width=ENERGY_SPRITE_WIDTH,
+                             height=ENERGY_SPRITE_HEIGHT,
+                             scale=ENERGY_SIZE,
                              color=GENERAL["black"])
 
 # ############################################################### #
@@ -32,7 +34,7 @@ skull_sheet = pygame.image.load(
     "images/interactives/skull/skull_sheet.png").convert_alpha()
 SKULL_SPRITES = get_sprites(sheet=skull_sheet,
                             number_sprites=7,
-                            width=SKULL["sprite_width"],
-                            height=SKULL["sprite_height"],
-                            scale=SKULL["size"],
+                            width=SKULL_SPRITE_WIDTH,
+                            height=SKULL_SPRITE_HEIGHT,
+                            scale=SKULL_SIZE,
                             color=GENERAL["black"])

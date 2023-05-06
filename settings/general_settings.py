@@ -1,8 +1,15 @@
 GENERAL = {
+    # level
     "width": 1600,
     "height": 900,
     "half_width": 800,
     "half_height": 450,
+    "left_x_min": 800,
+    "left_x_max": 1600,
+    "right_x_min": 1800,
+    "right_x_max": 2700,
+    "y_min": 900,
+    "y_max": 2000,
 
     "title": "AreaControl",
     "FPS": 60,
@@ -21,19 +28,46 @@ GENERAL = {
     "level_top_y": 850,
     "level_bottom_y": 2050,
 
-    "health_bar_x_offset": 850,
+    "health_bar_x_offset": 750,
     "health_bar_y_offset": 450,
     "health_bar_height": 25,
 }
 
+# Characters
 SKULL_COLLECTOR_SIZE = 2.5
 SKULL_COLLECTOR_SPRITE_WIDTH = 56
 SKULL_COLLECTOR_SPRITE_HEIGHT = 73
 
-RUSHER_SIZE = 2.2
+RUSHER_SIZE = 2.5
 RUSHER_SPRITE_WIDTH = 51
 RUSHER_SPRITE_HEIGHT = 53
 
 GOLEM_SIZE = 3
 GOLEM_SPRITE_WIDTH = 256
 GOLEM_SPRITE_HEIGHT = 256
+
+BAT_SIZE = 2
+BAT_SPRITE_WIDTH = 28
+BAT_SPRITE_HEIGHT = 28
+
+# Projectiles
+FIRE_SKULL_SIZE = 1.5
+FIRE_SKULL_SPRITE_WIDTH = 15
+FIRE_SKULL_SPRITE_HEIGHT = 25
+
+BULLET_SIZE = 1
+BULLET_SPRITE_WIDTH = 16
+BULLET_SPRITE_HEIGHT = 16
+
+# Interactives
+ENERGY_SIZE = 0.5
+ENERGY_SPRITE_WIDTH = 100
+ENERGY_SPRITE_HEIGHT = 100
+
+SKULL_SIZE = 0.4
+SKULL_SPRITE_WIDTH = 75
+SKULL_SPRITE_HEIGHT = 100
+
+PORTAL_SIZE = 1
+PORTAL_SPRITE_WIDTH = 75
+PORTAL_SPRITE_HEIGHT = 85

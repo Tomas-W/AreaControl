@@ -2,7 +2,7 @@ import math
 
 import pygame
 
-from settings.enemy_projectile_settings import FIRE_SKULL
+from settings.projectile_settings import FIRE_SKULL
 from sprites.projectile_sprites import FIRE_SKULL_SPRITE
 from utilities import all_sprites, all_projectile_sprites, enemy_projectile_sprites
 

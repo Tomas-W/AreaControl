@@ -1,12 +1,12 @@
 import pygame
 
-from settings.enemy_projectile_settings import FIRE_SKULL
+from settings.projectile_settings import FIRE_SKULL, BULLET
 from settings.enemy_settings import SKULL_COLLECTOR, RUSHER, GOLEM
 from settings.general_settings import GENERAL
-from settings.interactives_settings import PORTAL
-from settings.player_settings import PLAYER, BULLET
+from settings.interactives_settings import PORTAL, SKULL, ENERGY
+from settings.player_settings import PLAYER
 from utilities import all_sprites, player_projectile_sprites, enemy_projectile_sprites, \
-    portal_sprites
+    portal_sprites, skull_sprites, energy_sprites
 
 
 class Camera(pygame.sprite.Group):
@@ -27,8 +27,42 @@ class Camera(pygame.sprite.Group):
             offset_pos = sprite.rect.topleft - self.offset
             screen.blit(sprite.image, offset_pos)
 
+    def show_bars(self, screen, player=None, health=None, skull=None, energy=None):
+        if health is not None:
+            bar_position = (player.rect.centerx - GENERAL["health_bar_x_offset"],
+                            player.rect.centery - GENERAL["health_bar_y_offset"])
+            new_bar_position = bar_position - self.offset
+            bar_x = new_bar_position[0]
+            bar_y = new_bar_position[1]
+            pygame.draw.rect(screen,
+                             GENERAL["green"],
+                             (bar_x, bar_y,
+                              player.health, GENERAL["health_bar_height"]))
+
+        if skull is not None:
+            bar_position = (player.rect.centerx - GENERAL["health_bar_x_offset"],
+                            player.rect.centery - GENERAL["health_bar_y_offset"] + 75)
+            new_bar_position = bar_position - self.offset
+            bar_x = new_bar_position[0]
+            bar_y = new_bar_position[1]
+            pygame.draw.rect(screen,
+                             GENERAL["red"],
+                             (bar_x, bar_y,
+                              player.skull_level, GENERAL["health_bar_height"]))
+
+        if energy is not None:
+            bar_position = (player.rect.centerx - GENERAL["health_bar_x_offset"],
+                            player.rect.centery - GENERAL["health_bar_y_offset"] + 150)
+            new_bar_position = bar_position - self.offset
+            bar_x = new_bar_position[0]
+            bar_y = new_bar_position[1]
+            pygame.draw.rect(screen,
+                             GENERAL["blue"],
+                             (bar_x, bar_y,
+                              player.energy_level, GENERAL["health_bar_height"]))
+
     def show_hitboxes(self, player=None, skull_collector=None, rusher=None, golem=None,
-                      bullet=None, fire_skull=None, portal=None):
+                      bullet=None, fire_skull=None, skull=None, energy=None, portal=None):
         """
         Draws hitboxes.
         Player, SkullCollector and Rusher need instances, others only need to be not None.
@@ -83,6 +117,22 @@ class Camera(pygame.sprite.Group):
                                                      pygame.Rect(FIRE_SKULL["hitbox"]),
                                                      2)
                 fire_skull_hitbox.topleft -= self.offset
+
+        if skull is not None:
+            for skull in skull_sprites:
+                skull_hitbox = pygame.draw.rect(skull.image,
+                                                GENERAL["red"],
+                                                pygame.Rect(SKULL["hitbox"]),
+                                                2)
+                skull_hitbox.topleft -= self.offset
+
+        if energy is not None:
+            for energy in energy_sprites:
+                energy_hitbox = pygame.draw.rect(energy.image,
+                                                 GENERAL["red"],
+                                                 pygame.Rect(ENERGY["hitbox"]),
+                                                 2)
+                energy_hitbox.topleft -= self.offset
 
         if portal is not None:
             for portal in portal_sprites:

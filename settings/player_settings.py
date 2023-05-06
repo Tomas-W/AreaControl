@@ -8,8 +8,8 @@ PLAYER = {
     "speed": 10,
     "health": 1000,
 
-    "shoot_cooldown": 24,
-    "muzzle_flash_cooldown": 20,
+    "shoot_cooldown": 60,
+    "muzzle_flash_cooldown": 8,
 
     "left_portal": None,
     "right_portal": None,
@@ -20,16 +20,3 @@ PLAYER = {
     "hitbox": (0, 0,
                (214 * PLAYER_SIZE), (174 * PLAYER_SIZE)),
 }
-
-# ################################################################ #
-# ############################ BULLET ############################ #
-BULLET_SIZE = 1
-BULLET = {
-    "size": BULLET_SIZE,
-    "speed": 4,
-    "damage": 400,
-
-    "hitbox": (0, 0,
-               (212 * PLAYER_SIZE), (172 * PLAYER_SIZE)),
-}
-

@@ -2,7 +2,7 @@ import math
 
 import pygame
 
-from settings.player_settings import BULLET
+from settings.projectile_settings import BULLET
 from sprites.projectile_sprites import BULLET_SPRITE
 from utilities import all_sprites, all_projectile_sprites, player_projectile_sprites
 

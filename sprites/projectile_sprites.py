@@ -1,16 +1,15 @@
 import pygame
 
-from settings.enemy_projectile_settings import FIRE_SKULL
-from settings.player_settings import BULLET
+from settings.general_settings import FIRE_SKULL_SIZE, BULLET_SIZE
 
 fire_skull_image = pygame.image.load(
     "./images/projectiles/fire_skull.png").convert_alpha()
 FIRE_SKULL_SPRITE = pygame.transform.rotozoom(fire_skull_image,
                                               False,
-                                              FIRE_SKULL["size"])
+                                              FIRE_SKULL_SIZE)
 
 bullet_image = pygame.image.load(
     "./images/projectiles/bullet_blue.png").convert_alpha()
 BULLET_SPRITE = pygame.transform.rotozoom(bullet_image,
                                           False,
-                                          BULLET["size"])
+                                          BULLET_SIZE)
