@@ -21,6 +21,7 @@ class Rusher(Enemy):
         distance_to_player = get_distance(location_a=self.player.hitbox.center,
                                           location_b=self.rect.center)
 
+        # Death
         if self.health <= 0:
             self.death = True
             self.idle = False
@@ -29,19 +30,19 @@ class Rusher(Enemy):
             self.frame_ticks = 0
             self.frame = 0
 
-        # Set strike
+        # Strike
         elif distance_to_player < RUSHER["strike_distance"]:
             self.strike = True
             self.idle = False
             self.run = False
             self.current_state = "strike"
-        # Set move
+        # Move
         elif distance_to_player < RUSHER["run_distance"]:
             self.run = True
             self.idle = False
             self.strike = False
             self.current_state = "run"
-        # Set idle
+        # Idle
         elif distance_to_player > RUSHER["run_distance"]:
             self.idle = True
             self.run = False
@@ -104,6 +105,7 @@ class Rusher(Enemy):
             self.kill()
 
     def update(self):
+        # Death state has its own frame manager
         if self.death:
             self.manage_death_state()
 

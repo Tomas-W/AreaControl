@@ -5,7 +5,7 @@ PLAYER = {
     "start_position": (1750, 1450),
     "size": PLAYER_SIZE,
     "hitbox_size": 0.8,
-    "speed": 10,
+    "speed": 5,
     "health": 1000,
 
     "shoot_cooldown": 60,

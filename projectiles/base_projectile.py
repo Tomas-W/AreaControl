@@ -32,7 +32,7 @@ class Projectile(pygame.sprite.Sprite):
         # add to correct sprite list
         if self.name == "bullet":
             player_projectile_sprites.add(self)
-        elif self.name == "fire_skull":
+        elif self.name == "flaming_skull":
             enemy_projectile_sprites.add(self)
 
     def set_hitbox(self):

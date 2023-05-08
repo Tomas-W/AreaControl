@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 
-from creepers.bat import Bat
+from creepers.fish import Fish
 from settings.general_settings import GENERAL
 
 # INIT PYGAME #
@@ -20,23 +20,27 @@ from settings.enemy_settings import SKULL_COLLECTOR, RUSHER
 from characters.player import Player
 from characters.skull_collector import SkullCollector
 from characters.rusher import Rusher
-from settings.creeper_settings import BAT
+from creepers.bat import Bat
+from settings.creeper_settings import BAT, FISH
 
 from camera import Camera
 
+# Characters
 player = Player()
+skull_collector = SkullCollector(player=player,
+                                 position=(1400, 1250),
+                                 character=SKULL_COLLECTOR)
+rusher = Rusher(player=player,
+                position=(1400, 1400),
+                character=RUSHER)
 
-skull = SkullCollector(player=player,
-                       position=(1400, 1250),
-                       character=SKULL_COLLECTOR)
-
-rush = Rusher(player=player,
-              position=(1400, 1400),
-              character=RUSHER)
-
+# Creepers
 bat = Bat(player=player,
           creeper_name=BAT)
+fish = Fish(player=player,
+            creeper_name=FISH)
 
+# Camera
 camera = Camera(background=background)
 
 # Allowed events
@@ -46,9 +50,7 @@ pygame.event.set_allowed([QUIT, K_w, K_s, K_a, K_d, MOUSEBUTTONDOWN])
 clock = pygame.time.Clock()
 
 tick = 0
-
 while True:
-
     tick += 1
     if tick == 50:
         print(len(all_sprites.sprites()))
@@ -56,13 +58,15 @@ while True:
 
         bat = Bat(player=player,
                   creeper_name=BAT)
+        fish = Fish(player=player,
+                    creeper_name=FISH)
 
-    #     skull = SkullCollector(player=player,
-    #                            position=(1400, 1250),
-    #                            character=SKULL_COLLECTOR)
-    #     rush = Rusher(player=player,
-    #                   position=(1400, 1400),
-    #                   character=RUSHER)
+        skull = SkullCollector(player=player,
+                               position=(1400, 1250),
+                               character=SKULL_COLLECTOR)
+        rush = Rusher(player=player,
+                      position=(1400, 1400),
+                      character=RUSHER)
         tick = 0
 
     # Events
@@ -72,21 +76,25 @@ while True:
             pygame.quit()
             exit()
 
+    # Utility handlers
     handle_incoming_projectiles()
     handle_outgoing_projectiles()
     handle_pickups()
 
+    # Camera offset
     camera.custom_draw(screen=screen,
                        background=background,
                        player=player)
 
-    # camera.show_hitboxes(player=player,
-    #                      skull_collector=skull,
+    # Hitboxes
+    # camera.show_hitboxes(player=player)
+    # camera.show_hitboxes(skull_collector=skull,
     #                      rusher=rush)
+    # camera.show_hitboxes(skull=True,
+    #                      energy=True)
+    # camera.show_hitboxes(fish=fish)
 
-    camera.show_hitboxes(skull=True,
-                         energy=True)
-
+    # Bars
     camera.show_bars(screen=screen,
                      player=player,
                      health=True,

@@ -1,6 +1,7 @@
 import pygame
 
-from settings.projectile_settings import FIRE_SKULL, BULLET
+from settings.creeper_settings import BAT
+from settings.projectile_settings import FLAMING_SKULL, BULLET
 from settings.enemy_settings import SKULL_COLLECTOR, RUSHER, GOLEM
 from settings.general_settings import GENERAL
 from settings.interactives_settings import PORTAL, SKULL, ENERGY
@@ -61,8 +62,9 @@ class Camera(pygame.sprite.Group):
                              (bar_x, bar_y,
                               player.energy_level, GENERAL["health_bar_height"]))
 
-    def show_hitboxes(self, player=None, skull_collector=None, rusher=None, golem=None,
-                      bullet=None, fire_skull=None, skull=None, energy=None, portal=None):
+    def show_hitboxes(self, player=None, skull_collector=None, rusher=None, golem=None, bat=None,
+                      fish=None, bullet=None, flaming_skull=None, skull=None, energy=None,
+                      portal=None):
         """
         Draws hitboxes.
         Player, SkullCollector and Rusher need instances, others only need to be not None.
@@ -102,6 +104,20 @@ class Camera(pygame.sprite.Group):
                                             2)
             golem_hitbox.topleft -= self.offset
 
+        if bat is not None:
+            bat_hitbox = pygame.draw.rect(bat.image,
+                                          GENERAL["red"],
+                                          pygame.Rect(BAT["hitbox"]),
+                                          2)
+            bat_hitbox.topleft -= self.offset
+
+        if fish is not None:
+            fish_hitbox = pygame.draw.rect(fish.image,
+                                           GENERAL["red"],
+                                           pygame.Rect(BAT["hitbox"]),
+                                           2)
+            fish_hitbox.topleft -= self.offset
+
         if bullet is not None:
             for bullet in player_projectile_sprites:
                 bullet_hitbox = pygame.draw.rect(bullet.image,
@@ -110,13 +126,13 @@ class Camera(pygame.sprite.Group):
                                                  2)
                 bullet_hitbox.topleft -= self.offset
 
-        if fire_skull is not None:
-            for fire_skull in enemy_projectile_sprites:
-                fire_skull_hitbox = pygame.draw.rect(fire_skull.image,
+        if flaming_skull is not None:
+            for flaming_skull in enemy_projectile_sprites:
+                flaming_skull_hitbox = pygame.draw.rect(flaming_skull.image,
                                                      GENERAL["red"],
-                                                     pygame.Rect(FIRE_SKULL["hitbox"]),
+                                                     pygame.Rect(FLAMING_SKULL["hitbox"]),
                                                      2)
-                fire_skull_hitbox.topleft -= self.offset
+                flaming_skull_hitbox.topleft -= self.offset
 
         if skull is not None:
             for skull in skull_sprites:

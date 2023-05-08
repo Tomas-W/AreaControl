@@ -2,7 +2,7 @@ import math
 
 from characters.base_enemy import Enemy
 from interactives.base_pickup import PickUp
-from projectiles.fire_skull import FireSkull
+from projectiles.flaming_skull import FlamingSkull
 from settings.interactives_settings import SKULL
 
 from utilities import get_distance
@@ -23,6 +23,7 @@ class SkullCollector(Enemy):
         distance_to_player = get_distance(location_a=self.player.hitbox.center,
                                           location_b=self.hitbox.center)
 
+        # Death
         if self.health <= 0:
             self.death = True
             self.walk = False
@@ -30,15 +31,17 @@ class SkullCollector(Enemy):
             self.frame_ticks = 0
             self.frame = 0
 
+        # Move
+        if distance_to_player > SKULL_COLLECTOR["shoot_distance"]:
+            self.walk = True
+            self.shoot = False
+            self.current_state = "walk"
+
+        # Shoot
         elif distance_to_player < SKULL_COLLECTOR["shoot_distance"]:
             self.shoot = True
             self.walk = False
             self.current_state = "shoot"
-
-        elif distance_to_player > SKULL_COLLECTOR["shoot_distance"]:
-            self.walk = True
-            self.shoot = False
-            self.current_state = "walk"
 
     def manage_move_state(self):
         """
@@ -66,7 +69,7 @@ class SkullCollector(Enemy):
 
     def shoot_player(self):
         """
-        Shoot FireSkull towards Player.
+        Shoot FlamingSkull towards Player.
         """
         # Set projectile in right spot on the SkullCollector image
         if self.flip_image:
@@ -80,9 +83,9 @@ class SkullCollector(Enemy):
         dy = self.player.rect.centery - projectile_y
         angle = math.degrees(math.atan2(dy, dx))
         # Create projectile
-        FireSkull(x=projectile_x,
-                  y=projectile_y,
-                  angle=angle)
+        FlamingSkull(x=projectile_x,
+                     y=projectile_y,
+                     angle=angle)
 
     def manage_death_state(self):
         """
@@ -103,6 +106,7 @@ class SkullCollector(Enemy):
             self.kill()
 
     def update(self):
+        # Death state has its own frame manager
         if self.death:
             self.manage_death_state()
 

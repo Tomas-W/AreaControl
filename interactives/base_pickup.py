@@ -39,6 +39,10 @@ class PickUp(pygame.sprite.Sprite):
         self.set_interactive_image()
 
     def set_interactive_image(self):
+        """
+        Sets correct image depending on animation length and
+            frames per animation.
+        """
         if self.frame_ticks == self.ticks_per_frame:
             self.frame += 1
             self.frame_ticks = 0

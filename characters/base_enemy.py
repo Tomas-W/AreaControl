@@ -63,16 +63,6 @@ class Enemy(pygame.sprite.Sprite):
         self.strike_distance = character["strike_distance"]
         self.shoot_distance = character["shoot_distance"]
 
-        # Attributes
-        self.position = pygame.math.Vector2(position)
-        self.direction = pygame.math.Vector2()
-        self.velocity = pygame.math.Vector2()
-        self.health = character["health"]
-        self.damage = character["damage"]
-        self.walk_speed = character["walk_speed"]
-        self.run_speed = character["run_speed"]
-        self.speed = character["speed"]
-
         # Frame attributes
         self.frame = character["frame"]
         self.frame_ticks = character["frame_ticks"]
@@ -89,12 +79,34 @@ class Enemy(pygame.sprite.Sprite):
         self.death_frame = character["death_frame"]
         self.flip_image = character["flip_image"]
 
+        # Attributes
+        self.position = pygame.math.Vector2(position)
+        self.direction = pygame.math.Vector2()
+        self.velocity = pygame.math.Vector2()
+        self.health = character["health"]
+        self.damage = character["damage"]
+        self.walk_speed = character["walk_speed"]
+        self.run_speed = character["run_speed"]
+        self.speed = character["speed"]
+
     def set_hitbox(self):
         """
         Aligns hitbox with rect.
         """
         self.hitbox.left = self.rect.left + self.hitbox_offset_x
         self.hitbox.top = self.rect.top + self.hitbox_offset_y
+
+    def manage_frames(self):
+        """
+        Updates frame_ticks and state tracking for animations.
+        """
+        self.frame_ticks += 1
+
+        # Animation switch
+        if self.current_state != self.last_state:
+            self.frame_ticks = 0
+
+        self.last_state = self.current_state
 
     def should_image_flip(self):
         """
@@ -119,16 +131,12 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.centerx = self.position.x
         self.rect.centery = self.position.y
 
-    def manage_frames(self):
-        self.frame_ticks += 1
-
-        # Animation switch
-        if self.current_state != self.last_state:
-            self.frame_ticks = 0
-
-        self.last_state = self.current_state
-
     def set_idle_image(self):
+        """
+        Sets correct image depending on animation length,
+            frames per animation and
+            flip_image.
+        """
         if self.frame_ticks == self.idle_ticks:
             self.frame += 1
             self.frame_ticks = 0
@@ -142,6 +150,11 @@ class Enemy(pygame.sprite.Sprite):
             self.image = self.idle_sprites[self.frame]
 
     def set_walk_image(self):
+        """
+        Sets correct image depending on animation length,
+            frames per animation and
+            flip_image.
+        """
         if self.frame_ticks == self.walk_ticks:
             self.frame += 1
             self.frame_ticks = 0
@@ -155,6 +168,11 @@ class Enemy(pygame.sprite.Sprite):
             self.image = self.walk_sprites[self.frame]
 
     def set_run_image(self):
+        """
+        Sets correct image depending on animation length,
+            frames per animation and
+            flip_image.
+        """
         if self.frame_ticks == self.run_ticks:
             self.frame += 1
             self.frame_ticks = 0
@@ -168,6 +186,11 @@ class Enemy(pygame.sprite.Sprite):
             self.image = self.run_sprites[self.frame]
 
     def set_strike_image(self):
+        """
+        Sets correct image depending on animation length,
+            frames per animation and
+            flip_image.
+        """
         if self.frame_ticks == self.strike_ticks:
             self.frame += 1
             self.frame_ticks = 0
@@ -181,6 +204,11 @@ class Enemy(pygame.sprite.Sprite):
             self.image = self.strike_sprites[self.frame]
 
     def set_shoot_image(self):
+        """
+        Sets correct image depending on animation length,
+            frames per animation and
+            flip_image.
+        """
         if self.frame_ticks == self.shoot_ticks:
             self.frame += 1
             self.frame_ticks = 0
@@ -194,6 +222,11 @@ class Enemy(pygame.sprite.Sprite):
             self.image = self.shoot_sprites[self.frame]
 
     def set_death_image(self):
+        """
+        Sets correct image depending on animation length,
+            frames per animation and
+            flip_image.
+        """
         if self.flip_image:
             self.image = self.death_sprites_flipped[self.frame]
         else:

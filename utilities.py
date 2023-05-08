@@ -5,15 +5,23 @@ import pygame
 from settings.general_settings import GENERAL
 
 all_sprites = pygame.sprite.Group()
+# Characters
 player_sprite = pygame.sprite.GroupSingle()
 enemy_sprites = pygame.sprite.Group()
-
+# Projectiles
 all_projectile_sprites = pygame.sprite.Group()
 player_projectile_sprites = pygame.sprite.Group()
 enemy_projectile_sprites = pygame.sprite.Group()
-
+# Creepers
+all_creeper_sprites = pygame.sprite.Group()
+bat_sprites = pygame.sprite.Group()
+fish_sprites = pygame.sprite.Group()
+# Pickups
+all_pickup_sprites = pygame.sprite.Group()
 skull_sprites = pygame.sprite.Group()
 energy_sprites = pygame.sprite.Group()
+# Interactives
+all_interactives_sprites = pygame.sprite.Group()
 portal_sprites = pygame.sprite.Group()
 
 
@@ -36,8 +44,9 @@ def handle_outgoing_projectiles():
     """
     Checks all Player projectiles and Enemies and applies damage if collision.
     """
-    for enemy in enemy_sprites:
-        for projectile in player_projectile_sprites:
+    for projectile in player_projectile_sprites:
+        # Enemies
+        for enemy in enemy_sprites:
             # Check collision with Enemies
             if projectile.rect.colliderect(enemy.hitbox) and not enemy.death:
                 enemy.health -= projectile.damage
@@ -48,6 +57,14 @@ def handle_outgoing_projectiles():
                 "level_right_x"] or \
                     projectile.rect.top < GENERAL["level_top_y"] or projectile.rect.bottom > \
                     GENERAL["level_bottom_y"]:
+                projectile.kill()
+
+    for projectile in player_projectile_sprites:
+        # Creepers
+        for creeper in all_creeper_sprites:
+            # Check collision with Player
+            if projectile.rect.colliderect(creeper.hitbox):
+                creeper.health -= projectile.damage
                 projectile.kill()
 
 

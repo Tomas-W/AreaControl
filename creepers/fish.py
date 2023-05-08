@@ -1,8 +1,10 @@
+from random import randint
+
 from creepers.base_creeper import Creeper
 from utilities import get_distance
 
 
-class Bat(Creeper):
+class Fish(Creeper):
     def __init__(self, player, creeper_name):
         super().__init__(player=player,
                          creeper_name=creeper_name)
@@ -37,7 +39,7 @@ class Bat(Creeper):
 
     def is_allowed_to_strike(self):
         """
-        Checks if Bat is allowed to strike Player.
+        Checks if Fish is allowed to strike Player.
 
         :return: Returns True if conditions are met (bool).
         """
