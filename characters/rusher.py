@@ -1,7 +1,5 @@
 from random import choice
 
-import pygame.transform
-
 from characters.base_enemy import Enemy
 from interactives.base_pickup import PickUp
 
@@ -18,20 +16,33 @@ class Rusher(Enemy):
                          position=position,
                          character=character)
 
-        self.opacity_ticks = 0
+        # Private attributes
+        self.image_opacity = 10
 
     def manage_spawn_state(self):
-        self.spawn_ticks += 1
-        self.image_opacity += 10
+        """"
+        Controls spawn behaviour of the Rusher.
+        Places Rusher in random location,
+            plays appear in cage animation and
+            increases its alpha value.
 
-        if self.image_opacity >= 255:
-            self.opacity_ticks += 1
-            self.image_opacity = 0
+        """
+        self.frame_ticks += 1
 
-        if self.opacity_ticks >= 7:
-            self.spawn = False
-
+        self.image = self.spawn_sprites[self.frame]
         self.image.set_alpha(self.image_opacity)
+
+        # Set correct spawn frame and alpha value
+        if self.frame_ticks == self.spawn_ticks:
+            self.frame_ticks = 0
+            self.frame += 1
+            self.image_opacity += 10
+
+        # Disable spawn state when animation is done
+        if self.frame == len(self.spawn_sprites):
+            self.frame = 0
+            self.frame_ticks = 0
+            self.spawn = False
 
     def set_state(self):
         """
@@ -109,9 +120,9 @@ class Rusher(Enemy):
         """
         Applies Rusher death state and image properties.
         """
-        self.set_death_image()
-
         self.frame_ticks += 1
+
+        self.set_death_image()
 
         if self.frame_ticks == self.death_ticks:
             self.frame += 1
@@ -132,11 +143,11 @@ class Rusher(Enemy):
             self.manage_spawn_state()
 
         else:
-
             # Death state has its own frame manager
             if self.death:
                 self.manage_death_state()
 
+            # If not dead and not in spawn mode
             else:
                 self.set_hitbox()
 

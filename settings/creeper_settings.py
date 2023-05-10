@@ -10,6 +10,8 @@ BAT = {
     "spawn_opacity": 0,
     "name": "bat",
     "size": BAT_SIZE,
+
+    # attributes
     "health": 60,
     "damage": 50,
     "speed": 2,
@@ -19,7 +21,7 @@ BAT = {
     "angle": 90,
     "angle_adjustment": 0.5,
 
-    # state
+    # states
     "idle": True,
     "chase": False,
     "strike": None,
@@ -72,6 +74,8 @@ FISH = {
     "spawn_opacity": 0,
     "name": "fish",
     "size": FISH_SIZE,
+
+    # attributes
     "health": 60,
     "damage": 50,
     "speed": 2,
@@ -81,7 +85,7 @@ FISH = {
     "angle": 90,
     "angle_adjustment": 1,
 
-    # state
+    # states
     "idle": True,
     "chase": False,
     "strike": None,

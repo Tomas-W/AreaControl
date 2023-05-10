@@ -4,12 +4,20 @@ from utilities import all_sprites, enemy_sprites, get_direction
 
 
 class Enemy(pygame.sprite.Sprite):
+    """
+    Base class to create Enemies.
+
+    Contains all sprites, attributes and trackers.
+    To create a new Enemy, pass in a dictionary.
+    """
     def __init__(self, player, position, character):
         super().__init__(all_sprites, enemy_sprites)
         # References
         self.player = player
 
         # Sprites
+        self.spawn_sprites = character["spawn_sprites"]
+
         self.idle_sprites = character["idle_sprites"]
         self.idle_sprites_flipped = character["idle_sprites_flipped"]
 
@@ -52,7 +60,7 @@ class Enemy(pygame.sprite.Sprite):
         self.strike = character["strike"]
         self.shoot = character["shoot"]
         self.death = character["death"]
-
+        # Track states
         self.current_state = character["current_state"]
         self.last_state = character["last_state"]
 
@@ -70,7 +78,7 @@ class Enemy(pygame.sprite.Sprite):
         self.frame = character["frame"]
         self.frame_ticks = character["frame_ticks"]
         self.spawn_ticks = character["spawn_ticks"]
-        # how ticks frames per frame
+        # How many ticks frames per frame
         self.idle_ticks = character["idle_ticks"]
         self.walk_ticks = character["walk_ticks"]
         self.run_ticks = character["run_ticks"]

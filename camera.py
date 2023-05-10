@@ -1,6 +1,6 @@
 import pygame
 
-from settings.creeper_settings import BAT
+from settings.creeper_settings import BAT, FISH
 from settings.projectile_settings import FLAMING_SKULL, BULLET
 from settings.enemy_settings import SKULL_COLLECTOR, RUSHER, GOLEM
 from settings.general_settings import GENERAL
@@ -58,7 +58,7 @@ class Camera(pygame.sprite.Group):
         screen.blit(self.energy_image, (base_x + 85,
                                         base_y + 50))
         energy_number = self.font.render(str(player.energy_level), True, GENERAL["white"])
-        screen.blit(energy_number, (base_x + 85 + 5,
+        screen.blit(energy_number, (base_x + 85 + 15,
                                     base_y + 100))
 
         # Coin
@@ -142,7 +142,7 @@ class Camera(pygame.sprite.Group):
         if fish is not None:
             fish_hitbox = pygame.draw.rect(fish.image,
                                            GENERAL["red"],
-                                           pygame.Rect(BAT["hitbox"]),
+                                           pygame.Rect(FISH["hitbox"]),
                                            2)
             fish_hitbox.topleft -= self.offset
 

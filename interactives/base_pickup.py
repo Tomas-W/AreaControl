@@ -4,13 +4,21 @@ from utilities import all_sprites, energy_sprites, skull_sprites, coin_sprites
 
 
 class PickUp(pygame.sprite.Sprite):
+    """
+    Base class for PickUps.
+
+    PickUps are spawned in on an Enemy's location after they die.
+    Collecting them rewards bonuses.
+
+    A new PickUp can be created by passing in a dictionary.
+    """
     def __init__(self, position, pickup_name):
         super().__init__(all_sprites)
         # Sprites
         self.sprites = pickup_name["sprites"]
 
         # Image
-        self.image = pickup_name["image"]
+        self.image = pickup_name["image"].copy()
         # Rect
         self.rect = self.image.get_rect()
         self.rect.center = position

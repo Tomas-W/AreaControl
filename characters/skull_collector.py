@@ -4,6 +4,7 @@ from random import choice
 from characters.base_enemy import Enemy
 from interactives.base_pickup import PickUp
 from projectiles.flaming_skull import FlamingSkull
+
 from settings.general_settings import GENERAL
 from settings.interactives_settings import SKULL
 
@@ -18,20 +19,33 @@ class SkullCollector(Enemy):
                          position=position,
                          character=character)
 
-    def manage_spawn_state(self):
-        self.spawn_ticks += 1
+        # Private attributes
 
+    def manage_spawn_state(self):
+        """"
+        Controls spawn behaviour of the SkullCollector.
+        Places SkullCollector outside boarders and
+            moves it towards the play area,
+            increasing its alpha value.
+
+        When SkullCollector is in play area and 255 alpha,
+            spawn state is disabled.
+        """
+        self.frame_ticks += 1
+
+        # Move towards play area
         if self.rect.centery < GENERAL["y_min"]:
             self.rect.y += 1
         if self.rect.centery > GENERAL["y_max"]:
             self.rect.y -= 1
 
+        # Update position and alpha value
         self.position = self.rect.center
-        self.image.set_alpha(self.spawn_ticks)
+        self.image.set_alpha(self.frame_ticks)
 
-        if self.spawn_ticks == 255:
+        if self.frame_ticks == 255:
             self.spawn = False
-            self.spawn_ticks = 0
+            self.frame_ticks = 0
 
     def set_state(self):
         """
@@ -100,23 +114,25 @@ class SkullCollector(Enemy):
         dy = self.player.rect.centery - projectile_y
         angle = math.degrees(math.atan2(dy, dx))
         # Create projectile
-        FlamingSkull(x=projectile_x,
+        FlamingSkull(player=self.player,
+                     x=projectile_x,
                      y=projectile_y,
-                     angle=angle)
+                     angle=angle,
+                     bomb_location=None)
 
     def manage_death_state(self):
         """
         Applies SkullCollector death state and image properties.
         """
-        self.set_death_image()
-
         self.frame_ticks += 1
+
+        self.set_death_image()
 
         if self.frame_ticks == self.death_ticks:
             self.frame += 1
             self.frame_ticks = 0
 
-        # Kill SkullCollector and place Skull
+        # Place Skull and kill SkullCollector
         if self.frame == self.death_frame:
             PickUp(position=self.rect.center,
                    pickup_name=SKULL)
@@ -126,18 +142,16 @@ class SkullCollector(Enemy):
             self.kill()
 
     def update(self):
-        # print(self.image_opacity)
+        # Spawn image is currently static
         if self.spawn:
-            self.set_hitbox()
-            # self.should_image_flip()
             self.manage_spawn_state()
 
         else:
-
             # Death state has its own frame manager
             if self.death:
                 self.manage_death_state()
 
+            # If not dead and not in spawn mode
             else:
                 self.set_hitbox()
 

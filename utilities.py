@@ -12,6 +12,7 @@ enemy_sprites = pygame.sprite.Group()
 all_projectile_sprites = pygame.sprite.Group()
 player_projectile_sprites = pygame.sprite.Group()
 enemy_projectile_sprites = pygame.sprite.Group()
+bomb_sprites = pygame.sprite.Group()
 # Creepers
 all_creeper_sprites = pygame.sprite.Group()
 bat_sprites = pygame.sprite.Group()

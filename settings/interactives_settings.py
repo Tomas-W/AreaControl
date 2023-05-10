@@ -22,6 +22,8 @@ PORTAL = {
 SKULL = {
     "name": "skull",
     "size": SKULL_SIZE,
+
+    # attributes
     "transparency": 155,
     "boost": 1,
 
@@ -45,6 +47,8 @@ SKULL = {
 ENERGY = {
     "name": "energy",
     "size": ENERGY_SIZE,
+
+    # attributes
     "transparency": 155,
     "boost": 1,
 

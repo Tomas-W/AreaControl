@@ -8,6 +8,9 @@ from utilities import get_sprites
 
 # ######################################################################### #
 # ############################ SKULL COLLECTOR ############################ #
+skull_collector_spawn_sheet = None
+SKULL_COLLECTOR_SPAWN_SPRITES = None
+
 skull_collector_walk_sheet = pygame.image.load(
     "images/enemies/skull_collector/skull_collector_walk.png").convert_alpha()
 SKULL_COLLECTOR_WALK_SPRITES = get_sprites(sheet=skull_collector_walk_sheet,
@@ -61,6 +64,15 @@ SKULL_COLLECTOR_DEATH_SPRITES_FLIPPED = get_sprites(sheet=skull_collector_death_
 
 # ################################################################ #
 # ############################ RUSHER ############################ #
+rusher_spawn_sheet = pygame.image.load(
+    "images/enemies/rusher/rusher_spawn.png").convert_alpha()
+RUSHER_SPAWN_SPRITES = get_sprites(sheet=rusher_spawn_sheet,
+                                   number_sprites=19,
+                                   width=RUSHER_SPRITE_WIDTH,
+                                   height=RUSHER_SPRITE_HEIGHT,
+                                   scale=RUSHER_SIZE,
+                                   color=GENERAL["black"])
+
 rusher_idle_sheet = pygame.image.load(
     "images/enemies/rusher/rusher_idle.png").convert_alpha()
 RUSHER_IDLE_SPRITES = get_sprites(sheet=rusher_idle_sheet,

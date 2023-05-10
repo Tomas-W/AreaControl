@@ -10,6 +10,7 @@ GENERAL = {
     "origin": (0, 0),
     # level
     "background_path": "./images/levels/level_medium.png",
+    "menu_background_path": "./images/levels/menu_background.png",
 
     "left_x_min": 900,
     "left_x_max": 2100,
@@ -24,6 +25,7 @@ GENERAL = {
     "level_bottom_y": 2750,
 
     "left_mouse_button": (1, 0, 0),
+    "right_mouse_button": (0, 0, 1),
 
     # player attributes display
     "health_bar_x_offset": 750,
@@ -39,6 +41,10 @@ GENERAL = {
 }
 
 # Characters
+PLAYER_SIZE = 0.4
+PLAYER_SPRITE_WIDTH = 214
+PLAYER_SPRITE_HEIGHT = 174
+
 SKULL_COLLECTOR_SIZE = 2.5
 SKULL_COLLECTOR_SPRITE_WIDTH = 56
 SKULL_COLLECTOR_SPRITE_HEIGHT = 73
@@ -68,6 +74,10 @@ BULLET_SIZE = 1
 BULLET_SPRITE_WIDTH = 16
 BULLET_SPRITE_HEIGHT = 16
 
+BOMB_SIZE = 1
+BOMB_SPRITE_WIDTH = 38
+BOMB_SPRITE_HEIGHT = 38
+
 # Interactives
 ENERGY_SIZE = 0.5
 ENERGY_SPRITE_WIDTH = 100
@@ -92,4 +102,6 @@ COIN_SPRITE_HEIGHT = 175
 # www.vhv.rs
 # Freepic
 # https://creativekind.itch.io/
+# spoadr.itch.io
 # https://opengameart.org/content/animated-top-down-survivor-player
+# https://www.pngimages.in

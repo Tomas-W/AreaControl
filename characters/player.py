@@ -3,13 +3,13 @@ from math import atan2, sqrt, degrees
 
 import pygame
 
-from projectiles.base_projectile import Projectile
-from settings.projectile_settings import BULLET
+from projectiles.bomb import Bomb
+from projectiles.bullet import Bullet
 
 from utilities import player_sprite, all_sprites
 
 from settings.general_settings import GENERAL
-from settings.player_settings import PLAYER
+from settings.player_settings import PLAYER, PLAYER_SIZE
 
 
 class Player(pygame.sprite.Sprite):
@@ -19,14 +19,8 @@ class Player(pygame.sprite.Sprite):
         self.position = pygame.math.Vector2(PLAYER["start_position"])
 
         # Create sprites
-        self.image = pygame.transform.rotozoom(
-            pygame.image.load("./images/player/player_pistol.png").convert_alpha(),
-            False,
-            PLAYER["size"])
-        self.image_shoot = pygame.transform.rotozoom(
-            pygame.image.load("./images/player/player_pistol_fire.png").convert_alpha(),
-            False,
-            PLAYER["size"])
+        self.image = PLAYER["sprite"]
+        self.image_shoot = PLAYER["shoot_sprite"]
 
         # Base images for rotation purposes
         self.base_image = self.image.copy()
@@ -36,26 +30,30 @@ class Player(pygame.sprite.Sprite):
         # Rect
         self.rect = self.hitbox.copy()
 
-        # Attributes
-        self.health = PLAYER["health"]
-        self.speed = PLAYER["speed"]
-        self.shoot = False
-        self.new_location = None
-        self.teleport_location = None
-        self.is_invincible = False
-
-        # power levels
-        self.energy_level = 0
-        self.skull_level = 0
-        self.coin_level = 0
-
-        # Trackers
-        self.shoot_cooldown = 0
-        self.muzzle_flash_cooldown = 0
+        # States
+        self.shoot = PLAYER["shoot"]
+        self.bomb = PLAYER["bomb"]
+        self.is_invincible = PLAYER["is_invincible"]
+        # Track states
+        self.shoot_cooldown = PLAYER["shoot_cooldown"]
+        self.muzzle_flash_cooldown = PLAYER["muzzle_flash_cooldown"]
+        self.bomb_cooldown = PLAYER["bomb_cooldown"]
         self.new_location_ticks = 0
         self.invincible_ticks = 0
         self.invincible_image_ticks = 0
+        # State attributes
+        self.new_location = PLAYER["new_location"]
+        self.teleport_location = PLAYER["teleport_location"]
 
+        # Attributes
+        self.health = PLAYER["health"]
+        self.speed = PLAYER["speed"]
+        self.skull_level = PLAYER["skull_level"]
+        self.energy_level = PLAYER["energy_level"]
+        self.coin_level = PLAYER["coin_level"]
+
+    # ################################################################ #
+    # ############################ MOVING ############################ #
     def rotate_player(self):
         """
         Keeps player image directed at mouse position.
@@ -133,6 +131,8 @@ class Player(pygame.sprite.Sprite):
         self.hitbox.center = self.position
         self.rect.center = self.hitbox.center
 
+    # ################################################################## #
+    # ############################ SHOOTING ############################ #
     def get_shoot_input(self):
         """
         Listens for user input and sets Player shoot property accordingly.
@@ -148,7 +148,7 @@ class Player(pygame.sprite.Sprite):
             updates trackers.
         """
         if self.shoot and not self.shoot_cooldown:
-            self.shoot_projectile()
+            self.fire_bullet()
         # Update shoot cooldown
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 1
@@ -156,7 +156,36 @@ class Player(pygame.sprite.Sprite):
         if self.muzzle_flash_cooldown > 0:
             self.muzzle_flash_cooldown -= 1
 
-    def shoot_projectile(self):
+    def adjust_projectile_position(self):
+        """
+        Adjusts spawn location of the projectile to account for shape
+
+        :return: Projectile spawn position (tuple int).
+        """
+        # Calculate the starting position of the projectile based on the player rect and direction
+        projectile_start_x = self.hitbox.centerx + (
+                    (PLAYER["sprite_width"] * PLAYER_SIZE) / 2) * math.cos(
+            self.angle * math.pi / 180)
+        projectile_start_y = self.hitbox.centery + (
+                    (PLAYER["sprite_height"] * PLAYER_SIZE) / 2) * math.sin(
+            self.angle * math.pi / 180)
+
+        # Adjust bullet location
+        if 120 < self.angle < 180:
+            projectile_start_y -= abs((120 + self.angle) * 0.03)
+
+        if -120 < self.angle < 0:
+            projectile_start_x -= abs((120 + self.angle) * 0.15)
+            projectile_start_y -= abs((120 + self.angle) * 0.05)
+
+        elif self.angle >= 0:
+            projectile_start_x -= abs(self.angle // 30)
+        else:
+            projectile_start_y -= abs(self.angle // 30)
+
+        return projectile_start_x, projectile_start_y
+
+    def fire_bullet(self):
         """
         Created a Bullet projectile instance and
             gives it an angle.
@@ -164,34 +193,52 @@ class Player(pygame.sprite.Sprite):
         self.shoot_cooldown = PLAYER["shoot_cooldown"]
         self.muzzle_flash_cooldown = PLAYER["muzzle_flash_cooldown"]
 
-        # Calculate the starting position of the bullet based on the player rect and direction
-        bullet_start_x = self.hitbox.centerx + ((214 * 0.4) / 2) * math.cos(
-            self.angle * math.pi / 180)
-        bullet_start_y = self.hitbox.centery + ((174 * 0.4) / 2) * math.sin(
-            self.angle * math.pi / 180)
+        bullet_start_x, bullet_start_y = self.adjust_projectile_position()
 
-        # Adjust bullet location
-        if 120 < self.angle < 180:
-            bullet_start_y -= abs((120 + self.angle) * 0.03)
+        Bullet(player=self,
+               x=bullet_start_x,
+               y=bullet_start_y,
+               angle=self.angle)
 
-        if -120 < self.angle < 0:
-            bullet_start_x -= abs((120 + self.angle) * 0.15)
-            bullet_start_y -= abs((120 + self.angle) * 0.05)
+    def get_bomb_input(self):
+        """
+        Listens for user input and sets Player Bomb properties accordingly.
+        """
+        if pygame.mouse.get_pressed() == GENERAL["right_mouse_button"]:
+            self.bomb = True
 
-        elif self.angle >= 0:
-            bullet_start_x -= abs(self.angle // 30)
         else:
-            bullet_start_y -= abs(self.angle // 30)
+            self.bomb = False
 
-        Projectile(x=bullet_start_x,
-                   y=bullet_start_y,
-                   angle=self.angle,
-                   projectile_name=BULLET)
+    def manage_bombing(self):
+        """
+        Checks bombing requirements and
+            updates trackers.
+        """
+        if self.bomb and not self.bomb_cooldown:
+            self.bomb_cooldown = PLAYER["bomb_cooldown"]
+            self.throw_bomb()
 
-        # Create projectile
-        # Bullet(x=bullet_start_x,
-        #        y=bullet_start_y,
-        #        angle=self.angle)
+        if self.bomb_cooldown > 0:
+            self.bomb_cooldown -= 1
+
+    def throw_bomb(self):
+        """
+        Created a Bomb projectile instance,
+            gives it an angle and
+            a location to explode at.
+        """
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        mouse_x, mouse_y = (self.rect.centerx - GENERAL["half_width"] + mouse_x,
+                            self.rect.centery - GENERAL["half_height"] + mouse_y)
+
+        bomb_start_x, bomb_start_y = self.adjust_projectile_position()
+
+        Bomb(player=self,
+             x=bomb_start_x,
+             y=bomb_start_y,
+             angle=self.angle,
+             bomb_location=(mouse_x, mouse_y))
 
     def manage_teleport(self):
         """
@@ -245,6 +292,9 @@ class Player(pygame.sprite.Sprite):
         # Shoot
         self.get_shoot_input()
         self.manage_shooting()
+
+        self.get_bomb_input()
+        self.manage_bombing()
 
         # Start Teleport counter if Portal used
         self.manage_teleport()

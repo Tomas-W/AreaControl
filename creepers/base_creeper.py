@@ -4,13 +4,18 @@ from random import choice
 import pygame
 
 from interactives.base_pickup import PickUp
-from settings.creeper_settings import FISH, BAT
 from settings.interactives_settings import COIN
 from utilities import all_sprites, get_distance, get_direction, bat_sprites, fish_sprites, \
     all_creeper_sprites
 
 
 class Creeper(pygame.sprite.Sprite):
+    """
+    Base class to create Creepers.
+    Creepers spawn and rotate around their spawn point.
+    When Player is in range, they go in chase mode and deal damage when colliding.
+    If Player kills a Creeper, it drops a coin. Not when it suicides.
+    """
     def __init__(self, player, creeper_name):
         super().__init__(all_sprites, all_creeper_sprites)
         # Reference to Player
@@ -21,7 +26,7 @@ class Creeper(pygame.sprite.Sprite):
         self.sprites_flipped = creeper_name["sprites_flipped"]
 
         # Image
-        self.image = creeper_name["image"]
+        self.image = creeper_name["image"].copy()
         # Rect
         self.rect = self.image.get_rect()
         self.rect.center = choice(creeper_name["start_position"])
