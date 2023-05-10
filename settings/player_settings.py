@@ -8,7 +8,7 @@ PLAYER = {
     "speed": 5,
     "health": 1000,
 
-    "shoot_cooldown": 60,
+    "shoot_cooldown": 15,
     "muzzle_flash_cooldown": 8,
 
     "left_portal": None,

@@ -29,7 +29,9 @@ class Enemy(pygame.sprite.Sprite):
         self.death_sprites_flipped = character["death_sprites_flipped"]
 
         # Image
-        self.image = character["image"]
+        self.image = character["image"].copy()
+        self.image_opacity = character["spawn_opacity"]
+        self.image.set_alpha(self.image_opacity)
         # Rect
         self.rect = self.image.get_rect()
         self.rect.center = position
@@ -43,6 +45,7 @@ class Enemy(pygame.sprite.Sprite):
         self.shoot_offset_y = character["shoot_offset_y"]
 
         # States
+        self.spawn = character["spawn"]
         self.idle = character["idle"]
         self.walk = character["walk"]
         self.run = character["run"]
@@ -66,6 +69,7 @@ class Enemy(pygame.sprite.Sprite):
         # Frame attributes
         self.frame = character["frame"]
         self.frame_ticks = character["frame_ticks"]
+        self.spawn_ticks = character["spawn_ticks"]
         # how ticks frames per frame
         self.idle_ticks = character["idle_ticks"]
         self.walk_ticks = character["walk_ticks"]

@@ -5,7 +5,9 @@ from sprites.creeper_sprites import BAT_SPRITES, BAT_SPRITES_FLIPPED, FISH_SPRIT
 # ############################################################ #
 # ############################ BAT ########################### #
 BAT = {
-    "start_position": [(800, 900), (2700, 900), (800, 2000), (2700, 2000)],
+    "start_position": [(850, 750), (3450, 750), (850, 2750), (3450, 2750)],
+    "spawn": True,
+    "spawn_opacity": 0,
     "name": "bat",
     "size": BAT_SIZE,
     "health": 60,
@@ -13,8 +15,9 @@ BAT = {
     "speed": 2,
     "idle_speed": 2,
     "chase_speed": 4,
-    "circle_radius": 250,
+    "circle_radius": 400,
     "angle": 90,
+    "angle_adjustment": 0.5,
 
     # state
     "idle": True,
@@ -31,6 +34,7 @@ BAT = {
     # frame attributes
     "frame": 0,
     "frame_ticks": 0,
+    "spawn_ticks": 0,
     # ticks per frame
     "idle_ticks": 6,
     "chase_ticks": 4,
@@ -63,7 +67,9 @@ BAT = {
 # ############################################################# #
 # ############################ FISH ########################### #
 FISH = {
-    "start_position": [(x, y) for x in range(950, 2551, 150) for y in range(1050, 1851, 150)],
+    "start_position": [(x, y) for x in range(1000, 3301, 150) for y in range(900, 2601, 150)],
+    "spawn": True,
+    "spawn_opacity": 0,
     "name": "fish",
     "size": FISH_SIZE,
     "health": 60,
@@ -73,6 +79,7 @@ FISH = {
     "chase_speed": 4,
     "circle_radius": 100,
     "angle": 90,
+    "angle_adjustment": 1,
 
     # state
     "idle": True,
@@ -89,6 +96,7 @@ FISH = {
     # frame attributes
     "frame": 0,
     "frame_ticks": 0,
+    "spawn_ticks": 0,
     # ticks per frame
     "idle_ticks": 6,
     "chase_ticks": 4,

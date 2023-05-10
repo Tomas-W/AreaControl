@@ -1,36 +1,41 @@
 GENERAL = {
-    # level
+    # window
     "width": 1600,
     "height": 900,
     "half_width": 800,
     "half_height": 450,
-    "left_x_min": 800,
-    "left_x_max": 1600,
-    "right_x_min": 1800,
-    "right_x_max": 2700,
-    "y_min": 900,
-    "y_max": 2000,
-
+    # main
     "title": "AreaControl",
     "FPS": 60,
     "origin": (0, 0),
+    # level
+    "background_path": "./images/levels/level_medium.png",
+
+    "left_x_min": 900,
+    "left_x_max": 2100,
+    "right_x_min": 2200,
+    "right_x_max": 3400,
+    "y_min": 800,
+    "y_max": 2700,
+
+    "level_left_x": 850,
+    "level_right_x": 3450,
+    "level_top_y": 750,
+    "level_bottom_y": 2750,
 
     "left_mouse_button": (1, 0, 0),
 
+    # player attributes display
+    "health_bar_x_offset": 750,
+    "health_bar_y_offset": 425,
+    "health_bar_height": 25,
+
+    # colors
     "black": (0, 0, 0),
+    "white": (255, 255, 255),
     "red": (255, 0, 0),
     "green": (0, 255, 0),
     "blue": (0, 0, 255),
-
-    "background_path": "./images/levels/level_small.png",
-    "level_left_x": 750,
-    "level_right_x": 2750,
-    "level_top_y": 850,
-    "level_bottom_y": 2050,
-
-    "health_bar_x_offset": 750,
-    "health_bar_y_offset": 450,
-    "health_bar_height": 25,
 }
 
 # Characters
@@ -75,3 +80,16 @@ SKULL_SPRITE_HEIGHT = 100
 PORTAL_SIZE = 1
 PORTAL_SPRITE_WIDTH = 75
 PORTAL_SPRITE_HEIGHT = 85
+
+COIN_SIZE = 0.15
+COIN_SPRITE_WIDTH = 200
+COIN_SPRITE_HEIGHT = 175
+
+# Credits
+# pixelied
+# CraftPix
+# PNGTree
+# www.vhv.rs
+# Freepic
+# https://creativekind.itch.io/
+# https://opengameart.org/content/animated-top-down-survivor-player

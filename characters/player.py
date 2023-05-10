@@ -4,7 +4,6 @@ from math import atan2, sqrt, degrees
 import pygame
 
 from projectiles.base_projectile import Projectile
-from projectiles.bullet import Bullet
 from settings.projectile_settings import BULLET
 
 from utilities import player_sprite, all_sprites
@@ -48,6 +47,7 @@ class Player(pygame.sprite.Sprite):
         # power levels
         self.energy_level = 0
         self.skull_level = 0
+        self.coin_level = 0
 
         # Trackers
         self.shoot_cooldown = 0

@@ -20,6 +20,7 @@ fish_sprites = pygame.sprite.Group()
 all_pickup_sprites = pygame.sprite.Group()
 skull_sprites = pygame.sprite.Group()
 energy_sprites = pygame.sprite.Group()
+coin_sprites = pygame.sprite.Group()
 # Interactives
 all_interactives_sprites = pygame.sprite.Group()
 portal_sprites = pygame.sprite.Group()
@@ -38,6 +39,11 @@ def handle_pickups():
         if skull.hitbox.colliderect(player_sprite.sprite.hitbox):
             player_sprite.sprite.skull_level += skull.boost
             skull.kill()
+
+    for coin in coin_sprites:
+        if coin.hitbox.colliderect(player_sprite.sprite.hitbox):
+            player_sprite.sprite.coin_level += coin.boost
+            coin.kill()
 
 
 def handle_outgoing_projectiles():
@@ -62,7 +68,7 @@ def handle_outgoing_projectiles():
     for projectile in player_projectile_sprites:
         # Creepers
         for creeper in all_creeper_sprites:
-            # Check collision with Player
+            # Check collision with Creeper
             if projectile.rect.colliderect(creeper.hitbox):
                 creeper.health -= projectile.damage
                 projectile.kill()

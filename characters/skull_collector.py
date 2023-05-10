@@ -1,8 +1,10 @@
 import math
+from random import choice
 
 from characters.base_enemy import Enemy
 from interactives.base_pickup import PickUp
 from projectiles.flaming_skull import FlamingSkull
+from settings.general_settings import GENERAL
 from settings.interactives_settings import SKULL
 
 from utilities import get_distance
@@ -15,6 +17,21 @@ class SkullCollector(Enemy):
         super().__init__(player=player,
                          position=position,
                          character=character)
+
+    def manage_spawn_state(self):
+        self.spawn_ticks += 1
+
+        if self.rect.centery < GENERAL["y_min"]:
+            self.rect.y += 1
+        if self.rect.centery > GENERAL["y_max"]:
+            self.rect.y -= 1
+
+        self.position = self.rect.center
+        self.image.set_alpha(self.spawn_ticks)
+
+        if self.spawn_ticks == 255:
+            self.spawn = False
+            self.spawn_ticks = 0
 
     def set_state(self):
         """
@@ -103,24 +120,35 @@ class SkullCollector(Enemy):
         if self.frame == self.death_frame:
             PickUp(position=self.rect.center,
                    pickup_name=SKULL)
+            SkullCollector(player=self.player,
+                           position=(choice(SKULL_COLLECTOR["start_position"])),
+                           character=SKULL_COLLECTOR)
             self.kill()
 
     def update(self):
-        # Death state has its own frame manager
-        if self.death:
-            self.manage_death_state()
+        # print(self.image_opacity)
+        if self.spawn:
+            self.set_hitbox()
+            # self.should_image_flip()
+            self.manage_spawn_state()
 
         else:
-            self.set_hitbox()
 
-            self.set_state()
+            # Death state has its own frame manager
+            if self.death:
+                self.manage_death_state()
 
-            self.manage_frames()
+            else:
+                self.set_hitbox()
 
-            self.should_image_flip()
+                self.set_state()
 
-            if self.walk:
-                self.manage_move_state()
+                self.manage_frames()
 
-            elif self.shoot:
-                self.manage_shoot_state()
+                self.should_image_flip()
+
+                if self.walk:
+                    self.manage_move_state()
+
+                elif self.shoot:
+                    self.manage_shoot_state()

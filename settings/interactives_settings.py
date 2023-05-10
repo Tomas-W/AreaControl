@@ -1,7 +1,7 @@
 # ####################################################### #
 # ####################### PORTAL ####################### #
-from settings.general_settings import ENERGY_SIZE, SKULL_SIZE, PORTAL_SIZE
-from sprites.interactives_sprites import ENERGY_SPRITES, SKULL_SPRITES
+from settings.general_settings import ENERGY_SIZE, SKULL_SIZE, PORTAL_SIZE, COIN_SIZE
+from sprites.interactives_sprites import ENERGY_SPRITES, SKULL_SPRITES, COIN_SPRITES
 
 PORTAL = {
     "size": PORTAL_SIZE,
@@ -23,12 +23,12 @@ SKULL = {
     "name": "skull",
     "size": SKULL_SIZE,
     "transparency": 155,
-    "boost": 25,
+    "boost": 1,
 
     # frame attributes
     "frame": 0,
     "frame_ticks": 0,
-    "ticks_per_frame": 4,
+    "ticks_per_frame": 6,
 
     # sprites
     "sprites": SKULL_SPRITES,
@@ -46,7 +46,7 @@ ENERGY = {
     "name": "energy",
     "size": ENERGY_SIZE,
     "transparency": 155,
-    "boost": 25,
+    "boost": 1,
 
     # frame attributes
     "frame": 0,
@@ -62,4 +62,26 @@ ENERGY = {
                (50 * ENERGY_SIZE), (50 * ENERGY_SIZE)),
     "hitbox_offset_x": 25 * ENERGY_SIZE,
     "hitbox_offset_y": 25 * ENERGY_SIZE,
+}
+
+COIN = {
+    "name": "coin",
+    "size": COIN_SIZE,
+    "transparency": 155,
+    "boost": 1,
+
+    # frame attributes
+    "frame": 0,
+    "frame_ticks": 0,
+    "ticks_per_frame": 5,
+
+    # sprites
+    "sprites": COIN_SPRITES,
+    # initial image
+    "image": COIN_SPRITES[0],
+
+    "hitbox": ((50 * ENERGY_SIZE), (50 * ENERGY_SIZE),
+               (100 * ENERGY_SIZE), (75 * ENERGY_SIZE)),
+    "hitbox_offset_x": 50 * ENERGY_SIZE,
+    "hitbox_offset_y": 50 * ENERGY_SIZE,
 }

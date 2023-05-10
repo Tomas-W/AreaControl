@@ -3,6 +3,9 @@ from random import choice
 
 import pygame
 
+from interactives.base_pickup import PickUp
+from settings.creeper_settings import FISH, BAT
+from settings.interactives_settings import COIN
 from utilities import all_sprites, get_distance, get_direction, bat_sprites, fish_sprites, \
     all_creeper_sprites
 
@@ -29,6 +32,7 @@ class Creeper(pygame.sprite.Sprite):
         self.hitbox_offset_y = creeper_name["hitbox_offset_y"]
 
         # States
+        self.spawn = creeper_name["spawn"]
         self.idle = creeper_name["idle"]
         self.chase = creeper_name["chase"]
         self.strike = creeper_name["strike"]
@@ -43,6 +47,7 @@ class Creeper(pygame.sprite.Sprite):
         # Frame attributes
         self.frame = creeper_name["frame"]
         self.frame_ticks = creeper_name["frame_ticks"]
+        self.spawn_ticks = creeper_name["spawn_ticks"]
         # how ticks frames per frame
         self.idle_ticks = creeper_name["idle_ticks"]
         self.chase_ticks = creeper_name["chase_ticks"]
@@ -68,6 +73,8 @@ class Creeper(pygame.sprite.Sprite):
         self.chase_speed = creeper_name["chase_speed"]
         self.circle_radius = creeper_name["circle_radius"]
         self.angle = creeper_name["angle"]
+        self.angle_adjustment = creeper_name["angle_adjustment"]
+        self.spawn_opacity = creeper_name["spawn_opacity"]
 
         if self.name == "bat":
             bat_sprites.add(self)
@@ -80,6 +87,22 @@ class Creeper(pygame.sprite.Sprite):
         """
         self.hitbox.left = self.rect.left + self.hitbox_offset_x
         self.hitbox.top = self.rect.top + self.hitbox_offset_y
+
+    def set_state(self):
+
+        if self.health <= 0:
+            self.kill_self()
+
+        if not self.chase:
+            distance_to_player = get_distance(location_a=self.player.hitbox.center,
+                                              location_b=self.hitbox.center)
+
+            if distance_to_player < self.chase_distance:
+                self.chase = True
+                self.idle = False
+                self.frame_ticks = 0
+                self.position = self.rect.center
+                self.speed = self.chase_speed
 
     def manage_frames(self):
         """
@@ -104,6 +127,10 @@ class Creeper(pygame.sprite.Sprite):
             else:
                 self.flip_image = False
 
+    def manage_idle_state(self):
+        self.circle_location()
+        self.set_idle_image()
+
     def circle_location(self):
         """
         Moves Creeper in circular motion around a position.
@@ -116,9 +143,34 @@ class Creeper(pygame.sprite.Sprite):
 
         # Shift Creeper
         self.rect.center = (x.real, y.real)
-        self.angle += 1
+        self.angle += self.angle_adjustment
         if self.angle == 360:
             self.angle = 0
+
+    def manage_chase_state(self):
+        self.move_to_player()
+
+        if self.is_allowed_to_strike():
+            self.strike_player()
+
+        self.set_chase_image()
+
+    def is_allowed_to_strike(self):
+        """
+        Checks if Creeper is allowed to strike Player.
+
+        :return: Returns True if conditions are met (bool).
+        """
+        return self.hitbox.colliderect(self.player.hitbox) and not self.player.is_invincible
+
+    def strike_player(self):
+        self.player.health -= self.damage
+        self.kill()
+
+    def kill_self(self):
+        PickUp(position=self.rect.center,
+               pickup_name=COIN)
+        self.kill()
 
     def move_to_player(self):
         """

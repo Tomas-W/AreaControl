@@ -1,6 +1,6 @@
 import pygame
 
-from utilities import all_sprites, energy_sprites, skull_sprites
+from utilities import all_sprites, energy_sprites, skull_sprites, coin_sprites
 
 
 class PickUp(pygame.sprite.Sprite):
@@ -21,7 +21,7 @@ class PickUp(pygame.sprite.Sprite):
         # Attributes
         self.name = pickup_name["name"]
         self.boost = pickup_name["boost"]
-        self.image.set_alpha(pickup_name["transparency"])
+        self.transparency = pickup_name["transparency"]
 
         # Trackers
         self.frame = pickup_name["frame"]
@@ -33,10 +33,13 @@ class PickUp(pygame.sprite.Sprite):
             skull_sprites.add(self)
         elif pickup_name["name"] == "energy":
             energy_sprites.add(self)
+        elif pickup_name["name"] == "coin":
+            coin_sprites.add(self)
 
     def update(self):
         self.frame_ticks += 1
         self.set_interactive_image()
+        self.image.set_alpha(self.transparency)
 
     def set_interactive_image(self):
         """

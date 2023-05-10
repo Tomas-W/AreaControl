@@ -1,5 +1,3 @@
-# ############################################################### #
-# ####################### SKULL COLLECTOR ####################### #
 from settings.general_settings import SKULL_COLLECTOR_SIZE, RUSHER_SIZE, GOLEM_SIZE
 from sprites.enemy_sprites import GOLEM_DEATH_SPRITES, GOLEM_STRIKE_SPRITES, \
     GOLEM_STRIKE_SPRITES_FLIPPED, GOLEM_RUN_SPRITES_FLIPPED, GOLEM_RUN_SPRITES, \
@@ -11,8 +9,12 @@ from sprites.enemy_sprites import GOLEM_DEATH_SPRITES, GOLEM_STRIKE_SPRITES, \
     SKULL_COLLECTOR_WALK_SPRITES, SKULL_COLLECTOR_DEATH_SPRITES_FLIPPED, \
     RUSHER_DEATH_SPRITES_FLIPPED, GOLEM_DEATH_SPRITES_FLIPPED
 
+# ############################################################### #
+# ####################### SKULL COLLECTOR ####################### #
 SKULL_COLLECTOR = {
-    "start_position": (1280, 720),
+    "start_position": [(1000, 550), (1400, 550), (1800, 550), (2200, 550), (2600, 550), (3000, 550),
+                       (1000, 2950), (1400, 2950), (1800, 2950), (2200, 2950), (2600, 2950), (3000, 2950)],
+    "spawn_opacity": 0,
     "size": SKULL_COLLECTOR_SIZE,
     "health": 260,
     "damage": None,
@@ -21,8 +23,9 @@ SKULL_COLLECTOR = {
     "run_speed": None,
 
     # state
+    "spawn": True,
     "idle": False,
-    "walk": True,
+    "walk": False,
     "run": False,
     "strike": False,
     "shoot": False,
@@ -40,6 +43,7 @@ SKULL_COLLECTOR = {
     # frame attributes
     "frame": 0,
     "frame_ticks": 0,
+    "spawn_ticks": 0,
     # ticks per frame
     "idle_ticks": None,
     "walk_ticks": 4,
@@ -85,7 +89,8 @@ SKULL_COLLECTOR = {
 # ############################################################## #
 # ########################### RUSHER ########################### #
 RUSHER = {
-    "start_position": (1280, 920),
+    "start_position": [(1911, 1557), (2446, 1276), (3111, 1484), (1526, 2259), (2587, 2093), (2408, 1316), (1931, 1872), (2543, 1611), (1782, 1953), (3046, 2321)],
+    "spawn_opacity": 0,
     "size": RUSHER_SIZE,
     "health": 105,
     "damage": 40,
@@ -94,7 +99,8 @@ RUSHER = {
     "run_speed": 5,
 
     # state
-    "idle": True,
+    "spawn": True,
+    "idle": False,
     "walk": False,
     "run": False,
     "strike": False,
@@ -113,6 +119,7 @@ RUSHER = {
     # frame attributes
     "frame": 0,
     "frame_ticks": 0,
+    "spawn_ticks": 0,
     # ticks per frame
     "idle_ticks": 5,
     "walk_ticks": None,
@@ -159,6 +166,7 @@ RUSHER = {
 # ############################ GOLEM ############################ #
 GOLEM = {
     "start_position": (1750, 1100),
+    "spawn_opacity": 0,
     "size": GOLEM_SIZE,
     "speed": 1,
     "walk_speed": 1,
@@ -167,8 +175,9 @@ GOLEM = {
     "damage": 150,
 
     # state
+    "spawn": True,
     "idle": False,
-    "walk": True,
+    "walk": False,
     "run": False,
     "strike": False,
     "shoot": False,
@@ -185,6 +194,7 @@ GOLEM = {
     # frame attributes
     "frame": 0,
     "frame_ticks": 0,
+    "spawn_ticks": 0,
     # ticks per frame
     "idle_ticks": 5,
     "walk_ticks": 5,
@@ -231,6 +241,7 @@ GOLEM = {
 # ############################ ARCHER ########################### #
 ARCHER = {
     "start_position": (1280, 720),
+    "spawn_opacity": 0,
     "size": SKULL_COLLECTOR_SIZE,
     "health": 170,
     "damage": None,
@@ -239,8 +250,9 @@ ARCHER = {
     "run_speed": 3,
 
     # state
+    "spawn": True,
     "idle": False,
-    "walk": True,
+    "walk": False,
     "run": False,
     "strike": False,
     "shoot": False,
@@ -258,6 +270,7 @@ ARCHER = {
     # frame attributes
     "frame": 0,
     "frame_ticks": 0,
+    "spawn_ticks": 0,
     # ticks per frame
     "idle_ticks": 5,
     "walk_ticks": 4,

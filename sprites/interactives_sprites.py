@@ -2,7 +2,7 @@ import pygame
 
 from settings.general_settings import GENERAL, ENERGY_SIZE, PORTAL_SIZE, PORTAL_SPRITE_WIDTH, \
     SKULL_SPRITE_WIDTH, SKULL_SPRITE_HEIGHT, ENERGY_SPRITE_HEIGHT, ENERGY_SPRITE_WIDTH, \
-    PORTAL_SPRITE_HEIGHT, SKULL_SIZE
+    PORTAL_SPRITE_HEIGHT, SKULL_SIZE, COIN_SPRITE_WIDTH, COIN_SPRITE_HEIGHT, COIN_SIZE
 from utilities import get_sprites
 
 
@@ -37,4 +37,15 @@ SKULL_SPRITES = get_sprites(sheet=skull_sheet,
                             width=SKULL_SPRITE_WIDTH,
                             height=SKULL_SPRITE_HEIGHT,
                             scale=SKULL_SIZE,
+                            color=GENERAL["black"])
+
+# ############################################################## #
+# ############################ COIN ############################ #
+coin_sheet = pygame.image.load(
+    "images/interactives/coin/coin_sheet.png").convert_alpha()
+COIN_SPRITES = get_sprites(sheet=coin_sheet,
+                            number_sprites=6,
+                            width=COIN_SPRITE_WIDTH,
+                            height=COIN_SPRITE_HEIGHT,
+                            scale=COIN_SIZE,
                             color=GENERAL["black"])

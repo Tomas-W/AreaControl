@@ -1,3 +1,7 @@
+from random import choice
+
+import pygame.transform
+
 from characters.base_enemy import Enemy
 from interactives.base_pickup import PickUp
 
@@ -13,6 +17,21 @@ class Rusher(Enemy):
         super().__init__(player=player,
                          position=position,
                          character=character)
+
+        self.opacity_ticks = 0
+
+    def manage_spawn_state(self):
+        self.spawn_ticks += 1
+        self.image_opacity += 10
+
+        if self.image_opacity >= 255:
+            self.opacity_ticks += 1
+            self.image_opacity = 0
+
+        if self.opacity_ticks >= 7:
+            self.spawn = False
+
+        self.image.set_alpha(self.image_opacity)
 
     def set_state(self):
         """
@@ -102,27 +121,36 @@ class Rusher(Enemy):
         if self.frame == self.death_frame:
             PickUp(position=self.rect.center,
                    pickup_name=ENERGY)
+            Rusher(player=self.player,
+                   position=choice(RUSHER["start_position"]),
+                   character=RUSHER)
             self.kill()
 
     def update(self):
-        # Death state has its own frame manager
-        if self.death:
-            self.manage_death_state()
+
+        if self.spawn:
+            self.manage_spawn_state()
 
         else:
-            self.set_hitbox()
 
-            self.set_state()
+            # Death state has its own frame manager
+            if self.death:
+                self.manage_death_state()
 
-            self.manage_frames()
+            else:
+                self.set_hitbox()
 
-            self.should_image_flip()
+                self.set_state()
 
-            if self.idle:
-                self.manage_idle_state()
+                self.manage_frames()
 
-            elif self.run:
-                self.manage_move_state()
+                self.should_image_flip()
 
-            elif self.strike:
-                self.manage_strike_state()
+                if self.idle:
+                    self.manage_idle_state()
+
+                elif self.run:
+                    self.manage_move_state()
+
+                elif self.strike:
+                    self.manage_strike_state()
