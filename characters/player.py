@@ -163,23 +163,24 @@ class Player(pygame.sprite.Sprite):
         :return: Projectile spawn position (tuple int).
         """
         # Calculate the starting position of the projectile based on the player rect and direction
-        projectile_start_x = self.hitbox.centerx + (
-                    (PLAYER["sprite_width"] * PLAYER_SIZE) / 2) * math.cos(
-            self.angle * math.pi / 180)
-        projectile_start_y = self.hitbox.centery + (
-                    (PLAYER["sprite_height"] * PLAYER_SIZE) / 2) * math.sin(
-            self.angle * math.pi / 180)
+        projectile_start_x = self.hitbox.centerx
+        projectile_start_y = self.hitbox.centery
 
         # Adjust bullet location
         if 120 < self.angle < 180:
             projectile_start_y -= abs((120 + self.angle) * 0.03)
 
-        if -120 < self.angle < 0:
-            projectile_start_x -= abs((120 + self.angle) * 0.15)
-            projectile_start_y -= abs((120 + self.angle) * 0.05)
+        # Adjust bullet location
+        elif 100 < self.angle < 120:
+            projectile_start_y -= abs((120 + self.angle) * 0.06)
 
         elif self.angle >= 0:
             projectile_start_x -= abs(self.angle // 30)
+
+        elif -120 < self.angle < 0:
+            projectile_start_x -= abs((120 + self.angle) * 0.15)
+            projectile_start_y -= abs((120 + self.angle) * 0.05)
+
         else:
             projectile_start_y -= abs(self.angle // 30)
 

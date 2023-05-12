@@ -44,10 +44,10 @@ BULLET = {
     "sprite_sheet": None,
     "sprite": BULLET_SPRITE,
 
-    "hitbox": (0, 0,
+    "hitbox": ((0 * BULLET_SIZE), (0 * BULLET_SIZE),
                (16 * BULLET_SIZE), (16 * BULLET_SIZE)),
-    "hitbox_x_offset": (0 * BULLET_SIZE),
-    "hitbox_y_offset": (0 * BULLET_SIZE),
+    "hitbox_x_offset": ((0 * BULLET_SIZE) * BULLET_SIZE),
+    "hitbox_y_offset": ((0 * BULLET_SIZE) * BULLET_SIZE),
 }
 
 # ############################################################## #
@@ -56,7 +56,7 @@ BOMB = {
     "name": "bomb",
     "size": BOMB_SIZE,
     "speed": 3,
-    "damage": 60,
+    "damage": 500,
 
     # frame attributes
     "frame": 0,
@@ -68,8 +68,8 @@ BOMB = {
     "sprite_sheet": BOMB_SPRITES,
     "sprite": BOMB_SPRITES[0],
 
-    "hitbox": (0, 0,
-               (16 * BOMB_SIZE), (16 * BOMB_SIZE)),
+    "hitbox": ((10 * BOMB_SIZE), (10 * BOMB_SIZE),
+               (20 * BOMB_SIZE), (20 * BOMB_SIZE)),
     "hitbox_x_offset": (0 * BOMB_SIZE),
     "hitbox_y_offset": (0 * BOMB_SIZE),
 }

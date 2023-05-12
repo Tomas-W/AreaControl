@@ -31,8 +31,8 @@ class Button:
         return action
 
 
-start_img = pygame.image.load('start_btn.png').convert_alpha()
-exit_img = pygame.image.load('exit_btn.png').convert_alpha()
+start_img = pygame.image.load('./start_btn.png').convert_alpha()
+exit_img = pygame.image.load('./exit_btn.png').convert_alpha()
 
 
 start_button = Button(100, 200, start_img, 0.8)

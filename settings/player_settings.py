@@ -21,7 +21,7 @@ PLAYER = {
     # state durations
     "shoot_cooldown": 15,
     "muzzle_flash_cooldown": 8,
-    "bomb_cooldown": 60,
+    "bomb_cooldown": 12,
 
     # portal
     "new_location": None,
@@ -37,9 +37,9 @@ PLAYER = {
     # sprites
     "sprite": PLAYER_SPRITE,
     "shoot_sprite": PLAYER_SHOOT_SPRITE,
-    "hitbox": (0, 0,
-               (214 * PLAYER_SIZE), (174 * PLAYER_SIZE)),
-    "sprite_width": 214,
-    "sprite_height": 174,
+    "hitbox": ((25 * PLAYER_SIZE), (25 * PLAYER_SIZE),
+               (170 * PLAYER_SIZE), (170 * PLAYER_SIZE)),
+    "sprite_width": 220,
+    "sprite_height": 220,
 
 }

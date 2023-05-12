@@ -17,7 +17,6 @@ class Projectile(pygame.sprite.Sprite):
     """
     def __init__(self, player, x, y, angle, projectile_name, bomb_location):
         super().__init__(all_sprites, all_projectile_sprites)
-        self.bomb_location = bomb_location
         # Player reference
         self.player = player
 
@@ -41,6 +40,8 @@ class Projectile(pygame.sprite.Sprite):
         self.y = y
         self.x_velocity = math.cos(self.angle * (2 * math.pi / 360)) * self.speed
         self.y_velocity = math.sin(self.angle * (2 * math.pi / 360)) * self.speed
+
+        self.bomb_location = bomb_location
 
         # frame attributes
         self.frame = projectile_name["frame"]

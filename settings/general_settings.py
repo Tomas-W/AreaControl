@@ -9,8 +9,8 @@ GENERAL = {
     "FPS": 60,
     "origin": (0, 0),
     # level
-    "background_path": "./images/levels/level_medium.png",
-    "menu_background_path": "./images/levels/menu_background.png",
+    "background_path": "./images/game/level_medium.png",
+    "menu_background_path": "./images/game/menu_background.png",
 
     "left_x_min": 900,
     "left_x_max": 2100,
@@ -42,8 +42,8 @@ GENERAL = {
 
 # Characters
 PLAYER_SIZE = 0.4
-PLAYER_SPRITE_WIDTH = 214
-PLAYER_SPRITE_HEIGHT = 174
+PLAYER_SPRITE_WIDTH = 220
+PLAYER_SPRITE_HEIGHT = 220
 
 SKULL_COLLECTOR_SIZE = 2.5
 SKULL_COLLECTOR_SPRITE_WIDTH = 56

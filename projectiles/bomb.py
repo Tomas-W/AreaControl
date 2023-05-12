@@ -19,7 +19,9 @@ class Bomb(Projectile):
                          bomb_location=bomb_location)
 
         self.explosion_sprites = BOMB_EXPLOSION_SPRITES
+        self.dealt_damage = False
         self.explode = False
+        self.damage_radius = 150
 
     def manage_bomb(self):
         self.frame_ticks += 1
@@ -37,7 +39,7 @@ class Bomb(Projectile):
 
         # Explode when in range
         if get_distance(self.bomb_location,
-                        self.rect.center) < 30:
+                        self.rect.center) < 20:
             self.explode = True
 
     def manage_explosion(self):

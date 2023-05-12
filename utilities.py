@@ -51,28 +51,47 @@ def handle_outgoing_projectiles():
     """
     Checks all Player projectiles and Enemies and applies damage if collision.
     """
+    # Collision with Enemies
     for projectile in player_projectile_sprites:
-        # Enemies
         for enemy in enemy_sprites:
-            # Check collision with Enemies
             if projectile.rect.colliderect(enemy.hitbox) and not enemy.death:
                 enemy.health -= projectile.damage
                 projectile.kill()
 
+    # Collision with Creepers
+    for projectile in player_projectile_sprites:
+        for creeper in all_creeper_sprites:
+            if projectile.rect.colliderect(creeper.hitbox):
+                creeper.health -= projectile.damage
+                projectile.kill()
+
             # Check collision with walls
-            if projectile.rect.left < GENERAL["level_left_x"] or projectile.rect.right > GENERAL[
-                "level_right_x"] or \
+            if projectile.rect.left < GENERAL["level_left_x"] or projectile.rect.right > \
+                    GENERAL[
+                        "level_right_x"] or \
                     projectile.rect.top < GENERAL["level_top_y"] or projectile.rect.bottom > \
                     GENERAL["level_bottom_y"]:
                 projectile.kill()
 
-    for projectile in player_projectile_sprites:
-        # Creepers
-        for creeper in all_creeper_sprites:
-            # Check collision with Creeper
-            if projectile.rect.colliderect(creeper.hitbox):
-                creeper.health -= projectile.damage
-                projectile.kill()
+
+def handle_outgoing_bombs():
+    """
+    Checks for damage caused by Player Bomb.
+    """
+    for bomb in bomb_sprites:
+        if bomb.explode and not bomb.dealt_damage:
+
+            # Because of small offset trigger detonation by distance
+            for enemy in enemy_sprites:
+                distance = get_distance(enemy.rect.center,
+                                        bomb.rect.center)
+                # Only deal damage if Bomb has damage left
+                if distance < bomb.damage_radius and bomb.damage > 0:
+                    old_enemy_health = enemy.health
+                    enemy.health -= bomb.damage - (bomb.damage / bomb.damage_radius * distance)
+                    bomb.damage -= old_enemy_health
+            # Disable bomb damage
+            bomb.dealt_damage = True
 
 
 def handle_incoming_projectiles():
