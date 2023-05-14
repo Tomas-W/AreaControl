@@ -25,7 +25,10 @@ from creepers.fish import Fish
 from settings.enemy_settings import SKULL_COLLECTOR, RUSHER
 from settings.creeper_settings import BAT, FISH
 from utilities import handle_incoming_projectiles, handle_outgoing_projectiles, handle_pickups, \
-    all_sprites, handle_outgoing_bombs, enemy_sprites, all_creeper_sprites
+    all_sprites, handle_outgoing_bombs, enemy_sprites, all_creeper_sprites, buy_bullet_upgrade, \
+    buy_bomb_upgrade, buy_bomb, buy_portal
+
+from settings.projectile_settings import BULLET, BOMB
 
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
@@ -47,7 +50,6 @@ class Game:
         self.medium_font = pygame.font.Font(os.path.join(base_dir, "fonts/PublicPixel.ttf"), 30)
         self.large_font = pygame.font.Font(os.path.join(base_dir, "fonts/PublicPixel.ttf"), 45)
         self.font_color = GENERAL["white"]
-
 
         # Menus
         self.first_button_x = 0.62 * GENERAL["width"]
@@ -114,10 +116,12 @@ class Game:
         self.pause_menu_shown = False
 
         self.sound_is_on = False
+
         # Trackers
         self.tick = 0
         self.wave_pause_ticks = 0
-        self.wave_pause = 180
+        self.wave_pause = 2400
+        self.buy_tick = 2400
 
         # Misc
         self.credits = GENERAL["credits"]
@@ -140,6 +144,30 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.pause_menu_shown = not self.pause_menu_shown
+
+            # Operate buy menu
+            if self.wave_pause_ticks > 0:
+                if event.type == pygame.KEYDOWN:
+
+                    # Buy Bullet upgrade
+                    if event.key == K_1:
+                        buy_bullet_upgrade(game=self,
+                                           bullet_stats=BULLET)
+
+                    # Buy Bomb upgrade
+                    elif event.key == K_2:
+                        buy_bomb_upgrade(game=self,
+                                         bomb_stats=BOMB)
+
+                    # Buy Bomb
+                    elif event.key == K_3:
+                        buy_bomb(game=self,
+                                 player=self.player)
+
+                    # Buy Teleport
+                    elif event.key == K_4:
+                        buy_portal(game=self,
+                                   player=self.player)
 
     def turn_off_menus(self):
         self.main_menu_shown = False
@@ -178,7 +206,8 @@ class Game:
         self.screen.blit(self.menu_background, (0, 0))
         for i, credit in enumerate(self.credits):
             text = self.small_font.render(credit, True, self.font_color)
-            self.screen.blit(text, (self.first_button_x, self.first_button_y + i * 28))
+            self.screen.blit(text, (
+            self.first_button_x - 0.02 * GENERAL["width"], self.first_button_y + i * 26))
 
         if self.main_menu_button.draw(self.screen):
             self.turn_off_menus()
@@ -200,6 +229,11 @@ class Game:
             self.tick = 0
 
     def spawn_waves(self):
+        SKULL_COLLECTOR["health"] *= 1.1
+        RUSHER["health"] *= 1.2
+        BAT["health"] *= 1.1
+        FISH["health"] *= 1.1
+
         for _ in range(SKULL_COLLECTOR["wave_spawns"][self.player.wave_level]):
             SkullCollector(player=self.player,
                            position=choice(SKULL_COLLECTOR["start_position"]),
@@ -262,13 +296,12 @@ class Game:
             elif self.is_playing_game:
                 self.tick += 1
 
-                # self.spawn_test_enemies()
+                # Start wave countdown when al enemies are killed
                 if not len(enemy_sprites) and not len(all_creeper_sprites):
                     self.wave_pause_ticks += 1
-                    # display buy menu text
+
                     if self.wave_pause_ticks == self.wave_pause:
                         self.wave_pause_ticks = 0
-                        print(f"level: {self.player.wave_level}")
                         self.spawn_waves()
                         self.player.wave_level += 1
 
@@ -284,11 +317,21 @@ class Game:
                                         player=self.player)
 
                 # Hitboxes
-                self.outline_hitboxes()
+                # self.outline_hitboxes()
 
                 # Bars
                 self.camera.show_stats(screen=self.screen,
                                        player=self.player)
+
+                # Display buy menu text
+                if self.wave_pause_ticks > 0:
+                    self.camera.show_new_wave_info(screen=screen,
+                                                   player=self.player)
+                    self.camera.show_buy_menu(screen=screen,
+                                              player=self.player)
+                    self.camera.show_buy_menu_countdown(screen=screen,
+                                                        player=self.player,
+                                                        ticks=self.wave_pause_ticks)
 
                 # Update sprites
                 all_sprites.update()

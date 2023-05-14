@@ -10,10 +10,19 @@ PLAYER = {
     "hitbox_size": 0.8,
     "speed": 8,
     "health": 1000,
-    "skull_level": 34,
-    "energy_level": 66,
-    "coin_level": 25,
+    "skull_level": 0,
+    "energy_level": 0,
+    "coin_level": 0,
     "wave_level": 0,
+    "total_bombs": 3,
+
+    # buy menu
+    "buy_multiplier": 1.1,
+    "buy_multiplier_addition": 1.3,
+    "bullet_upgrade_cost": 4,
+    "bomb_upgrade_cost": 6,
+    "buy_bomb_cost": 1,
+    "buy_portal_cost": 3,
 
     # states
     "shoot": False,
@@ -23,7 +32,7 @@ PLAYER = {
     # state durations
     "shoot_cooldown": 15,
     "muzzle_flash_cooldown": 8,
-    "bomb_cooldown": 12,
+    "bomb_cooldown": 120,
 
     # portal
     "new_location": None,

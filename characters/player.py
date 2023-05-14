@@ -45,6 +45,14 @@ class Player(pygame.sprite.Sprite):
         self.new_location = PLAYER["new_location"]
         self.teleport_location = PLAYER["teleport_location"]
 
+        # Buy menu
+        self.buy_multiplier = PLAYER["buy_multiplier"]
+        self.buy_multiplier_addition = PLAYER["buy_multiplier_addition"]
+        self.bullet_upgrade_cost = PLAYER["bullet_upgrade_cost"]
+        self.bomb_upgrade_cost = PLAYER["bomb_upgrade_cost"]
+        self.buy_bomb_cost = PLAYER["buy_bomb_cost"]
+        self.buy_portal_cost = PLAYER["buy_portal_cost"]
+
         # Attributes
         self.name = PLAYER["name"]
         self.health = PLAYER["health"]
@@ -53,6 +61,7 @@ class Player(pygame.sprite.Sprite):
         self.energy_level = PLAYER["energy_level"]
         self.coin_level = PLAYER["coin_level"]
         self.wave_level = PLAYER["wave_level"]
+        self.total_bombs = PLAYER["total_bombs"]
 
     # ################################################################ #
     # ############################ MOVING ############################ #
@@ -218,7 +227,8 @@ class Player(pygame.sprite.Sprite):
         Checks bombing requirements and
             updates trackers.
         """
-        if self.bomb and not self.bomb_cooldown:
+        if self.bomb and not self.bomb_cooldown and self.total_bombs > 0:
+            self.total_bombs -= 1
             self.bomb_cooldown = PLAYER["bomb_cooldown"]
             self.throw_bomb()
 

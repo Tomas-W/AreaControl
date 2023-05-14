@@ -9,6 +9,10 @@ from sprites.enemy_sprites import GOLEM_DEATH_SPRITES, GOLEM_STRIKE_SPRITES, \
     SKULL_COLLECTOR_WALK_SPRITES, SKULL_COLLECTOR_DEATH_SPRITES_FLIPPED, \
     RUSHER_DEATH_SPRITES_FLIPPED, GOLEM_DEATH_SPRITES_FLIPPED, RUSHER_SPAWN_SPRITES
 
+# a = [2, 3, 8, 3, 7, 7, 14]
+# b = [3, 7, 3, 6, 7, 11, 4]
+# c = [3, 4, 12, 0, 5, 8, 15]
+# d = [3, 3, 0, 20, 7, 11, 7]
 # ############################################################### #
 # ####################### SKULL COLLECTOR ####################### #
 SKULL_COLLECTOR = {
@@ -24,7 +28,7 @@ SKULL_COLLECTOR = {
     "speed": 3,
     "walk_speed": 4,
     "run_speed": None,
-    "wave_spawns": [3, 3, 8, 3],
+    "wave_spawns": [2, 3, 8, 3, 7, 7, 14],
 
     # states
     "spawn": True,
@@ -105,7 +109,7 @@ RUSHER = {
     "speed": 7,
     "walk_speed": None,
     "run_speed": 7,
-    "wave_spawns": [3, 7, 3, 6],
+    "wave_spawns": [3, 7, 3, 6, 7, 11, 4],
 
     # states
     "spawn": True,

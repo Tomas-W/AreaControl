@@ -20,7 +20,7 @@ BAT = {
     "circle_radius": 400,
     "angle": 90,
     "angle_adjustment": 0.5,
-    "wave_spawns": [2, 4, 12, 0],
+    "wave_spawns": [3, 4, 12, 0, 5, 8, 15],
 
     # states
     "idle": True,
@@ -85,7 +85,7 @@ FISH = {
     "circle_radius": 100,
     "angle": 90,
     "angle_adjustment": 1,
-    "wave_spawns": [5, 3, 0, 20],
+    "wave_spawns": [3, 3, 0, 20, 7, 11, 7],
 
     # states
     "idle": True,

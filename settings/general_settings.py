@@ -9,8 +9,8 @@ GENERAL = {
     "height": 900,
     "half_width": 800,
     "half_height": 450,
-    # main
 
+    # main
     "title": "AreaControl",
     "FPS": 60,
     "origin": (0, 0),
@@ -51,6 +51,15 @@ GENERAL = {
     "health_bar_y_offset": 425,
     "health_bar_height": 25,
 
+    "wave_text_x_offset": 250,
+    "wave_text_y_offset": 330,
+
+    "buy_menu_x_offset": 250,
+    "buy_menu_y_offset": -125,
+
+    "countdown_x_offset": 60,
+    "countdown_y_offset": 30,
+
     # colors
     "black": (0, 0, 0),
     "white": (255, 255, 255),
@@ -59,7 +68,7 @@ GENERAL = {
     "blue": (0, 0, 255),
 
     # credits
-    "credits": ["pixelied.com", "craftpix.net", "pngtree.com", "vhv.rs", "freepik.com", "opengameart.org", "pngimages.in", "bdragon1727.itch.io", "ellr.itch.io", "digigrand.itch.io", "humblepixel.itch.io", "spoadr.itch.io"]
+    "credits": ["pixelied.com", "craftpix.net", "pngtree.com", "vhv.rs", "freepik.com", "opengameart.org", "pngimages.in", "bdragon1727.itch.io", "ellr.itch.io", "digigrand.itch.io", "humblepixel.itch.io", "spoadr.itch.io", "gerald-burke.itch.io"]
 }
 
 # Characters

@@ -32,7 +32,7 @@ BULLET = {
     "name": "bullet",
     "size": BULLET_SIZE,
     "speed": 14,
-    "damage": 60,
+    "damage": 40,
 
     # frame attributes
     "frame": None,

@@ -27,6 +27,47 @@ all_interactives_sprites = pygame.sprite.Group()
 portal_sprites = pygame.sprite.Group()
 
 
+def buy_bullet_upgrade(game, bullet_stats):
+    if game.player.coin_level > int(
+            game.player.bullet_upgrade_cost * game.player.buy_multiplier):
+        game.player.coin_level -= int(
+            game.player.bullet_upgrade_cost * game.player.buy_multiplier)
+        game.buy_tick = game.wave_pause_ticks
+        game.player.buy_multiplier *= game.player.buy_multiplier_addition
+        bullet_stats["damage"] *= 1.05
+        bullet_stats["speed"] *= 1.05
+
+
+def buy_bomb_upgrade(game, bomb_stats):
+    if game.player.coin_level > int(
+            game.player.bomb_upgrade_cost * game.player.buy_multiplier):
+        game.player.coin_level -= int(
+            game.player.bomb_upgrade_cost * game.player.buy_multiplier)
+        game.buy_tick = game.wave_pause_ticks
+        game.player.buy_multiplier *= game.player.buy_multiplier_addition
+        bomb_stats["damage"] *= 1.07
+
+
+def buy_bomb(game, player):
+    if game.player.skull_level > int(
+            game.player.buy_bomb_cost * game.player.buy_multiplier):
+        game.player.skull_level -= int(
+            game.player.buy_bomb_cost * game.player.buy_multiplier)
+        game.buy_tick = game.wave_pause_ticks
+        game.player.buy_multiplier *= game.player.buy_multiplier_addition
+        player.total_bombs += 1
+
+
+def buy_portal(game, player):
+    if game.player.energy_level > int(
+            game.player.buy_bomb_cost * game.player.buy_multiplier):
+        game.player.energy_level -= int(
+            game.player.buy_bomb_cost * game.player.buy_multiplier)
+        game.buy_tick = game.wave_pause_ticks
+        game.player.buy_multiplier *= game.player.buy_multiplier_addition
+        # player.total_portals += 1
+
+
 def handle_pickups():
     """
     Checks all PickUps and Player location and applies PickUp stats if collision.
