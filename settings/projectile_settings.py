@@ -7,7 +7,7 @@ from sprites.projectile_sprites import FLAMING_SKULL_SPRITE, BULLET_SPRITE, BOMB
 FLAMING_SKULL = {
     "name": "flaming_skull",
     "size": FLAMING_SKULL_SIZE,
-    "speed": 3,
+    "speed": 6,
     "damage": 50,
 
     # frame attributes
@@ -31,7 +31,7 @@ FLAMING_SKULL = {
 BULLET = {
     "name": "bullet",
     "size": BULLET_SIZE,
-    "speed": 4,
+    "speed": 14,
     "damage": 60,
 
     # frame attributes

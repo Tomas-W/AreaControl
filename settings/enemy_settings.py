@@ -16,13 +16,15 @@ SKULL_COLLECTOR = {
                        (1000, 2950), (1400, 2950), (1800, 2950), (2200, 2950), (2600, 2950), (3000, 2950)],
     "spawn_opacity": 0,
     "size": SKULL_COLLECTOR_SIZE,
+    "name": "skull_collector",
 
     # attributes
     "health": 260,
     "damage": None,
-    "speed": 1.5,
-    "walk_speed": 1.5,
+    "speed": 3,
+    "walk_speed": 4,
     "run_speed": None,
+    "wave_spawns": [3, 3, 8, 3],
 
     # states
     "spawn": True,
@@ -95,13 +97,15 @@ RUSHER = {
     "start_position": [(x, y) for x in range(1000, 3301, 130) for y in range(900, 2601, 140)],
     "spawn_opacity": 0,
     "size": RUSHER_SIZE,
+    "name": "rusher",
 
     # attributes
     "health": 105,
     "damage": 40,
-    "speed": 4,
+    "speed": 7,
     "walk_speed": None,
-    "run_speed": 5,
+    "run_speed": 7,
+    "wave_spawns": [3, 7, 3, 6],
 
     # states
     "spawn": True,

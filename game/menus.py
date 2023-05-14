@@ -1,7 +1,8 @@
+import time
+
 import pygame
 
 
-# button class
 class Button:
     def __init__(self, x, y, image, scale):
         width = image.get_width()
@@ -10,6 +11,7 @@ class Button:
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.clicked = False
+        self.spawn_time = time.time()
 
     def draw(self, surface):
         action = False
@@ -18,9 +20,13 @@ class Button:
 
         # check mouseover and clicked conditions
         if self.rect.collidepoint(pos):
-            if pygame.mouse.get_pressed()[0] == 1 and not self.clicked:
+            self.image.set_alpha(255)
+            if pygame.mouse.get_pressed()[0] == 1 and not self.clicked and time.time() - self.spawn_time > 0.5:
+                self.spawn_time = time.time()
                 self.clicked = True
                 action = True
+        else:
+            self.image.set_alpha(175)
 
         if not pygame.mouse.get_pressed()[0]:
             self.clicked = False
@@ -29,11 +35,3 @@ class Button:
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
         return action
-
-
-start_img = pygame.image.load('./start_btn.png').convert_alpha()
-exit_img = pygame.image.load('./exit_btn.png').convert_alpha()
-
-
-start_button = Button(100, 200, start_img, 0.8)
-exit_button = Button(450, 200, exit_img, 0.8)

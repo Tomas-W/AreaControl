@@ -1,3 +1,5 @@
+import os
+
 from game.setup import Game
 
 game = Game()

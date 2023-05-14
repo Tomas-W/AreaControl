@@ -5,7 +5,7 @@ from sprites.creeper_sprites import BAT_SPRITES, BAT_SPRITES_FLIPPED, FISH_SPRIT
 # ############################################################ #
 # ############################ BAT ########################### #
 BAT = {
-    "start_position": [(850, 750), (3450, 750), (850, 2750), (3450, 2750)],
+    "start_position": [(1000, 900), (3300, 900), (1000, 2600), (3300, 2600)],
     "spawn": True,
     "spawn_opacity": 0,
     "name": "bat",
@@ -16,10 +16,11 @@ BAT = {
     "damage": 50,
     "speed": 2,
     "idle_speed": 2,
-    "chase_speed": 4,
+    "chase_speed": 7,
     "circle_radius": 400,
     "angle": 90,
     "angle_adjustment": 0.5,
+    "wave_spawns": [2, 4, 12, 0],
 
     # states
     "idle": True,
@@ -29,7 +30,7 @@ BAT = {
     "death": None,
 
     # state distance
-    "chase_distance": 300,
+    "chase_distance": 400,
     "strike_distance": None,
     "shoot_distance": None,
 
@@ -80,10 +81,11 @@ FISH = {
     "damage": 50,
     "speed": 2,
     "idle_speed": 2,
-    "chase_speed": 4,
+    "chase_speed": 6,
     "circle_radius": 100,
     "angle": 90,
     "angle_adjustment": 1,
+    "wave_spawns": [5, 3, 0, 20],
 
     # states
     "idle": True,
@@ -93,7 +95,7 @@ FISH = {
     "death": None,
 
     # state distance
-    "chase_distance": 200,
+    "chase_distance": 225,
     "strike_distance": None,
     "shoot_distance": None,
 

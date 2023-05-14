@@ -1,17 +1,21 @@
+import os
+import sys
+
 import pygame
 
 from settings.general_settings import GENERAL
 
 from settings.player_settings import PLAYER
-from settings.enemy_settings import SKULL_COLLECTOR, RUSHER, GOLEM
+from settings.enemy_settings import SKULL_COLLECTOR, RUSHER
 from settings.creeper_settings import BAT, FISH
 
-from settings.interactives_settings import PORTAL, SKULL, ENERGY
+from settings.interactives_settings import SKULL, ENERGY
 
 from settings.projectile_settings import FLAMING_SKULL, BULLET, BOMB
 
-from utilities import all_sprites, player_projectile_sprites, enemy_projectile_sprites, \
-    portal_sprites, skull_sprites, energy_sprites, bomb_sprites
+from utilities import all_sprites
+
+base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 
 class Camera(pygame.sprite.Group):
@@ -25,9 +29,9 @@ class Camera(pygame.sprite.Group):
         self.offset = pygame.math.Vector2()
         self.floor_rect = background.get_rect(topleft=GENERAL["origin"])
 
-        self.skull_image = pygame.image.load("./images/interactives/skull/skull.png")
-        self.energy_image = pygame.image.load("./images/interactives/energy/energy2.png")
-        self.coin_image = pygame.image.load("./images/interactives/coin/coin.png")
+        self.skull_image = pygame.image.load(os.path.join(base_dir, "./images/interactives/skull/skull.png"))
+        self.energy_image = pygame.image.load(os.path.join(base_dir, "./images/interactives/energy/energy2.png"))
+        self.coin_image = pygame.image.load(os.path.join(base_dir, "./images/interactives/coin/coin.png"))
 
         self.font = pygame.font.SysFont("comicsansms", 30)
 
@@ -93,14 +97,13 @@ class Camera(pygame.sprite.Group):
         screen.blit(coin_number, (base_x + 185 + 5,
                                   base_y + 100))
 
-    def show_hitboxes(self, screen, player=None, skull_collector=None, rusher=None, golem=None,
-                      bat=None,
-                      fish=None, bullet=None, bomb=None, flaming_skull=None, skull=None,
-                      energy=None,
-                      portal=None):
+    def show_hitboxes(self, screen, player=None, skull_collector=False, rusher=False,
+                      bat=False, fish=False,
+                      bullet=False, bomb=False, flaming_skull=False,
+                      skull=False, energy=False):
         """
-        Draws hitboxes.
-        Player, SkullCollector and Rusher need instances, others only need to be not None.
+        Draws hitboxes if True.
+        Player needs instance.
         """
         if player is not None:
             if not player.shoot:
@@ -114,95 +117,74 @@ class Camera(pygame.sprite.Group):
                                  pygame.Rect(PLAYER["hitbox"]),
                                  2)
 
-        if skull_collector is not None:
-            pygame.draw.rect(skull_collector.image,
-                             GENERAL["red"],
-                             pygame.Rect(SKULL_COLLECTOR["hitbox"]),
-                             2)
-
-        if rusher is not None:
-            pygame.draw.rect(rusher.image,
-                             GENERAL["red"],
-                             pygame.Rect(RUSHER["hitbox"]),
-                             2)
-
-        if golem is not None:
-            pygame.draw.rect(golem.image,
-                             GENERAL["red"],
-                             pygame.Rect(GOLEM["hitbox"]),
-                             2)
-
-        if bat is not None:
-            pygame.draw.rect(bat.image,
-                             GENERAL["red"],
-                             pygame.Rect(BAT["hitbox"]),
-                             2)
-
-        if fish is not None:
-            pygame.draw.rect(fish.image,
-                             GENERAL["red"],
-                             pygame.Rect(FISH["hitbox"]),
-                             2)
-
-        if bullet is not None:
-            for bullet in player_projectile_sprites:
-                pygame.draw.rect(bullet.image,
-                                 GENERAL["blue"],
-                                 pygame.Rect(BULLET["hitbox"]),
-                                 2)
-
-        if bomb is not None:
-            for bomb in bomb_sprites:
-
-                pygame.draw.circle(screen,
-                                   GENERAL["blue"],
-                                   bomb.bomb_location,
-                                   8,
-                                   2)
-
-                if not bomb.explode:
-
-                    pygame.draw.rect(bomb.image,
-                                     GENERAL["blue"],
-                                     pygame.Rect(BOMB["hitbox"]),
+        for item in all_sprites:
+            if skull_collector:
+                if item.name == "skull_collector":
+                    pygame.draw.rect(item.image,
+                                     GENERAL["red"],
+                                     pygame.Rect(SKULL_COLLECTOR["hitbox"]),
                                      2)
 
-                else:
-                    # print("***")
-                    # print(bomb.bomb_location)
-                    # print(bomb.rect.center)
-                    # print("***")
+            if rusher:
+                if item.name == "rusher":
+                    pygame.draw.rect(item.image,
+                                     GENERAL["red"],
+                                     pygame.Rect(RUSHER["hitbox"]),
+                                     2)
 
-                    pygame.draw.circle(bomb.image,
-                                       GENERAL["blue"],
-                                       bomb.image.get_rect().center,
-                                       bomb.image.get_width() // 2,
-                                       2)
+            if bat:
+                if item.name == "bat":
+                    pygame.draw.rect(item.image,
+                                     GENERAL["red"],
+                                     pygame.Rect(BAT["hitbox"]),
+                                     2)
 
-        if flaming_skull is not None:
-            for flaming_skull in enemy_projectile_sprites:
-                pygame.draw.rect(flaming_skull.image,
-                                 GENERAL["red"],
-                                 pygame.Rect(FLAMING_SKULL["hitbox"]),
-                                 2)
+            if fish:
+                if item.name == "fish":
+                    pygame.draw.rect(item.image,
+                                     GENERAL["red"],
+                                     pygame.Rect(FISH["hitbox"]),
+                                     2)
 
-        if skull is not None:
-            for skull in skull_sprites:
-                pygame.draw.rect(skull.image,
-                                 GENERAL["red"],
-                                 pygame.Rect(SKULL["hitbox"]),
-                                 2)
+            if skull:
+                if item.name == "skull":
+                    pygame.draw.rect(item.image,
+                                     GENERAL["blue"],
+                                     pygame.Rect(SKULL["hitbox"]),
+                                     2)
 
-        if energy is not None:
-            for energy in energy_sprites:
-                pygame.draw.rect(energy.image,
-                                 GENERAL["red"],
-                                 pygame.Rect(ENERGY["hitbox"]),
-                                 2)
+            if energy:
+                if item.name == "energy":
+                    pygame.draw.rect(item.image,
+                                     GENERAL["blue"],
+                                     pygame.Rect(ENERGY["hitbox"]),
+                                     2)
 
-        if portal is not None:
-            for portal in portal_sprites:
-                pygame.draw.rect(portal.image,
-                                 GENERAL["blue"],
-                                 pygame.Rect(PORTAL["hitbox"]),
-                                 2)
+            if bullet:
+                if item.name == "bullet":
+                    pygame.draw.rect(item.image,
+                                     GENERAL["green"],
+                                     pygame.Rect(BULLET["hitbox"]),
+                                     2)
+
+            if bomb:
+                if item.name == "bomb":
+                    if not item.explode:
+
+                        pygame.draw.rect(item.image,
+                                         GENERAL["blue"],
+                                         pygame.Rect(BOMB["hitbox"]),
+                                         2)
+                    else:
+                        pygame.draw.circle(screen,
+                                           GENERAL["blue"],
+                                           item.image.get_rect().center,
+                                           item.image.get_width() // 2,
+                                           2)
+
+            if flaming_skull:
+                if item.name == "flaming_skull":
+                    pygame.draw.rect(item.image,
+                                     GENERAL["red"],
+                                     pygame.Rect(FLAMING_SKULL["hitbox"]),
+                                     2)

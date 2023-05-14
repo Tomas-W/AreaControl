@@ -92,6 +92,7 @@ class Enemy(pygame.sprite.Sprite):
         self.flip_image = character["flip_image"]
 
         # Attributes
+        self.name = character["name"]
         self.position = pygame.math.Vector2(position)
         self.direction = pygame.math.Vector2()
         self.velocity = pygame.math.Vector2()

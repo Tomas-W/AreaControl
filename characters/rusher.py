@@ -132,9 +132,9 @@ class Rusher(Enemy):
         if self.frame == self.death_frame:
             PickUp(position=self.rect.center,
                    pickup_name=ENERGY)
-            Rusher(player=self.player,
-                   position=choice(RUSHER["start_position"]),
-                   character=RUSHER)
+            # Rusher(player=self.player,
+            #        position=choice(RUSHER["start_position"]),
+            #        character=RUSHER)
             self.kill()
 
     def update(self):

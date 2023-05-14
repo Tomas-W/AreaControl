@@ -46,11 +46,13 @@ class Player(pygame.sprite.Sprite):
         self.teleport_location = PLAYER["teleport_location"]
 
         # Attributes
+        self.name = PLAYER["name"]
         self.health = PLAYER["health"]
         self.speed = PLAYER["speed"]
         self.skull_level = PLAYER["skull_level"]
         self.energy_level = PLAYER["energy_level"]
         self.coin_level = PLAYER["coin_level"]
+        self.wave_level = PLAYER["wave_level"]
 
     # ################################################################ #
     # ############################ MOVING ############################ #

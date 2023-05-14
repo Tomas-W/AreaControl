@@ -4,14 +4,16 @@ PLAYER_SIZE = 0.4
 PLAYER = {
     "start_position": (1750, 1450),
     "size": PLAYER_SIZE,
+    "name": "player",
 
     # attributes
     "hitbox_size": 0.8,
-    "speed": 5,
+    "speed": 8,
     "health": 1000,
     "skull_level": 34,
     "energy_level": 66,
     "coin_level": 25,
+    "wave_level": 0,
 
     # states
     "shoot": False,

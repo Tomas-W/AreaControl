@@ -1,3 +1,8 @@
+import os
+import sys
+
+base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+
 GENERAL = {
     # window
     "width": 1600,
@@ -5,12 +10,26 @@ GENERAL = {
     "half_width": 800,
     "half_height": 450,
     # main
+
     "title": "AreaControl",
     "FPS": 60,
     "origin": (0, 0),
+
     # level
-    "background_path": "./images/game/level_medium.png",
-    "menu_background_path": "./images/game/menu_background.png",
+    "background_path": os.path.join(base_dir, "./images/game/level_medium.png"),
+    "menu_background_path": os.path.join(base_dir, "./images/game/menu_background.png"),
+
+    # menus
+    "play_btn_img": os.path.join(base_dir, "images/game/btn_play.png"),
+    "settings_btn_img":  os.path.join(base_dir, "images/game/btn_settings.png"),
+    "leaderboard_btn_img":  os.path.join(base_dir, "images/game/btn_leaderboard.png"),
+    "credits_btn_img":  os.path.join(base_dir, "images/game/btn_credits.png"),
+    "sounds_on_btn_img":  os.path.join(base_dir, "images/game/btn_sounds_on.png"),
+    "sounds_off_btn_img":  os.path.join(base_dir, "images/game/btn_sounds_off.png"),
+    "continue_btn_img":  os.path.join(base_dir, "images/game/btn_continue.png"),
+    "restart_btn_img":  os.path.join(base_dir, "images/game/btn_restart.png"),
+    "game_over_btn_img":  os.path.join(base_dir, "images/game/btn_game_over.png"),
+    "main_menu_btn_img":  os.path.join(base_dir, "images/game/btn_main_menu.png"),
 
     "left_x_min": 900,
     "left_x_max": 2100,
@@ -38,6 +57,9 @@ GENERAL = {
     "red": (255, 0, 0),
     "green": (0, 255, 0),
     "blue": (0, 0, 255),
+
+    # credits
+    "credits": ["pixelied.com", "craftpix.net", "pngtree.com", "vhv.rs", "freepik.com", "opengameart.org", "pngimages.in", "bdragon1727.itch.io", "ellr.itch.io", "digigrand.itch.io", "humblepixel.itch.io", "spoadr.itch.io"]
 }
 
 # Characters
@@ -94,14 +116,3 @@ PORTAL_SPRITE_HEIGHT = 85
 COIN_SIZE = 0.15
 COIN_SPRITE_WIDTH = 200
 COIN_SPRITE_HEIGHT = 175
-
-# Credits
-# pixelied
-# CraftPix
-# PNGTree
-# www.vhv.rs
-# Freepic
-# https://creativekind.itch.io/
-# spoadr.itch.io
-# https://opengameart.org/content/animated-top-down-survivor-player
-# https://www.pngimages.in
