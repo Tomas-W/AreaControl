@@ -5,11 +5,11 @@ from sprites.creeper_sprites import BAT_SPRITES, BAT_SPRITES_FLIPPED, FISH_SPRIT
 # ############################################################ #
 # ############################ BAT ########################### #
 BAT = {
-    "start_position": [(1000, 900), (3300, 900), (1000, 2600), (3300, 2600)],
-    "spawn": True,
+    # main
+    "start_position": [(1100, 1000), (3200, 1000), (1100, 2500), (3200, 2500)],
     "spawn_opacity": 0,
-    "name": "bat",
     "size": BAT_SIZE,
+    "name": "bat",
 
     # attributes
     "health": 60,
@@ -17,20 +17,20 @@ BAT = {
     "speed": 2,
     "idle_speed": 2,
     "chase_speed": 7,
-    "circle_radius": 400,
-    "angle": 90,
+    "circle_radius": 350,
+    "angle": [x for x in range(-180, 180, 10)],
     "angle_adjustment": 0.5,
     "wave_spawns": [3, 4, 12, 0, 5, 8, 15],
 
     # states
+    "spawn": None,
     "idle": True,
     "chase": False,
     "strike": None,
     "shoot": None,
     "death": None,
-
     # state distance
-    "chase_distance": 400,
+    "chase_distance": 350,
     "strike_distance": None,
     "shoot_distance": None,
 
@@ -44,8 +44,7 @@ BAT = {
     "strike_ticks": None,
     "shoot_ticks": None,
     "death_ticks": None,
-
-    # action at what frame
+    # action at what frame (starts at 0)
     "strike_frame": None,
     "shoot_frame": None,
     "death_frame": None,
@@ -71,10 +70,9 @@ BAT = {
 # ############################ FISH ########################### #
 FISH = {
     "start_position": [(x, y) for x in range(1000, 3301, 150) for y in range(900, 2601, 150)],
-    "spawn": True,
     "spawn_opacity": 0,
-    "name": "fish",
     "size": FISH_SIZE,
+    "name": "fish",
 
     # attributes
     "health": 60,
@@ -83,11 +81,12 @@ FISH = {
     "idle_speed": 2,
     "chase_speed": 6,
     "circle_radius": 100,
-    "angle": 90,
+    "angle": [x for x in range(-180, 180, 10)],
     "angle_adjustment": 1,
     "wave_spawns": [3, 3, 0, 20, 7, 11, 7],
 
     # states
+    "spawn": None,
     "idle": True,
     "chase": False,
     "strike": None,
@@ -109,8 +108,7 @@ FISH = {
     "strike_ticks": None,
     "shoot_ticks": None,
     "death_ticks": None,
-
-    # action at what frame
+    # action at what frame (starts at 0)
     "strike_frame": None,
     "shoot_frame": None,
     "death_frame": None,

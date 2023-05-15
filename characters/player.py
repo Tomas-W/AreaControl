@@ -1,4 +1,3 @@
-import math
 from math import atan2, sqrt, degrees
 
 import pygame
@@ -9,7 +8,7 @@ from projectiles.bullet import Bullet
 from utilities import player_sprite, all_sprites
 
 from settings.general_settings import GENERAL
-from settings.player_settings import PLAYER, PLAYER_SIZE
+from settings.player_settings import PLAYER
 
 
 class Player(pygame.sprite.Sprite):
@@ -56,12 +55,19 @@ class Player(pygame.sprite.Sprite):
         # Attributes
         self.name = PLAYER["name"]
         self.health = PLAYER["health"]
+        self.max_health = PLAYER["max_health"]
         self.speed = PLAYER["speed"]
         self.skull_level = PLAYER["skull_level"]
         self.energy_level = PLAYER["energy_level"]
         self.coin_level = PLAYER["coin_level"]
         self.wave_level = PLAYER["wave_level"]
         self.total_bombs = PLAYER["total_bombs"]
+        self.total_portals = PLAYER["total_portals"]
+        self.total_health_potions = PLAYER["total_health_potions"]
+
+        # Misc
+        self.health_potion_boost = PLAYER["health_potion_boost"]
+        self.item_ticks = 0
 
     # ################################################################ #
     # ############################ MOVING ############################ #
@@ -296,6 +302,16 @@ class Player(pygame.sprite.Sprite):
                 self.is_invincible = False
                 self.invincible_ticks = 0
 
+    def manage_activate_items(self):
+        keys = pygame.key.get_pressed()
+        # Consume health potion
+        if keys[pygame.K_q]:
+            if self.total_health_potions > 0 and self.item_ticks == 0:
+                self.total_health_potions -= 1
+                self.health = min(self.health + self.health_potion_boost,
+                                  self.max_health)
+                self.item_ticks = 15
+
     def update(self):
         # Move (do not change order)
         self.rotate_player()
@@ -321,6 +337,11 @@ class Player(pygame.sprite.Sprite):
 
         # Manage invincibility after Portal use
         self.manage_invincibility()
+
+        # Items
+        self.manage_activate_items()
+        if self.item_ticks > 0:
+            self.item_ticks -= 1
 
     def set_invincibility_image(self):
         """

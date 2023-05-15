@@ -5,7 +5,8 @@ import pygame
 
 from settings.general_settings import GENERAL, ENERGY_SIZE, PORTAL_SIZE, PORTAL_SPRITE_WIDTH, \
     SKULL_SPRITE_WIDTH, SKULL_SPRITE_HEIGHT, ENERGY_SPRITE_HEIGHT, ENERGY_SPRITE_WIDTH, \
-    PORTAL_SPRITE_HEIGHT, SKULL_SIZE, COIN_SPRITE_WIDTH, COIN_SPRITE_HEIGHT, COIN_SIZE
+    PORTAL_SPRITE_HEIGHT, SKULL_SIZE, COIN_SPRITE_WIDTH, COIN_SPRITE_HEIGHT, COIN_SIZE, \
+    HEALTH_POTION_SPRITE_WIDTH, HEALTH_POTION_SPRITE_HEIGHT, HEALTH_POTION_SIZE
 from utilities import get_sprites
 
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
@@ -48,8 +49,19 @@ SKULL_SPRITES = get_sprites(sheet=skull_sheet,
 coin_sheet = pygame.image.load(
     os.path.join(base_dir, "images/interactives/coin/coin_sheet.png")).convert_alpha()
 COIN_SPRITES = get_sprites(sheet=coin_sheet,
-                            number_sprites=6,
-                            width=COIN_SPRITE_WIDTH,
-                            height=COIN_SPRITE_HEIGHT,
-                            scale=COIN_SIZE,
-                            color=GENERAL["black"])
+                           number_sprites=6,
+                           width=COIN_SPRITE_WIDTH,
+                           height=COIN_SPRITE_HEIGHT,
+                           scale=COIN_SIZE,
+                           color=GENERAL["black"])
+
+# ####################################################################### #
+# ############################ HEALTH POTION ############################ #
+health_potion_sheet = pygame.image.load(
+    os.path.join(base_dir, "images/interactives/health/health_potion_sheet.png")).convert_alpha()
+HEALTH_POTION_SPRITES = get_sprites(sheet=health_potion_sheet,
+                                    number_sprites=13,
+                                    width=HEALTH_POTION_SPRITE_WIDTH,
+                                    height=HEALTH_POTION_SPRITE_HEIGHT,
+                                    scale=HEALTH_POTION_SIZE,
+                                    color=GENERAL["black"])

@@ -1,6 +1,9 @@
+from random import choice
+
 import pygame
 
-from utilities import all_sprites, energy_sprites, skull_sprites, coin_sprites
+from utilities import all_sprites, energy_sprites, skull_sprites, coin_sprites, \
+    health_potion_sprites
 
 
 class PickUp(pygame.sprite.Sprite):
@@ -14,6 +17,10 @@ class PickUp(pygame.sprite.Sprite):
     """
     def __init__(self, position, pickup_name):
         super().__init__(all_sprites)
+        # Determine spawn location
+        if pickup_name["name"] == "health_potion":
+            position = choice(pickup_name["spawn_location"])
+
         # Sprites
         self.sprites = pickup_name["sprites"]
 
@@ -43,6 +50,8 @@ class PickUp(pygame.sprite.Sprite):
             energy_sprites.add(self)
         elif pickup_name["name"] == "coin":
             coin_sprites.add(self)
+        elif self.name == "health_potion":
+            health_potion_sprites.add(self)
 
     def update(self):
         self.frame_ticks += 1

@@ -1,17 +1,14 @@
-import os
-import sys
-
-import pygame
-
 from settings.general_settings import GENERAL
-
+from settings.menu_settings import DISPLAY
 from settings.player_settings import PLAYER
 from settings.enemy_settings import SKULL_COLLECTOR, RUSHER
 from settings.creeper_settings import BAT, FISH
 
-from settings.interactives_settings import SKULL, ENERGY
+from settings.interactives_settings import SKULL, ENERGY, HEALTH_POTION
 
 from settings.projectile_settings import FLAMING_SKULL, BULLET, BOMB
+from sprites.camera_sprites import *
+from fonts.fonts import *
 
 from utilities import all_sprites
 
@@ -22,6 +19,8 @@ class Camera(pygame.sprite.Group):
     """
     Shifts all Sprites by an offset to keep Player centered in Camera.
     Offset is calculated based on screen dimensions.
+    Also draws game information to screen e.g.
+        items, wave info, buy info
     """
 
     def __init__(self, background):
@@ -29,44 +28,44 @@ class Camera(pygame.sprite.Group):
         self.offset = pygame.math.Vector2()
         self.floor_rect = background.get_rect(topleft=GENERAL["origin"])
 
-        self.skull_collector_image = pygame.image.load(
-            os.path.join(base_dir, "./images/camera/skull_collector.png"))
-        self.rusher_image = pygame.image.load(
-            os.path.join(base_dir, "./images/camera/rusher.png"))
-        self.bat_image = pygame.image.load(
-            os.path.join(base_dir, "./images/camera/bat.png"))
-        self.fish_image = pygame.image.load(
-            os.path.join(base_dir, "./images/camera/fish.png"))
-
-        self.skull_image = pygame.image.load(
-            os.path.join(base_dir, "./images/camera/skull.png"))
-        self.energy_image = pygame.image.load(
-            os.path.join(base_dir, "./images/camera/energy.png"))
-        self.coin_image = pygame.image.load(
-            os.path.join(base_dir, "./images/camera/coin.png"))
-        self.bomb_image = pygame.image.load(
-            os.path.join(base_dir, "./images/camera/bomb.png"))
-        self.portal_image = pygame.image.load(
-            os.path.join(base_dir, "./images/camera/portal.png"))
-
-        self.btn_1 = pygame.image.load(
-            os.path.join(base_dir, "./images/camera/btn_1.png"))
-        self.btn_2 = pygame.image.load(
-            os.path.join(base_dir, "./images/camera/btn_2.png"))
-        self.btn_3 = pygame.image.load(
-            os.path.join(base_dir, "./images/camera/btn_3.png"))
-        self.btn_4 = pygame.image.load(
-            os.path.join(base_dir, "./images/camera/btn_4.png"))
+        # Character images
+        self.skull_collector_image = SKULL_COLLECTOR_CAMERA_IMAGE
+        self.rusher_image = RUSHER_CAMERA_IMAGE
+        # Creeper images
+        self.bat_image = BAT_CAMERA_IMAGE
+        self.fish_image = FISH_CAMERA_IMAGE
+        # PickUp images
+        self.skull_image = SKULL_CAMERA_IMAGE
+        self.energy_image = ENERGY_CAMERA_IMAGE
+        self.coin_image = COIN_CAMERA_IMAGE
+        # Item images
+        self.bomb_image = BOMB_CAMERA_IMAGE
+        self.portal_image = PORTAL_CAMERA_IMAGE
+        self.health_potion_image = HEALTH_POTION_CAMERA_IMAGE
+        # Button images
+        self.btn_1 = BUTTON_1_CAMERA_IMAGE
+        self.btn_2 = BUTTON_2_CAMERA_IMAGE
+        self.btn_3 = BUTTON_3_CAMERA_IMAGE
+        self.btn_4 = BUTTON_4_CAMERA_IMAGE
+        self.btn_q = BUTTON_Q_CAMERA_IMAGE
+        self.btn_w = BUTTON_W_CAMERA_IMAGE
+        self.btn_e = BUTTON_E_CAMERA_IMAGE
+        self.btn_a = BUTTON_A_CAMERA_IMAGE
+        self.btn_s = BUTTON_S_CAMERA_IMAGE
+        self.btn_d = BUTTON_D_CAMERA_IMAGE
+        self.mouse_l = MOUSE_L_CAMERA_IMAGE
+        self.mouse_r = MOUSE_R_CAMERA_IMAGE
 
         # Fonts
-        self.small_font = pygame.font.Font(os.path.join(base_dir, "fonts/PublicPixel.ttf"), 15)
-        self.medium_font = pygame.font.Font(os.path.join(base_dir, "fonts/PublicPixel.ttf"), 30)
-        self.large_font = pygame.font.Font(os.path.join(base_dir, "fonts/PublicPixel.ttf"), 60)
-        self.font_color = GENERAL["white"]
+        self.small_font = SMALL_FONT
+        self.medium_font = MEDIUM_FONT
+        self.large_font = LARGE_FONT
+        self.font_color = FONT_COLOR
 
-    def custom_draw(self, screen, background, player):
+    def blit_all_sprites(self, screen, background, player):
         """
-        Blits all Sprites to the main screen.
+        Blits all Sprites to the main screen with an offset so
+            player is centered in screen.
 
         :param screen: Display to blit Sprites to (obj).
         :param background: Level image (png).
@@ -92,8 +91,8 @@ class Camera(pygame.sprite.Group):
         :param player: Player instance (obj).
         """
         # Calculate base position
-        base_position = (player.rect.centerx - GENERAL["wave_text_x_offset"],
-                         player.rect.centery - GENERAL["wave_text_y_offset"])
+        base_position = (player.rect.centerx - DISPLAY["wave_text_x_offset"],
+                         player.rect.centery - DISPLAY["wave_text_y_offset"])
         new_base_position = base_position - self.offset
         base_x = new_base_position[0]
         base_y = new_base_position[1]
@@ -131,7 +130,7 @@ class Camera(pygame.sprite.Group):
         screen.blit(bat_number, (base_x + 300 + 37,
                                  base_y + 150))
 
-        # Fishes
+        # Fish
         screen.blit(self.fish_image, (base_x + 460,
                                       base_y + 50))
         fish_number = self.small_font.render(
@@ -141,9 +140,16 @@ class Camera(pygame.sprite.Group):
                                   base_y + 150))
 
     def show_buy_menu_countdown(self, screen, player, ticks):
+        """
+        Displays buy menu in-between waves.
+
+        :param screen: Display to blit Sprites to (obj).
+        :param player: Player instance (obj).
+        :param ticks: Current wave tick (int).
+        """
         # Calculate base position
-        base_position = (player.rect.centerx - GENERAL["countdown_x_offset"],
-                         player.rect.centery - GENERAL["countdown_y_offset"])
+        base_position = (player.rect.centerx - DISPLAY["countdown_x_offset"],
+                         player.rect.centery - DISPLAY["countdown_y_offset"])
         new_base_position = base_position - self.offset
         base_x = new_base_position[0]
         base_y = new_base_position[1]
@@ -170,13 +176,13 @@ class Camera(pygame.sprite.Group):
         :param player: Player instance (obj).
         """
         # Calculate base position
-        base_position = (player.rect.centerx - GENERAL["buy_menu_x_offset"],
-                         player.rect.centery - GENERAL["buy_menu_y_offset"])
+        base_position = (player.rect.centerx - DISPLAY["buy_menu_x_offset"],
+                         player.rect.centery - DISPLAY["buy_menu_y_offset"])
         new_base_position = base_position - self.offset
         base_x = new_base_position[0]
         base_y = new_base_position[1]
 
-        # Upgrade bullets
+        # UPGRADE BULLETS
         # Button image
         screen.blit(self.btn_1, (base_x,
                                  base_y))
@@ -205,7 +211,7 @@ class Camera(pygame.sprite.Group):
         screen.blit(bullet_upgrade_amount, (base_x,
                                             base_y + 185))
 
-        # Upgrade bombs
+        # UPGRADE BOMBS
         # Button image
         screen.blit(self.btn_2, (base_x + 150,
                                  base_y))
@@ -234,7 +240,7 @@ class Camera(pygame.sprite.Group):
         screen.blit(bomb_upgrade_amount, (base_x + 150,
                                           base_y + 185))
 
-        # Buy bombs
+        # BUY BOMB
         # Button image
         screen.blit(self.btn_3, (base_x + 300,
                                  base_y))
@@ -243,7 +249,7 @@ class Camera(pygame.sprite.Group):
                                               GENERAL["white"])
         screen.blit(btn_3_text_a, (base_x + 300,
                                    base_y + 65))
-        btn_3_text_b = self.small_font.render("Bombs", True,
+        btn_3_text_b = self.small_font.render("Bomb", True,
                                               GENERAL["white"])
         screen.blit(btn_3_text_b, (base_x + 300,
                                    base_y + 95))
@@ -257,8 +263,8 @@ class Camera(pygame.sprite.Group):
         screen.blit(bomb_skull_cost, (base_x + 300 + 65,
                                       base_y + 135))
 
-        # Buy teleport
-        # Key image
+        # BUY TELEPORT
+        # Button image
         screen.blit(self.btn_4, (base_x + 450,
                                  base_y))
         # Buy text
@@ -266,7 +272,7 @@ class Camera(pygame.sprite.Group):
                                               GENERAL["white"])
         screen.blit(btn_4_text_a, (base_x + 450,
                                    base_y + 65))
-        btn_4_text_b = self.small_font.render("Portals", True,
+        btn_4_text_b = self.small_font.render("Portal", True,
                                               GENERAL["white"])
         screen.blit(btn_4_text_b, (base_x + 450,
                                    base_y + 95))
@@ -277,7 +283,7 @@ class Camera(pygame.sprite.Group):
         teleport_energy_cost = self.small_font.render(
             str(int(player.buy_multiplier * player.buy_portal_cost)), True,
             GENERAL["white"])
-        screen.blit(teleport_energy_cost, (base_x + 450 + 65,
+        screen.blit(teleport_energy_cost, (base_x + 450 + 70,
                                            base_y + 135))
 
     def show_stats(self, screen, player):
@@ -289,17 +295,48 @@ class Camera(pygame.sprite.Group):
         :param player: Player instance (obj).
         """
         # Calculate base position (health-bar)
-        base_position = (player.rect.centerx - GENERAL["health_bar_x_offset"],
-                         player.rect.centery - GENERAL["health_bar_y_offset"])
+        base_position = (player.rect.centerx - DISPLAY["health_bar_x_offset"],
+                         player.rect.centery - DISPLAY["health_bar_y_offset"])
         new_base_position = base_position - self.offset
         base_x = new_base_position[0]
         base_y = new_base_position[1]
 
-        # Health
+        import colorsys
+        green_hue = 120  # Green hue value in HSL color model
+        red_hue = 0  # Red hue value in HSL color model
+        color_list = [
+            colorsys.hls_to_rgb(
+                (red_hue + ((i / 99) * (green_hue - red_hue))) / 360,  # Hue
+                0.5,  # Saturation
+                1  # Lightness
+            )
+            for i in range(100)
+        ]
+        color_list = [
+            (
+                int(color[0] * 255),  # Convert RGB values to 0-255 range
+                int(color[1] * 255),
+                int(color[2] * 255)
+            )
+            for color in color_list
+        ]
+        # Health-bar
         pygame.draw.rect(screen,
-                         GENERAL["green"],
+                         color_list[player.health // 11],
                          (base_x, base_y,
-                          player.health, GENERAL["health_bar_height"]))
+                          player.health, DISPLAY["health_bar_height"]))
+        # Health-bar outline
+        pygame.draw.rect(screen,
+                         GENERAL["black"],
+                         (base_x, base_y,
+                          player.max_health, DISPLAY["health_bar_height"]),
+                         2)
+
+        # Health-bar text
+        health_number = self.small_font.render(f"{int(max(0, player.health))}", True,
+                                               GENERAL["white"])
+        screen.blit(health_number, (base_x + 10,
+                                    base_y + 6))
 
         # Skulls
         screen.blit(self.skull_image, (base_x,
@@ -322,6 +359,14 @@ class Camera(pygame.sprite.Group):
         screen.blit(coin_number, (base_x + 195,
                                   base_y + 110))
 
+        # Health
+        screen.blit(self.health_potion_image, (base_x + 1220,
+                                               base_y + 45))
+        health_potion_number = self.small_font.render(f"{player.total_health_potions:02}", True,
+                                                      GENERAL["white"])
+        screen.blit(health_potion_number, (base_x + 1233,
+                                           base_y + 110))
+
         # Bomb
         screen.blit(self.bomb_image, (base_x + 1320,
                                       base_y + 35))
@@ -340,7 +385,7 @@ class Camera(pygame.sprite.Group):
     def show_hitboxes(screen, player=None, skull_collector=False, rusher=False,
                       bat=False, fish=False,
                       bullet=False, bomb=False, flaming_skull=False,
-                      skull=False, energy=False):
+                      skull=False, energy=False, health_potion=False):
         """
         Draws hitboxes if True.
         Player needs instance.
@@ -398,6 +443,13 @@ class Camera(pygame.sprite.Group):
                     pygame.draw.rect(item.image,
                                      GENERAL["blue"],
                                      pygame.Rect(ENERGY["hitbox"]),
+                                     2)
+
+            if health_potion:
+                if item.name == "health_potion":
+                    pygame.draw.rect(item.image,
+                                     GENERAL["blue"],
+                                     pygame.Rect(HEALTH_POTION["hitbox"]),
                                      2)
 
             if bullet:

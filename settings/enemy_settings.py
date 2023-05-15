@@ -16,6 +16,7 @@ from sprites.enemy_sprites import GOLEM_DEATH_SPRITES, GOLEM_STRIKE_SPRITES, \
 # ############################################################### #
 # ####################### SKULL COLLECTOR ####################### #
 SKULL_COLLECTOR = {
+    # main
     "start_position": [(1000, 550), (1400, 550), (1800, 550), (2200, 550), (2600, 550), (3000, 550),
                        (1000, 2950), (1400, 2950), (1800, 2950), (2200, 2950), (2600, 2950), (3000, 2950)],
     "spawn_opacity": 0,
@@ -59,7 +60,7 @@ SKULL_COLLECTOR = {
     "strike_ticks": None,
     "shoot_ticks": 5,
     "death_ticks": 4,
-    # action at what frame
+    # action at what frame (starts at 0)
     "strike_frame": None,
     "shoot_frame": 5,
     "death_frame": 8,
@@ -98,6 +99,7 @@ SKULL_COLLECTOR = {
 # ############################################################## #
 # ########################### RUSHER ########################### #
 RUSHER = {
+    # main
     "start_position": [(x, y) for x in range(1000, 3301, 130) for y in range(900, 2601, 140)],
     "spawn_opacity": 0,
     "size": RUSHER_SIZE,

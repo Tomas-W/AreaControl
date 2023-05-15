@@ -1,9 +1,12 @@
 # ####################################################### #
 # ####################### PORTAL ####################### #
-from settings.general_settings import ENERGY_SIZE, SKULL_SIZE, PORTAL_SIZE, COIN_SIZE
-from sprites.interactives_sprites import ENERGY_SPRITES, SKULL_SPRITES, COIN_SPRITES
+from settings.general_settings import ENERGY_SIZE, SKULL_SIZE, PORTAL_SIZE, COIN_SIZE, \
+    HEALTH_POTION_SIZE
+from sprites.interactives_sprites import ENERGY_SPRITES, SKULL_SPRITES, COIN_SPRITES, \
+    HEALTH_POTION_SPRITES
 
 PORTAL = {
+    "spawn_location": None,
     "size": PORTAL_SIZE,
 
     "min_distance_player": 250,
@@ -20,6 +23,7 @@ PORTAL = {
 # ######################################################## #
 # ####################### PICK UPS ####################### #
 SKULL = {
+    "spawn_location": None,
     "name": "skull",
     "size": SKULL_SIZE,
 
@@ -45,6 +49,7 @@ SKULL = {
 }
 
 ENERGY = {
+    "spawn_location": None,
     "name": "energy",
     "size": ENERGY_SIZE,
 
@@ -69,6 +74,7 @@ ENERGY = {
 }
 
 COIN = {
+    "spawn_location": None,
     "name": "coin",
     "size": COIN_SIZE,
     "transparency": 155,
@@ -88,4 +94,29 @@ COIN = {
                (100 * ENERGY_SIZE), (75 * ENERGY_SIZE)),
     "hitbox_offset_x": 50 * ENERGY_SIZE,
     "hitbox_offset_y": 50 * ENERGY_SIZE,
+}
+
+HEALTH_POTION = {
+    "spawn_location": [(x, y) for x in range(1000, 3301, 150) for y in range(900, 2601, 150)],
+    "name": "health_potion",
+    "size": HEALTH_POTION_SIZE,
+
+    # attributes
+    "transparency": 200,
+    "boost": 250,
+
+    # frame attributes
+    "frame": 0,
+    "frame_ticks": 0,
+    "ticks_per_frame": 4,
+
+    # sprites
+    "sprites": HEALTH_POTION_SPRITES,
+    # initial image
+    "image": HEALTH_POTION_SPRITES[0],
+
+    "hitbox": ((15 * HEALTH_POTION_SIZE), (15 * HEALTH_POTION_SIZE),
+               (20 * HEALTH_POTION_SIZE), (30 * HEALTH_POTION_SIZE)),
+    "hitbox_offset_x": 15 * HEALTH_POTION_SIZE,
+    "hitbox_offset_y": 20 * HEALTH_POTION_SIZE,
 }

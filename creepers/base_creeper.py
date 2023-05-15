@@ -77,7 +77,7 @@ class Creeper(pygame.sprite.Sprite):
         self.idle_speed = creeper_name["idle_speed"]
         self.chase_speed = creeper_name["chase_speed"]
         self.circle_radius = creeper_name["circle_radius"]
-        self.angle = creeper_name["angle"]
+        self.angle = choice(creeper_name["angle"])
         self.angle_adjustment = creeper_name["angle_adjustment"]
         self.spawn_opacity = creeper_name["spawn_opacity"]
 

@@ -1,19 +1,24 @@
-import os
-import sys
 from random import choice
 
 import pygame
 from pygame.locals import *
 
 from settings.general_settings import GENERAL
+from sprites.camera_sprites import BUTTON_Q_CAMERA_IMAGE, BUTTON_E_CAMERA_IMAGE, \
+    BUTTON_W_CAMERA_IMAGE, BUTTON_S_CAMERA_IMAGE, MOUSE_L_CAMERA_IMAGE, BUTTON_A_CAMERA_IMAGE, \
+    BUTTON_D_CAMERA_IMAGE, MOUSE_R_CAMERA_IMAGE
 
 pygame.init()
 screen = pygame.display.set_mode((GENERAL["width"],
                                   GENERAL["height"]),
                                  16)
+pygame.display.set_caption(GENERAL["title"])
+pygame.event.set_allowed([QUIT, K_w, K_s, K_a, K_d, MOUSEBUTTONDOWN])
 
-from game.menus import Button
 from game.camera import Camera
+from game.buttons import play_button, settings_button, leaderboard_button, credits_button, \
+    sounds_on_button, sounds_off_button, main_menu_button, first_button_x, first_button_y
+from fonts.fonts import *
 
 from characters.player import Player
 from characters.rusher import Rusher
@@ -22,21 +27,21 @@ from characters.skull_collector import SkullCollector
 from creepers.bat import Bat
 from creepers.fish import Fish
 
+from interactives.base_pickup import PickUp
+
 from settings.enemy_settings import SKULL_COLLECTOR, RUSHER
 from settings.creeper_settings import BAT, FISH
+from settings.interactives_settings import HEALTH_POTION
+from settings.projectile_settings import BULLET, BOMB
+
 from utilities import handle_incoming_projectiles, handle_outgoing_projectiles, handle_pickups, \
     all_sprites, handle_outgoing_bombs, enemy_sprites, all_creeper_sprites, buy_bullet_upgrade, \
     buy_bomb_upgrade, buy_bomb, buy_portal
-
-from settings.projectile_settings import BULLET, BOMB
 
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 
 class Game:
-    pygame.display.set_caption(GENERAL["title"])
-    pygame.event.set_allowed([QUIT, K_w, K_s, K_a, K_d, MOUSEBUTTONDOWN])
-
     def __init__(self):
         # Screen
         self.screen = screen
@@ -46,60 +51,29 @@ class Game:
         # Clock
         self.clock = pygame.time.Clock()
         # Fonts
-        self.small_font = pygame.font.Font(os.path.join(base_dir, "fonts/PublicPixel.ttf"), 15)
-        self.medium_font = pygame.font.Font(os.path.join(base_dir, "fonts/PublicPixel.ttf"), 30)
-        self.large_font = pygame.font.Font(os.path.join(base_dir, "fonts/PublicPixel.ttf"), 45)
-        self.font_color = GENERAL["white"]
+        self.small_font = SMALL_FONT
+        self.medium_font = MEDIUM_FONT
+        self.large_font = LARGE_FONT
+        self.font_color = FONT_COLOR
 
-        # Menus
-        self.first_button_x = 0.62 * GENERAL["width"]
-        self.first_button_y = 0.144 * GENERAL["width"]
-        self.play_button_image = pygame.image.load(GENERAL["play_btn_img"]).convert_alpha()
-        self.play_button = Button(x=self.first_button_x,
-                                  y=self.first_button_y,
-                                  image=self.play_button_image,
-                                  scale=1)
+        # Buttons
+        self.play_button = play_button
+        self.settings_button = settings_button
+        self.leaderboard_button = leaderboard_button
+        self.credits_button = credits_button
+        self.sounds_on_button = sounds_on_button
+        self.sounds_off_button = sounds_off_button
+        self.main_menu_button = main_menu_button
 
-        self.settings_button_image = pygame.image.load(GENERAL["settings_btn_img"]).convert_alpha()
-        self.settings_button = Button(x=self.first_button_x,
-                                      y=self.first_button_y + 90,
-                                      image=self.settings_button_image,
-                                      scale=1)
-
-        self.leaderboard_button_image = pygame.image.load(
-            GENERAL["leaderboard_btn_img"]).convert_alpha()
-        self.leaderboard_button = Button(x=self.first_button_x,
-                                         y=self.first_button_y + 180,
-                                         image=self.leaderboard_button_image,
-                                         scale=1)
-
-        self.credits_button_image = pygame.image.load(
-            GENERAL["credits_btn_img"]).convert_alpha()
-        self.credits_button = Button(x=self.first_button_x,
-                                     y=self.first_button_y + 270,
-                                     image=self.credits_button_image,
-                                     scale=1)
-
-        self.sounds_on_button_image = pygame.image.load(
-            GENERAL["sounds_on_btn_img"]).convert_alpha()
-        self.sounds_on_button = Button(x=self.first_button_x,
-                                       y=self.first_button_y + 360,
-                                       image=self.sounds_on_button_image,
-                                       scale=1)
-
-        self.sounds_off_button_image = pygame.image.load(
-            GENERAL["sounds_off_btn_img"]).convert_alpha()
-        self.sounds_off_button = Button(x=self.first_button_x,
-                                        y=self.first_button_y + 360,
-                                        image=self.sounds_off_button_image,
-                                        scale=1)
-
-        self.main_menu_button_image = pygame.image.load(
-            GENERAL["main_menu_btn_img"]).convert_alpha()
-        self.main_menu_button = Button(x=self.first_button_x,
-                                       y=self.first_button_y + 360,
-                                       image=self.main_menu_button_image,
-                                       scale=1)
+        # Button images
+        self.btn_q = BUTTON_Q_CAMERA_IMAGE
+        self.btn_w = BUTTON_W_CAMERA_IMAGE
+        self.btn_e = BUTTON_E_CAMERA_IMAGE
+        self.btn_a = BUTTON_A_CAMERA_IMAGE
+        self.btn_s = BUTTON_S_CAMERA_IMAGE
+        self.btn_d = BUTTON_D_CAMERA_IMAGE
+        self.mouse_l = MOUSE_L_CAMERA_IMAGE
+        self.mouse_r = MOUSE_R_CAMERA_IMAGE
 
         # Characters
         self.player = Player()
@@ -112,6 +86,7 @@ class Game:
         self.is_playing_game = False
 
         self.main_menu_shown = True
+        self.settings_menu_shown = False
         self.credits_menu_shown = False
         self.pause_menu_shown = False
 
@@ -120,13 +95,22 @@ class Game:
         # Trackers
         self.tick = 0
         self.wave_pause_ticks = 0
-        self.wave_pause = 2400
-        self.buy_tick = 2400
+        self.wave_pause = GENERAL["wave_pause"]
+        self.buy_tick = GENERAL["buy_tick"]
 
         # Misc
         self.credits = GENERAL["credits"]
 
     def listen_for_events(self):
+        """
+        Active keys:
+            'escape': closes game.
+            'space-bar': pauses game.
+            '1': buy option.
+            '2': buy option.
+            '3': buy option.
+            '4': buy option.
+        """
         for event in pygame.event.get():
 
             # Quit with exit window
@@ -149,44 +133,49 @@ class Game:
             if self.wave_pause_ticks > 0:
                 if event.type == pygame.KEYDOWN:
 
-                    # Buy Bullet upgrade
+                    # Buy Bullet upgrade with '1'
                     if event.key == K_1:
                         buy_bullet_upgrade(game=self,
                                            bullet_stats=BULLET)
-
-                    # Buy Bomb upgrade
+                    # Buy Bomb upgrade with '2'
                     elif event.key == K_2:
                         buy_bomb_upgrade(game=self,
                                          bomb_stats=BOMB)
-
-                    # Buy Bomb
+                    # Buy Bomb with '3'
                     elif event.key == K_3:
                         buy_bomb(game=self,
                                  player=self.player)
-
-                    # Buy Teleport
+                    # Buy Teleport with '4'
                     elif event.key == K_4:
                         buy_portal(game=self,
                                    player=self.player)
 
     def turn_off_menus(self):
+        """
+        Disables all menu states.
+        """
         self.main_menu_shown = False
+        self.settings_menu_shown = False
         self.credits_menu_shown = False
         self.pause_menu_shown = False
 
     def display_main_menu(self):
+        """
+        Displays main menu on screen.
+        """
         self.screen.blit(self.menu_background, (0, 0))
 
         # Menu buttons
         if self.play_button.draw(self.screen):
-            self.is_playing_game = True
             self.turn_off_menus()
+            self.is_playing_game = True
 
         elif self.settings_button.draw(self.screen):
-            print("settings menu")
+            self.turn_off_menus()
+            self.settings_menu_shown = True
 
         elif self.leaderboard_button.draw(self.screen):
-            print("leaderboard menu")
+            print(": test")
 
         elif self.credits_button.draw(self.screen):
             self.turn_off_menus()
@@ -202,19 +191,86 @@ class Game:
                 self.sound_is_on = True
                 print("turning off")
 
-    def display_credit_menu(self):
+    def display_settings_menu(self):
         self.screen.blit(self.menu_background, (0, 0))
-        for i, credit in enumerate(self.credits):
-            text = self.small_font.render(credit, True, self.font_color)
-            self.screen.blit(text, (
-            self.first_button_x - 0.02 * GENERAL["width"], self.first_button_y + i * 26))
 
+        screen.blit(self.btn_w,
+                    (first_button_x - 0.02 * GENERAL["width"], first_button_y))
+        text = self.small_font.render("forwards", True, self.font_color)
+        self.screen.blit(text, (
+            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 10))
+
+        screen.blit(self.btn_s,
+                    (first_button_x - 0.02 * GENERAL["width"], first_button_y + 40))
+        text = self.small_font.render("backwards", True, self.font_color)
+        self.screen.blit(text, (
+            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 50))
+
+        screen.blit(self.btn_a,
+                    (first_button_x - 0.02 * GENERAL["width"], first_button_y + 80))
+        text = self.small_font.render("left", True, self.font_color)
+        self.screen.blit(text, (
+            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 90))
+
+        screen.blit(self.btn_d,
+                    (first_button_x - 0.02 * GENERAL["width"], first_button_y + 120))
+        text = self.small_font.render("right", True, self.font_color)
+        self.screen.blit(text, (
+            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 130))
+
+        screen.blit(self.btn_q,
+                    (first_button_x - 0.02 * GENERAL["width"], first_button_y + 160))
+        text = self.small_font.render("use potion", True, self.font_color)
+        self.screen.blit(text, (
+            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 170))
+
+        screen.blit(self.btn_e,
+                    (first_button_x - 0.02 * GENERAL["width"], first_button_y + 200))
+        text = self.small_font.render("use portal", True, self.font_color)
+        self.screen.blit(text, (
+            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 210))
+
+        screen.blit(self.mouse_l,
+                    (first_button_x - 0.02 * GENERAL["width"], first_button_y + 250))
+        text = self.small_font.render("shoot bullet", True, self.font_color)
+        self.screen.blit(text, (
+            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 260))
+
+        screen.blit(self.mouse_r,
+                    (first_button_x - 0.02 * GENERAL["width"], first_button_y + 300))
+        text = self.small_font.render("throw bomb", True, self.font_color)
+        self.screen.blit(text, (
+            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 310))
+
+        pos = pygame.mouse.get_pos()
+        print(pos)
         if self.main_menu_button.draw(self.screen):
             self.turn_off_menus()
             self.main_menu_shown = True
 
-    def spawn_test_enemies(self):
-        if self.tick == 200:
+    def display_credit_menu(self):
+        """
+        Displays credit menu with credits and a Main Menu button.
+        """
+        self.screen.blit(self.menu_background, (0, 0))
+        # Loop over credits and blit them
+        for i, credit in enumerate(self.credits):
+            text = self.small_font.render(credit, True, self.font_color)
+            self.screen.blit(text, (
+                first_button_x - 0.02 * GENERAL["width"], first_button_y + i * 26))
+        # BLit Main Menu button
+        if self.main_menu_button.draw(self.screen):
+            self.turn_off_menus()
+            self.main_menu_shown = True
+
+    def spawn_test_enemies(self, ticks):
+        """
+        Spawns Enemies and Creepers after given ticks.
+
+        :param ticks: Number of game ticks after which Enemies and Creepers are spawned (int).
+        """
+        self.tick += 1
+        if self.tick == ticks:
             Bat(player=self.player,
                 creeper_name=BAT)
             Fish(player=self.player,
@@ -229,53 +285,84 @@ class Game:
             self.tick = 0
 
     def spawn_waves(self):
+        """
+        Updates Enemy and Creeper stats based on wave number.
+        Spawns new wave based on wave_spawn settings.
+        """
         SKULL_COLLECTOR["health"] *= 1.1
         RUSHER["health"] *= 1.2
         BAT["health"] *= 1.1
         FISH["health"] *= 1.1
+        self.player.max_health += 25
 
+        # Spawn SkullCollectors
         for _ in range(SKULL_COLLECTOR["wave_spawns"][self.player.wave_level]):
             SkullCollector(player=self.player,
                            position=choice(SKULL_COLLECTOR["start_position"]),
                            character=SKULL_COLLECTOR)
-
+        # Spawn Rushers
         for _ in range(RUSHER["wave_spawns"][self.player.wave_level]):
             Rusher(player=self.player,
                    position=choice(RUSHER["start_position"]),
                    character=RUSHER)
-
+        # Spawn Bats
         for _ in range(BAT["wave_spawns"][self.player.wave_level]):
             Bat(player=self.player,
                 creeper_name=BAT)
-
+        # Spawn Fish
         for _ in range(FISH["wave_spawns"][self.player.wave_level]):
             Fish(player=self.player,
                  creeper_name=FISH)
 
+    def end_of_wave_spawns(self):
+        for _ in range(self.player.wave_level):
+            PickUp(pickup_name=HEALTH_POTION,
+                   position=None)
+
     def outline_hitboxes(self):
-        # self.camera.show_hitboxes(screen=screen,
-        #                           player=self.player)
+        """
+        Draws outline around Sprite hitboxes.
+        """
+        # Characters
+        self.camera.show_hitboxes(screen=screen,
+                                  player=self.player)
         self.camera.show_hitboxes(screen=screen,
                                   skull_collector=True)
         self.camera.show_hitboxes(screen=screen,
                                   rusher=True)
-
-        self.camera.show_hitboxes(screen=screen,
-                                  skull=True)
-        self.camera.show_hitboxes(screen=screen,
-                                  energy=True)
-
+        # Creepers
         self.camera.show_hitboxes(screen=screen,
                                   bat=True)
         self.camera.show_hitboxes(screen=screen,
                                   fish=True)
-
+        # PickUps
+        self.camera.show_hitboxes(screen=screen,
+                                  skull=True)
+        self.camera.show_hitboxes(screen=screen,
+                                  energy=True)
+        self.camera.show_hitboxes(screen=screen,
+                                  health_potion=True)
+        # Projectiles
         self.camera.show_hitboxes(screen=screen,
                                   bullet=True)
         self.camera.show_hitboxes(screen=screen,
                                   bomb=True)
 
     def run_game(self):
+        """
+        Runs the game.
+
+        Listens for events.
+        Checks if menu's should be displayed.
+        Checks if game is running.
+        Checks wave spawns.
+        Calls utility handlers.
+        Draws sprites.
+        Draws hitboxes.
+        Checks if wave and buy info should be displayed.
+        Updates sprites.
+        Updates clock.
+        """
         while self.game_is_running:
             # Events
             self.listen_for_events()
@@ -285,6 +372,10 @@ class Game:
                 text = self.medium_font.render("Pause menu", True, self.font_color)
                 self.screen.blit(text, (GENERAL["half_width"], GENERAL["half_height"]))
 
+            elif self.settings_menu_shown:
+                self.display_settings_menu()
+
+            # Show credits menu
             elif self.credits_menu_shown:
                 self.display_credit_menu()
 
@@ -294,7 +385,6 @@ class Game:
 
             # Play game
             elif self.is_playing_game:
-                self.tick += 1
 
                 # Start wave countdown when al enemies are killed
                 if not len(enemy_sprites) and not len(all_creeper_sprites):
@@ -305,21 +395,32 @@ class Game:
                         self.spawn_waves()
                         self.player.wave_level += 1
 
-                # Utility handlers
+                # Spawn items after wave completed
+                if self.wave_pause_ticks == 1:
+                    self.end_of_wave_spawns()
+
+                # Tests
+                # self.spawn_test_enemies(100)
+                # print("*****")
+                # print(self.clock.get_fps())
+                # print(len(all_sprites.sprites()))
+                # print("*****")
+
+                # Utility handlers (collisions)
                 handle_outgoing_projectiles()
                 handle_outgoing_bombs()
                 handle_incoming_projectiles()
                 handle_pickups()
 
                 # Camera offset
-                self.camera.custom_draw(screen=self.screen,
-                                        background=self.background,
-                                        player=self.player)
+                self.camera.blit_all_sprites(screen=self.screen,
+                                             background=self.background,
+                                             player=self.player)
 
                 # Hitboxes
                 # self.outline_hitboxes()
 
-                # Bars
+                # Screen info
                 self.camera.show_stats(screen=self.screen,
                                        player=self.player)
 

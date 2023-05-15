@@ -22,6 +22,7 @@ all_pickup_sprites = pygame.sprite.Group()
 skull_sprites = pygame.sprite.Group()
 energy_sprites = pygame.sprite.Group()
 coin_sprites = pygame.sprite.Group()
+health_potion_sprites = pygame.sprite.Group()
 # Interactives
 all_interactives_sprites = pygame.sprite.Group()
 portal_sprites = pygame.sprite.Group()
@@ -65,7 +66,7 @@ def buy_portal(game, player):
             game.player.buy_bomb_cost * game.player.buy_multiplier)
         game.buy_tick = game.wave_pause_ticks
         game.player.buy_multiplier *= game.player.buy_multiplier_addition
-        # player.total_portals += 1
+        player.total_portals += 1
 
 
 def handle_pickups():
@@ -86,6 +87,13 @@ def handle_pickups():
         if coin.hitbox.colliderect(player_sprite.sprite.hitbox):
             player_sprite.sprite.coin_level += coin.boost
             coin.kill()
+
+    for health_potion in health_potion_sprites:
+        if health_potion.hitbox.colliderect(player_sprite.sprite.hitbox):
+            player_sprite.sprite.health = min(player_sprite.sprite.health + health_potion.boost,
+                                              player_sprite.sprite.max_health)
+            player_sprite.sprite.total_health_potions += 1
+            health_potion.kill()
 
 
 def handle_outgoing_projectiles():
