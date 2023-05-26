@@ -1,5 +1,4 @@
 import math
-from random import choice
 
 from characters.base_enemy import Enemy
 from interactives.base_pickup import PickUp

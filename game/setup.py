@@ -51,6 +51,7 @@ class Game:
         # Clock
         self.clock = pygame.time.Clock()
         # Fonts
+        self.tiny_font = TINY_FONT
         self.small_font = SMALL_FONT
         self.medium_font = MEDIUM_FONT
         self.large_font = LARGE_FONT
@@ -95,8 +96,10 @@ class Game:
         # Trackers
         self.tick = 0
         self.wave_pause_ticks = 0
-        self.wave_pause = GENERAL["wave_pause"]
-        self.buy_tick = GENERAL["buy_tick"]
+        self.wave_pause = GENERAL["wave_pause"]  # how long is the buy period
+        self.buy_tick = GENERAL["buy_tick"]  # to prevent double buys
+        self.bonus_ticks_list = [2000, 2100, 2600, 3000, 3000, 3500, 4000]
+        self.bonus_ticks = self.bonus_ticks_list[0]
 
         # Misc
         self.credits = GENERAL["credits"]
@@ -124,10 +127,16 @@ class Game:
                 pygame.quit()
                 exit()
 
-            # Pause with space-bar
             if event.type == pygame.KEYDOWN:
+                # Pause with space-bar
                 if event.key == pygame.K_SPACE:
                     self.pause_menu_shown = not self.pause_menu_shown
+                # Kill all enemies with k
+                if event.key == pygame.K_k:
+                    for enemy in enemy_sprites:
+                        enemy.kill()
+                    for creeper in all_creeper_sprites:
+                        creeper.kill()
 
             # Operate buy menu
             if self.wave_pause_ticks > 0:
@@ -242,8 +251,6 @@ class Game:
         self.screen.blit(text, (
             first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 310))
 
-        pos = pygame.mouse.get_pos()
-        print(pos)
         if self.main_menu_button.draw(self.screen):
             self.turn_off_menus()
             self.main_menu_shown = True
@@ -255,9 +262,9 @@ class Game:
         self.screen.blit(self.menu_background, (0, 0))
         # Loop over credits and blit them
         for i, credit in enumerate(self.credits):
-            text = self.small_font.render(credit, True, self.font_color)
+            text = self.tiny_font.render(credit, True, self.font_color)
             self.screen.blit(text, (
-                first_button_x - 0.02 * GENERAL["width"], first_button_y + i * 26))
+                first_button_x - 0.02 * GENERAL["width"], first_button_y + i * 22))
         # BLit Main Menu button
         if self.main_menu_button.draw(self.screen):
             self.turn_off_menus()
@@ -293,7 +300,6 @@ class Game:
         RUSHER["health"] *= 1.2
         BAT["health"] *= 1.1
         FISH["health"] *= 1.1
-        self.player.max_health += 25
 
         # Spawn SkullCollectors
         for _ in range(SKULL_COLLECTOR["wave_spawns"][self.player.wave_level]):
@@ -326,27 +332,27 @@ class Game:
         # Characters
         self.camera.show_hitboxes(screen=screen,
                                   player=self.player)
-        self.camera.show_hitboxes(screen=screen,
-                                  skull_collector=True)
-        self.camera.show_hitboxes(screen=screen,
-                                  rusher=True)
-        # Creepers
-        self.camera.show_hitboxes(screen=screen,
-                                  bat=True)
-        self.camera.show_hitboxes(screen=screen,
-                                  fish=True)
-        # PickUps
-        self.camera.show_hitboxes(screen=screen,
-                                  skull=True)
-        self.camera.show_hitboxes(screen=screen,
-                                  energy=True)
-        self.camera.show_hitboxes(screen=screen,
-                                  health_potion=True)
-        # Projectiles
-        self.camera.show_hitboxes(screen=screen,
-                                  bullet=True)
-        self.camera.show_hitboxes(screen=screen,
-                                  bomb=True)
+        # self.camera.show_hitboxes(screen=screen,
+        #                           skull_collector=True)
+        # self.camera.show_hitboxes(screen=screen,
+        #                           rusher=True)
+        # # Creepers
+        # self.camera.show_hitboxes(screen=screen,
+        #                           bat=True)
+        # self.camera.show_hitboxes(screen=screen,
+        #                           fish=True)
+        # # PickUps
+        # self.camera.show_hitboxes(screen=screen,
+        #                           skull=True)
+        # self.camera.show_hitboxes(screen=screen,
+        #                           energy=True)
+        # self.camera.show_hitboxes(screen=screen,
+        #                           health_potion=True)
+        # # Projectiles
+        # self.camera.show_hitboxes(screen=screen,
+        #                           bullet=True)
+        # self.camera.show_hitboxes(screen=screen,
+        #                           bomb=True)
 
     def run_game(self):
         """
@@ -367,19 +373,20 @@ class Game:
             # Events
             self.listen_for_events()
 
-            # Show pause menu
+            # Pause menu
             if self.pause_menu_shown:
                 text = self.medium_font.render("Pause menu", True, self.font_color)
                 self.screen.blit(text, (GENERAL["half_width"], GENERAL["half_height"]))
 
+            # Settings menu
             elif self.settings_menu_shown:
                 self.display_settings_menu()
 
-            # Show credits menu
+            # Credits menu
             elif self.credits_menu_shown:
                 self.display_credit_menu()
 
-            # Show start screen
+            # Main menu
             elif self.main_menu_shown:
                 self.display_main_menu()
 
@@ -391,6 +398,7 @@ class Game:
                     self.wave_pause_ticks += 1
 
                     if self.wave_pause_ticks == self.wave_pause:
+                        self.bonus_ticks = self.bonus_ticks_list[self.player.wave_level]  # Set bonus timer
                         self.wave_pause_ticks = 0
                         self.spawn_waves()
                         self.player.wave_level += 1
@@ -400,7 +408,7 @@ class Game:
                     self.end_of_wave_spawns()
 
                 # Tests
-                # self.spawn_test_enemies(100)
+                # self.spawn_test_enemies(20)
                 # print("*****")
                 # print(self.clock.get_fps())
                 # print(len(all_sprites.sprites()))
@@ -423,6 +431,14 @@ class Game:
                 # Screen info
                 self.camera.show_stats(screen=self.screen,
                                        player=self.player)
+
+                # Bonus timer
+                if self.bonus_ticks > 0:
+                    self.bonus_ticks -= 1
+
+                self.camera.show_bonus_timer(screen=self.screen,
+                                             player=self.player,
+                                             ticks=self.bonus_ticks)
 
                 # Display buy menu text
                 if self.wave_pause_ticks > 0:

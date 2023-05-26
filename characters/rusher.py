@@ -114,6 +114,7 @@ class Rusher(Enemy):
         """
         Deal strike damage to Player.
         """
+        self.attack_sound.play()
         self.player.health -= self.damage
 
     def manage_death_state(self):

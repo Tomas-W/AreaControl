@@ -25,11 +25,24 @@ class Projectile(pygame.sprite.Sprite):
         # Image
         self.image = projectile_name["sprite"].copy()
         # rect
-        self.rect = self.image.get_rect(center=(x, y))
+        self.rect = self.image.get_rect()
+        self.rect.bottomright = x, y
         # Hitbox
         self.hitbox = pygame.Rect(projectile_name["hitbox"])
         self.hitbox_x_offset = projectile_name["hitbox_x_offset"]
         self.hitbox_y_offset = projectile_name["hitbox_y_offset"]
+
+        # Sounds
+        if projectile_name["spawn_sound_path"] is not None:
+            self.spawn_sound = pygame.mixer.Sound(projectile_name["spawn_sound_path"])
+            self.spawn_sound.set_volume(0.15)
+        else:
+            self.spawn_sound = None
+        if projectile_name["death_sound_path"] is not None:
+            self.death_sound = pygame.mixer.Sound(projectile_name["death_sound_path"])
+            self.death_sound.set_volume(0.2)
+        else:
+            self.death_sound = None
 
         # Attributes
         self.name = projectile_name["name"]
@@ -49,6 +62,10 @@ class Projectile(pygame.sprite.Sprite):
         # ticks per frame
         self.image_ticks = projectile_name["image_ticks"]
 
+        # play spawn sound
+        if self.spawn_sound is not None:
+            self.spawn_sound.play()
+
         # add to correct sprite list
         if self.name == "bullet":
             player_projectile_sprites.add(self)
@@ -58,6 +75,14 @@ class Projectile(pygame.sprite.Sprite):
 
         elif self.name == "bomb":
             bomb_sprites.add(self)
+
+    def kill_self(self):
+        # bomb has its own death and sound manager because of animation
+        # play sound if it exists
+        if self.death_sound is not None and not self.name == "bomb":
+            self.death_sound.play()
+
+        self.kill()
 
     def set_hitbox(self):
         """

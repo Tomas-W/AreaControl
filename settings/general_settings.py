@@ -47,12 +47,12 @@ GENERAL = {
     "blue": (0, 0, 255),
 
     # credits
-    "credits": ["pixelied.com", "craftpix.net", "pngtree.com", "vhv.rs", "freepik.com", "opengameart.org", "pngimages.in", "bdragon1727.itch.io", "ellr.itch.io", "digigrand.itch.io", "humblepixel.itch.io", "spoadr.itch.io", "gerald-burke.itch.io", "lornent.itch.io"]
+    "credits": ["pixelied.com", "craftpix.net", "pngtree.com", "vhv.rs", "freepik.com", "opengameart.org", "pngimages.in", "freeiconspng.com", "bdragon1727.itch.io", "ellr.itch.io", "digigrand.itch.io", "humblepixel.itch.io", "spoadr.itch.io", "gerald-burke.itch.io", "lornent.itch.io", "audiotrimmer.com", "cloudconvert.com", "freesound.org", "mixkit.co"]
 }
 
 # Characters
 PLAYER_SIZE = 0.4
-PLAYER_HITBOX_SIZE = 0.8
+PLAYER_HITBOX_SIZE = 1
 PLAYER_SPRITE_WIDTH = 220
 PLAYER_SPRITE_HEIGHT = 220
 

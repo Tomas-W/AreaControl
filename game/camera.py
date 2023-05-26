@@ -10,7 +10,7 @@ from settings.projectile_settings import FLAMING_SKULL, BULLET, BOMB
 from sprites.camera_sprites import *
 from fonts.fonts import *
 
-from utilities import all_sprites
+from utilities import all_sprites, get_health_color_list
 
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
@@ -61,6 +61,9 @@ class Camera(pygame.sprite.Group):
         self.medium_font = MEDIUM_FONT
         self.large_font = LARGE_FONT
         self.font_color = FONT_COLOR
+
+        # Misc
+        self.health_color_list = get_health_color_list()
 
     def blit_all_sprites(self, screen, background, player):
         """
@@ -301,28 +304,9 @@ class Camera(pygame.sprite.Group):
         base_x = new_base_position[0]
         base_y = new_base_position[1]
 
-        import colorsys
-        green_hue = 120  # Green hue value in HSL color model
-        red_hue = 0  # Red hue value in HSL color model
-        color_list = [
-            colorsys.hls_to_rgb(
-                (red_hue + ((i / 99) * (green_hue - red_hue))) / 360,  # Hue
-                0.5,  # Saturation
-                1  # Lightness
-            )
-            for i in range(100)
-        ]
-        color_list = [
-            (
-                int(color[0] * 255),  # Convert RGB values to 0-255 range
-                int(color[1] * 255),
-                int(color[2] * 255)
-            )
-            for color in color_list
-        ]
         # Health-bar
         pygame.draw.rect(screen,
-                         color_list[player.health // 11],
+                         self.health_color_list[max(int(player.health / 10), 0)],
                          (base_x, base_y,
                           player.health, DISPLAY["health_bar_height"]))
         # Health-bar outline
@@ -359,7 +343,7 @@ class Camera(pygame.sprite.Group):
         screen.blit(coin_number, (base_x + 195,
                                   base_y + 110))
 
-        # Health
+        # Health potion
         screen.blit(self.health_potion_image, (base_x + 1220,
                                                base_y + 45))
         health_potion_number = self.small_font.render(f"{player.total_health_potions:02}", True,
@@ -377,9 +361,22 @@ class Camera(pygame.sprite.Group):
         # Portal
         screen.blit(self.portal_image, (base_x + 1440,
                                         base_y + 35))
-        bomb_number = self.small_font.render(f"{player.total_bombs:02}", True, GENERAL["white"])
+        bomb_number = self.small_font.render(f"{player.total_portals:02}", True, GENERAL["white"])
         screen.blit(bomb_number, (base_x + 1460,
                                   base_y + 110))
+
+    def show_bonus_timer(self, screen, player, ticks):
+        # Calculate base position (health-bar)
+        base_position = (player.rect.centerx - DISPLAY["health_bar_x_offset"],
+                         player.rect.centery - DISPLAY["health_bar_y_offset"])
+        new_base_position = base_position - self.offset
+        base_x = new_base_position[0]
+        base_y = new_base_position[1]
+
+        bonus_timer_text = self.small_font.render(f"Earn bonus {ticks // 60}", True,
+                                                  GENERAL["white"])
+        screen.blit(bonus_timer_text, (base_x + 650,
+                                       base_y + 50))
 
     @staticmethod
     def show_hitboxes(screen, player=None, skull_collector=False, rusher=False,

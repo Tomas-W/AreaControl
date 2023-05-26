@@ -1,6 +1,11 @@
+import os
+import sys
+
 from settings.general_settings import BAT_SIZE, FISH_SIZE
 from sprites.creeper_sprites import BAT_SPRITES, BAT_SPRITES_FLIPPED, FISH_SPRITES, \
     FISH_SPRITES_FLIPPED
+
+base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 # ############################################################ #
 # ############################ BAT ########################### #
@@ -55,6 +60,9 @@ BAT = {
     # initial image
     "image": BAT_SPRITES[0],
     "flip_image": False,
+
+    # sounds
+    "death_sound_path": os.path.join(base_dir, "sounds/bat_death_sound.mp3"),
 
     # hitbox
     "hitbox": ((8 * BAT_SIZE), (8 * BAT_SIZE),
@@ -119,6 +127,9 @@ FISH = {
     # initial image
     "image": FISH_SPRITES[0],
     "flip_image": False,
+
+    # sounds
+    "death_sound_path": os.path.join(base_dir, "sounds/fish_death_sound.mp3"),
 
     # hitbox
     "hitbox": ((10 * FISH_SIZE), (10 * FISH_SIZE),

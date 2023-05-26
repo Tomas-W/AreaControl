@@ -1,3 +1,4 @@
+import math
 from math import atan2, sqrt, degrees
 
 import pygame
@@ -7,7 +8,7 @@ from projectiles.bullet import Bullet
 
 from utilities import player_sprite, all_sprites
 
-from settings.general_settings import GENERAL
+from settings.general_settings import GENERAL, PLAYER_SIZE
 from settings.player_settings import PLAYER
 
 
@@ -28,6 +29,16 @@ class Player(pygame.sprite.Sprite):
         self.hitbox = self.base_image.get_rect(center=self.position)
         # Rect
         self.rect = self.hitbox.copy()
+
+        # Sounds
+        self.hit_sound = pygame.mixer.Sound(PLAYER["hit_sound_path"])
+        self.hit_sound.set_volume(0.2)
+
+        self.add_health_sound = pygame.mixer.Sound(PLAYER["add_health_sound_path"])
+        self.hit_sound.set_volume(0.15)
+
+        self.death_sound = pygame.mixer.Sound(PLAYER["death_sound_path"])
+        self.death_sound.set_volume(0.2)
 
         # States
         self.shoot = PLAYER["shoot"]
@@ -68,9 +79,22 @@ class Player(pygame.sprite.Sprite):
         # Misc
         self.health_potion_boost = PLAYER["health_potion_boost"]
         self.item_ticks = 0
+        self.shooting_offset = PLAYER["sprite_width"] * PLAYER_SIZE // 2.5
+        self.health_checker = self.health
 
     # ################################################################ #
     # ############################ MOVING ############################ #
+    def check_for_damage(self):
+        if self.health < self.health_checker:
+            # Player has been hit
+            self.hit_sound.play()
+
+        elif self.health > self.health_checker:
+            # Player used health potion
+            self.add_health_sound.play()
+
+        self.health_checker = self.health
+
     def rotate_player(self):
         """
         Keeps player image directed at mouse position.
@@ -116,21 +140,17 @@ class Player(pygame.sprite.Sprite):
 
         keys = pygame.key.get_pressed()
         # Axial movement and wall collision
-        if keys[pygame.K_a]:
-            # Detect walls
-            if self.hitbox.left > GENERAL["level_left_x"]:
-                self.velocity_x = -self.speed
-        if keys[pygame.K_d]:
-            # Detect walls
-            if self.hitbox.right < GENERAL["level_right_x"]:
-                self.velocity_x = self.speed  # noqa
-        if keys[pygame.K_w]:
-            if self.hitbox.top > GENERAL["level_top_y"]:
-                self.velocity_y = -self.speed
-        if keys[pygame.K_s]:
-            # Detect walls
-            if self.hitbox.bottom < GENERAL["level_bottom_y"]:
-                self.velocity_y = self.speed  # noqa
+        if keys[pygame.K_a] and self.hitbox.left > GENERAL["level_left_x"]:
+            self.velocity_x = -self.speed
+
+        if keys[pygame.K_d] and self.hitbox.right < GENERAL["level_right_x"]:
+            self.velocity_x = self.speed  # noqa
+
+        if keys[pygame.K_w] and self.hitbox.top > GENERAL["level_top_y"]:
+            self.velocity_y = -self.speed
+
+        if keys[pygame.K_s] and self.hitbox.bottom < GENERAL["level_bottom_y"]:
+            self.velocity_y = self.speed  # noqa
 
         # Vertical movement adjust with Pythagoras
         if self.velocity_x != 0 and self.velocity_y != 0:
@@ -175,40 +195,49 @@ class Player(pygame.sprite.Sprite):
 
     def adjust_projectile_position(self):
         """
-        Adjusts spawn location of the projectile to account for shape
+        Adjusts spawn location of the projectile.
+        Aligns bullet spawn location with pistol muzzle.
+        First applies coordinate offset and then
+            angle offset.
 
         :return: Projectile spawn position (tuple int).
         """
-        # Calculate the starting position of the projectile based on the player rect and direction
-        projectile_start_x = self.hitbox.centerx
-        projectile_start_y = self.hitbox.centery
+        # Convert the player angle to radians
+        angle_radians = math.radians(self.angle)
 
-        # Adjust bullet location
+        # Calculate the offset position
+        offset_x = self.shooting_offset * math.cos(angle_radians)
+        offset_y = self.shooting_offset * math.sin(angle_radians)
+
+        # Calculate the spawn position based on the offset
+        bullet_spawn_x = self.rect.centerx + offset_x
+        bullet_spawn_y = self.rect.centery + offset_y
+
+        # Adjust bullet location depending on angle
         if 120 < self.angle < 180:
-            projectile_start_y -= abs((120 + self.angle) * 0.03)
+            bullet_spawn_y -= abs((120 + self.angle) * 0.05)
 
-        # Adjust bullet location
         elif 100 < self.angle < 120:
-            projectile_start_y -= abs((120 + self.angle) * 0.06)
+            bullet_spawn_y -= abs((120 + self.angle) * 0.06)
 
         elif self.angle >= 0:
-            projectile_start_x -= abs(self.angle // 30)
+            bullet_spawn_x -= abs(self.angle // 30)
 
         elif -120 < self.angle < 0:
-            projectile_start_x -= abs((120 + self.angle) * 0.15)
-            projectile_start_y -= abs((120 + self.angle) * 0.05)
+            bullet_spawn_x -= abs((120 + self.angle) * 0.15)
+            bullet_spawn_y -= abs((120 + self.angle) * 0.05)
 
         else:
-            projectile_start_y -= abs(self.angle // 30)
+            bullet_spawn_y -= abs(self.angle // 30)
 
-        return projectile_start_x, projectile_start_y
+        return bullet_spawn_x, bullet_spawn_y
 
     def fire_bullet(self):
         """
         Created a Bullet projectile instance and
             gives it an angle.
         """
-        self.shoot_cooldown = PLAYER["shoot_cooldown"]
+        self.shoot_cooldown = int(PLAYER["shoot_cooldown"])
         self.muzzle_flash_cooldown = PLAYER["muzzle_flash_cooldown"]
 
         bullet_start_x, bullet_start_y = self.adjust_projectile_position()
@@ -342,6 +371,9 @@ class Player(pygame.sprite.Sprite):
         self.manage_activate_items()
         if self.item_ticks > 0:
             self.item_ticks -= 1
+
+        # Sounds
+        self.check_for_damage()
 
     def set_invincibility_image(self):
         """

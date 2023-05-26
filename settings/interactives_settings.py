@@ -1,10 +1,15 @@
-# ####################################################### #
-# ####################### PORTAL ####################### #
+import os
+import sys
+
 from settings.general_settings import ENERGY_SIZE, SKULL_SIZE, PORTAL_SIZE, COIN_SIZE, \
     HEALTH_POTION_SIZE
 from sprites.interactives_sprites import ENERGY_SPRITES, SKULL_SPRITES, COIN_SPRITES, \
     HEALTH_POTION_SPRITES
 
+base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+
+# ####################################################### #
+# ####################### PORTAL ####################### #
 PORTAL = {
     "spawn_location": None,
     "size": PORTAL_SIZE,
@@ -41,6 +46,9 @@ SKULL = {
     # initial image
     "image": SKULL_SPRITES[0],
 
+    # sounds
+    "pick_up_sound_path": os.path.join(base_dir, "sounds/skull_pickup_sound.mp3"),
+
     # hitbox
     "hitbox": ((20 * SKULL_SIZE), (25 * SKULL_SIZE),
                (35 * SKULL_SIZE), (50 * SKULL_SIZE)),
@@ -67,6 +75,9 @@ ENERGY = {
     # initial image
     "image": ENERGY_SPRITES[0],
 
+    # sounds
+    "pick_up_sound_path": os.path.join(base_dir, "sounds/energy_pickup_sound.mp3"),
+
     "hitbox": ((25 * ENERGY_SIZE), (25 * ENERGY_SIZE),
                (50 * ENERGY_SIZE), (50 * ENERGY_SIZE)),
     "hitbox_offset_x": 25 * ENERGY_SIZE,
@@ -89,6 +100,9 @@ COIN = {
     "sprites": COIN_SPRITES,
     # initial image
     "image": COIN_SPRITES[0],
+
+    # sounds
+    "pick_up_sound_path": os.path.join(base_dir, "sounds/coin_pickup_sound.mp3"),
 
     "hitbox": ((50 * ENERGY_SIZE), (50 * ENERGY_SIZE),
                (100 * ENERGY_SIZE), (75 * ENERGY_SIZE)),
@@ -114,6 +128,9 @@ HEALTH_POTION = {
     "sprites": HEALTH_POTION_SPRITES,
     # initial image
     "image": HEALTH_POTION_SPRITES[0],
+
+    # sounds
+    "pick_up_sound_path": os.path.join(base_dir, "sounds/health_pickup_sound.mp3"),
 
     "hitbox": ((15 * HEALTH_POTION_SIZE), (15 * HEALTH_POTION_SIZE),
                (20 * HEALTH_POTION_SIZE), (30 * HEALTH_POTION_SIZE)),

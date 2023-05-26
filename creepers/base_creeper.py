@@ -32,6 +32,12 @@ class Creeper(pygame.sprite.Sprite):
         self.rect.center = choice(creeper_name["start_position"])
         # Hitbox
         self.hitbox = pygame.Rect(creeper_name["hitbox"])
+
+        # Sounds
+        self.death_sound = pygame.mixer.Sound(creeper_name["death_sound_path"])
+        self.death_sound.set_volume(0.4)
+        self.played_death_sound = False
+
         # Offsets
         self.hitbox_offset_x = creeper_name["hitbox_offset_x"]
         self.hitbox_offset_y = creeper_name["hitbox_offset_y"]
@@ -173,6 +179,10 @@ class Creeper(pygame.sprite.Sprite):
         self.kill()
 
     def kill_self(self):
+        # Play sound
+        if not self.played_death_sound:
+            self.death_sound.play()
+
         PickUp(position=self.rect.center,
                pickup_name=COIN)
         self.kill()

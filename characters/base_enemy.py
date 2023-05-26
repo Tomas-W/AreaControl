@@ -46,6 +46,15 @@ class Enemy(pygame.sprite.Sprite):
         # Hitbox
         self.hitbox = pygame.Rect(character["hitbox"])
 
+        # Sounds
+        if character["attack_sound_path"] is not None:
+            self.attack_sound = pygame.mixer.Sound(character["attack_sound_path"])
+            self.attack_sound.set_volume(0.2)
+
+        self.death_sound = pygame.mixer.Sound(character["death_sound_path"])
+        self.death_sound.set_volume(0.2)
+        self.played_death_sound = False
+
         # Offsets
         self.hitbox_offset_x = character["hitbox_offset_x"]
         self.hitbox_offset_y = character["hitbox_offset_y"]
@@ -240,6 +249,12 @@ class Enemy(pygame.sprite.Sprite):
             frames per animation and
             flip_image.
         """
+        # Play sound
+        if not self.played_death_sound:
+            self.death_sound.play()
+            self.played_death_sound = True
+
+        # Set image
         if self.flip_image:
             self.image = self.death_sprites_flipped[self.frame]
         else:

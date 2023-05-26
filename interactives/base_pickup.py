@@ -33,6 +33,11 @@ class PickUp(pygame.sprite.Sprite):
         self.hitbox = pygame.Rect(pickup_name["hitbox"])
         self.hitbox.center = position
 
+        # Sounds
+        self.pick_up_sound = pygame.mixer.Sound(pickup_name["pick_up_sound_path"])
+        self.pick_up_sound.set_volume(0.2)
+        self.played_death_sound = False
+
         # Attributes
         self.name = pickup_name["name"]
         self.boost = pickup_name["boost"]
@@ -52,6 +57,10 @@ class PickUp(pygame.sprite.Sprite):
             coin_sprites.add(self)
         elif self.name == "health_potion":
             health_potion_sprites.add(self)
+
+    def kill_self(self):
+        self.pick_up_sound.play()
+        self.kill()
 
     def update(self):
         self.frame_ticks += 1

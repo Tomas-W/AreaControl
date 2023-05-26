@@ -1,9 +1,13 @@
-# #################################################################### #
-# ############################ FIRE SKULL ############################ #
+import os
+import sys
+
 from settings.general_settings import FLAMING_SKULL_SIZE, BULLET_SIZE, BOMB_SIZE
-from settings.player_settings import PLAYER_SIZE
 from sprites.projectile_sprites import FLAMING_SKULL_SPRITE, BULLET_SPRITE, BOMB_SPRITES
 
+base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+
+# #################################################################### #
+# ############################ FLAMING SKULL ############################ #
 FLAMING_SKULL = {
     "name": "flaming_skull",
     "size": FLAMING_SKULL_SIZE,
@@ -19,6 +23,10 @@ FLAMING_SKULL = {
     # sprites
     "sprite_sheet": None,
     "sprite": FLAMING_SKULL_SPRITE,
+
+    # sounds
+    "spawn_sound_path": None,
+    "death_sound_path": None,
 
     "hitbox": (0, (10 * FLAMING_SKULL_SIZE),
                (15 * FLAMING_SKULL_SIZE), (15 * FLAMING_SKULL_SIZE)),
@@ -44,6 +52,10 @@ BULLET = {
     "sprite_sheet": None,
     "sprite": BULLET_SPRITE,
 
+    # sounds
+    "spawn_sound_path": os.path.join(base_dir, "sounds/pistol_shoot_sound.mp3"),
+    "death_sound_path": None,
+
     "hitbox": ((0 * BULLET_SIZE), (0 * BULLET_SIZE),
                (16 * BULLET_SIZE), (16 * BULLET_SIZE)),
     "hitbox_x_offset": ((0 * BULLET_SIZE) * BULLET_SIZE),
@@ -67,6 +79,11 @@ BOMB = {
     # sprites
     "sprite_sheet": BOMB_SPRITES,
     "sprite": BOMB_SPRITES[0],
+
+    # sounds
+    "spawn_sound_path": None,
+    "death_sound_path": os.path.join(base_dir, "sounds/bomb_explosion_sound.mp3"),
+
 
     "hitbox": ((10 * BOMB_SIZE), (10 * BOMB_SIZE),
                (20 * BOMB_SIZE), (20 * BOMB_SIZE)),

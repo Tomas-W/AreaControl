@@ -18,6 +18,10 @@ class Bomb(Projectile):
                          projectile_name=BOMB,
                          bomb_location=bomb_location)
 
+        self.spawn = True
+        self.image.set_alpha(0)
+        self.alpha_ticks = 0
+
         self.explosion_sprites = BOMB_EXPLOSION_SPRITES
         self.dealt_damage = False
         self.explode = False
@@ -41,11 +45,20 @@ class Bomb(Projectile):
         if get_distance(self.bomb_location,
                         self.rect.center) < 20:
             self.explode = True
+            self.frame = 0
+            self.frame_ticks = 0
 
     def manage_explosion(self):
         # Offset explosion because of scaling
         self.rect.centerx = self.bomb_location[0] - 25
         self.rect.centery = self.bomb_location[1] - 25
+        print(self.frame)
+        print(self.frame_ticks)
+        print("**********")
+        print("**********")
+
+        if self.frame == 0 and self.frame_ticks == 1:
+            self.death_sound.play()
 
         self.frame_ticks += 1
 
@@ -61,6 +74,12 @@ class Bomb(Projectile):
         self.image = self.explosion_sprites[self.frame]
 
     def update(self):
+        if self.spawn:
+            self.alpha_ticks += 1
+
+            if self.alpha_ticks > 1:
+                self.image.set_alpha(255)
+                self.spawn = False
 
         if not self.explode:
             self.set_hitbox()

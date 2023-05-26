@@ -1,7 +1,13 @@
+import os
+import sys
+
 from settings.general_settings import PLAYER_HITBOX_SIZE
 from sprites.player_sprites import PLAYER_SPRITE, PLAYER_SHOOT_SPRITE
 
+base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+
 PLAYER_SIZE = 0.4
+
 PLAYER = {
     # main
     "start_position": (1750, 1450),
@@ -12,7 +18,7 @@ PLAYER = {
     # attributes
     "health": 1000,
     "max_health": 1000,
-    "speed": 15,
+    "speed": 8,
 
     # states
     "shoot": False,
@@ -29,18 +35,18 @@ PLAYER = {
     # items
     "skull_level": 0,
     "energy_level": 0,
-    "coin_level": 0,
-    "total_bombs": 3,
+    "coin_level": 110,
+    "total_bombs": 33,
     "total_portals": 0,
-    "total_health_potions": 50,
+    "total_health_potions": 22,
     "health_potion_boost": 250,  # linked with health_potion settings
 
     # buy menu
     "buy_multiplier": 1.1,
-    "buy_multiplier_addition": 1.3,
+    "buy_multiplier_addition": 0.25,
     "bullet_upgrade_cost": 4,
-    "bomb_upgrade_cost": 6,
-    "buy_bomb_cost": 1,
+    "bomb_upgrade_cost": 5,
+    "buy_bomb_cost": 2,
     "buy_portal_cost": 3,
 
     # portal
@@ -55,9 +61,13 @@ PLAYER = {
     # sprites
     "sprite": PLAYER_SPRITE,
     "shoot_sprite": PLAYER_SHOOT_SPRITE,
-    "hitbox": ((25 * PLAYER_SIZE), (25 * PLAYER_SIZE),
-               (170 * PLAYER_SIZE), (170 * PLAYER_SIZE)),
+    "hitbox": ((20 * PLAYER_SIZE), (20 * PLAYER_SIZE),
+               (180 * PLAYER_SIZE), (180 * PLAYER_SIZE)),
     "sprite_width": 220,
     "sprite_height": 220,
 
+    # sounds
+    "hit_sound_path": os.path.join(base_dir, "sounds/player_hit_sound.mp3"),
+    "add_health_sound_path": os.path.join(base_dir, "sounds/player_add_health_sound.mp3"),
+    "death_sound_path": os.path.join(base_dir, "sounds/player_death_sound.mp3"),
 }

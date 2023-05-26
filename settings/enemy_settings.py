@@ -1,3 +1,6 @@
+import os
+import sys
+
 from settings.general_settings import SKULL_COLLECTOR_SIZE, RUSHER_SIZE, GOLEM_SIZE
 from sprites.enemy_sprites import GOLEM_DEATH_SPRITES, GOLEM_STRIKE_SPRITES, \
     GOLEM_STRIKE_SPRITES_FLIPPED, GOLEM_RUN_SPRITES_FLIPPED, GOLEM_RUN_SPRITES, \
@@ -9,10 +12,12 @@ from sprites.enemy_sprites import GOLEM_DEATH_SPRITES, GOLEM_STRIKE_SPRITES, \
     SKULL_COLLECTOR_WALK_SPRITES, SKULL_COLLECTOR_DEATH_SPRITES_FLIPPED, \
     RUSHER_DEATH_SPRITES_FLIPPED, GOLEM_DEATH_SPRITES_FLIPPED, RUSHER_SPAWN_SPRITES
 
-# a = [2, 3, 8, 3, 7, 7, 14]
-# b = [3, 7, 3, 6, 7, 11, 4]
-# c = [3, 4, 12, 0, 5, 8, 15]
-# d = [3, 3, 0, 20, 7, 11, 7]
+base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+
+# skull = [2, 3, 8, 3, 7, 7, 14]
+# rush = [3, 7, 3, 6, 7, 11, 4]
+# bat = [3, 4, 12, 0, 5, 8, 15]
+# fish = [3, 3, 0, 20, 7, 11, 7]
 # ############################################################### #
 # ####################### SKULL COLLECTOR ####################### #
 SKULL_COLLECTOR = {
@@ -85,6 +90,10 @@ SKULL_COLLECTOR = {
     # initial image
     "image": SKULL_COLLECTOR_WALK_SPRITES[0],
     "flip_image": False,
+
+    # sounds
+    "death_sound_path": os.path.join(base_dir, "sounds/skull_collector_death_sound.mp3"),
+    "attack_sound_path": None,
 
     # hitbox
     "hitbox": ((16 * SKULL_COLLECTOR_SIZE), (20 * SKULL_COLLECTOR_SIZE),
@@ -167,6 +176,10 @@ RUSHER = {
     # initial image
     "image": RUSHER_SPAWN_SPRITES[0],
     "flip_image": False,
+
+    # sounds
+    "death_sound_path": os.path.join(base_dir, "sounds/rusher_death_sound.mp3"),
+    "attack_sound_path": os.path.join(base_dir, "sounds/rusher_strike_sound.mp3"),
 
     # hitbox
     "hitbox": ((15 * RUSHER_SIZE), (20 * RUSHER_SIZE),
