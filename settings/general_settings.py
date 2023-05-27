@@ -39,6 +39,11 @@ GENERAL = {
     "left_mouse_button": (1, 0, 0),
     "right_mouse_button": (0, 0, 1),
 
+    # sounds
+    "button_hover_sound_path": os.path.join(base_dir, "sounds/button_hover_sound.mp3"),
+    "button_click_sound_path": os.path.join(base_dir, "sounds/button_click_sound.mp3"),
+    "play_game_sound_path": os.path.join(base_dir, "sounds/play_game_sound.mp3"),
+
     # colors
     "black": (0, 0, 0),
     "white": (255, 255, 255),

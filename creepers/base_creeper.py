@@ -35,7 +35,7 @@ class Creeper(pygame.sprite.Sprite):
 
         # Sounds
         self.death_sound = pygame.mixer.Sound(creeper_name["death_sound_path"])
-        self.death_sound.set_volume(0.4)
+        self.death_sound.set_volume(0.2)
         self.played_death_sound = False
 
         # Offsets

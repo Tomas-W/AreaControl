@@ -35,7 +35,7 @@ class Player(pygame.sprite.Sprite):
         self.hit_sound.set_volume(0.2)
 
         self.add_health_sound = pygame.mixer.Sound(PLAYER["add_health_sound_path"])
-        self.hit_sound.set_volume(0.15)
+        self.hit_sound.set_volume(0.2)
 
         self.death_sound = pygame.mixer.Sound(PLAYER["death_sound_path"])
         self.death_sound.set_volume(0.2)

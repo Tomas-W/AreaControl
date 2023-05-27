@@ -1,3 +1,4 @@
+import time
 from random import choice
 
 import pygame
@@ -104,6 +105,9 @@ class Game:
         # Misc
         self.credits = GENERAL["credits"]
 
+    def reset_game(self):
+        pass
+
     def listen_for_events(self):
         """
         Active keys:
@@ -128,11 +132,17 @@ class Game:
                 exit()
 
             if event.type == pygame.KEYDOWN:
-                # Pause with space-bar
-                if event.key == pygame.K_SPACE:
+                # Pause and resume with space-bar
+                if event.key == pygame.K_SPACE and self.is_playing_game:
                     self.pause_menu_shown = not self.pause_menu_shown
+                # Go to main menu with backspace
+                if event.key == pygame.K_BACKSPACE and self.pause_menu_shown:
+                    self.pause_menu_shown = False
+                    self.turn_off_menus()
+                    self.main_menu_shown = True
+                    self.rest_game()
                 # Kill all enemies with k
-                if event.key == pygame.K_k:
+                if event.key == pygame.K_k and self.is_playing_game:
                     for enemy in enemy_sprites:
                         enemy.kill()
                     for creeper in all_creeper_sprites:
@@ -190,15 +200,15 @@ class Game:
             self.turn_off_menus()
             self.credits_menu_shown = True
 
+        if not self.sound_is_on:
+            if self.sounds_off_button.draw(self.screen):
+                self.sound_is_on = True
+                time.sleep(0.1)
+
         elif self.sound_is_on:
             if self.sounds_on_button.draw(self.screen):
                 self.sound_is_on = False
-                print("turning on")
-
-        else:
-            if self.sounds_off_button.draw(self.screen):
-                self.sound_is_on = True
-                print("turning off")
+                time.sleep(0.1)
 
     def display_settings_menu(self):
         self.screen.blit(self.menu_background, (0, 0))
@@ -269,6 +279,7 @@ class Game:
         if self.main_menu_button.draw(self.screen):
             self.turn_off_menus()
             self.main_menu_shown = True
+            time.sleep(0.1)  # to prevent doudle click on sound
 
     def spawn_test_enemies(self, ticks):
         """
@@ -375,8 +386,19 @@ class Game:
 
             # Pause menu
             if self.pause_menu_shown:
-                text = self.medium_font.render("Pause menu", True, self.font_color)
-                self.screen.blit(text, (GENERAL["half_width"], GENERAL["half_height"]))
+                pause_text = self.small_font.render("Game paused", True, self.font_color)
+                self.screen.blit(pause_text,
+                                 (GENERAL["half_width"] // 6, GENERAL["half_height"] // 1.5))
+
+                resume_text = self.small_font.render("Space-bar to continue", True,
+                                                      self.font_color)
+                self.screen.blit(resume_text,
+                                 (GENERAL["half_width"] // 6, GENERAL["half_height"] // 1.5 + 75))
+
+                exit_text = self.small_font.render("Backspace to quit", True,
+                                                    self.font_color)
+                self.screen.blit(exit_text,
+                                 (GENERAL["half_width"] // 6, GENERAL["half_height"] // 1.5 + 150))
 
             # Settings menu
             elif self.settings_menu_shown:
@@ -398,7 +420,8 @@ class Game:
                     self.wave_pause_ticks += 1
 
                     if self.wave_pause_ticks == self.wave_pause:
-                        self.bonus_ticks = self.bonus_ticks_list[self.player.wave_level]  # Set bonus timer
+                        self.bonus_ticks = self.bonus_ticks_list[
+                            self.player.wave_level]  # Set bonus timer
                         self.wave_pause_ticks = 0
                         self.spawn_waves()
                         self.player.wave_level += 1
