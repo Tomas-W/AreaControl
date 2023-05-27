@@ -134,7 +134,8 @@ class SkullCollector(Enemy):
         # Place Skull and kill SkullCollector
         if self.frame == self.death_frame:
             PickUp(position=self.rect.center,
-                   pickup_name=SKULL)
+                   pickup_name=SKULL,
+                   player=self.player)
             # SkullCollector(player=self.player,
             #                position=(choice(SKULL_COLLECTOR["start_position"])),
             #                character=SKULL_COLLECTOR)

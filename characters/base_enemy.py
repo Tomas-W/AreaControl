@@ -250,7 +250,7 @@ class Enemy(pygame.sprite.Sprite):
             flip_image.
         """
         # Play sound
-        if not self.played_death_sound:
+        if not self.played_death_sound and self.player.sound_is_on:
             self.death_sound.play()
             self.played_death_sound = True
 

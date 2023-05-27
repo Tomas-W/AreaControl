@@ -15,8 +15,11 @@ class PickUp(pygame.sprite.Sprite):
 
     A new PickUp can be created by passing in a dictionary.
     """
-    def __init__(self, position, pickup_name):
+    def __init__(self, player, position, pickup_name):
         super().__init__(all_sprites)
+        # Reference Player
+        self.player = player
+
         # Determine spawn location
         if pickup_name["name"] == "health_potion":
             position = choice(pickup_name["spawn_location"])
@@ -59,7 +62,8 @@ class PickUp(pygame.sprite.Sprite):
             health_potion_sprites.add(self)
 
     def kill_self(self):
-        self.pick_up_sound.play()
+        if self.player.sound_is_on:
+            self.pick_up_sound.play()
         self.kill()
 
     def update(self):

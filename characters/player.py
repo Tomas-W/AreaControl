@@ -13,7 +13,7 @@ from settings.player_settings import PLAYER
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, sound_is_on):
         super().__init__(all_sprites, player_sprite)
         # Starting position
         self.position = pygame.math.Vector2(PLAYER["start_position"])
@@ -31,6 +31,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.hitbox.copy()
 
         # Sounds
+        self.sound_is_on = sound_is_on
         self.hit_sound = pygame.mixer.Sound(PLAYER["hit_sound_path"])
         self.hit_sound.set_volume(0.2)
 
@@ -85,11 +86,11 @@ class Player(pygame.sprite.Sprite):
     # ################################################################ #
     # ############################ MOVING ############################ #
     def check_for_damage(self):
-        if self.health < self.health_checker:
+        if self.health < self.health_checker and self.sound_is_on:
             # Player has been hit
             self.hit_sound.play()
 
-        elif self.health > self.health_checker:
+        elif self.health > self.health_checker and self.sound_is_on:
             # Player used health potion
             self.add_health_sound.play()
 
@@ -335,7 +336,7 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         # Consume health potion
         if keys[pygame.K_q]:
-            if self.total_health_potions > 0 and self.item_ticks == 0:
+            if self.total_health_potions > 0 and self.item_ticks == 0 and self.health < self.max_health:
                 self.total_health_potions -= 1
                 self.health = min(self.health + self.health_potion_boost,
                                   self.max_health)

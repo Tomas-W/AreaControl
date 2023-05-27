@@ -1,4 +1,3 @@
-import time
 from random import choice
 
 import pygame
@@ -17,8 +16,7 @@ pygame.display.set_caption(GENERAL["title"])
 pygame.event.set_allowed([QUIT, K_w, K_s, K_a, K_d, MOUSEBUTTONDOWN])
 
 from game.camera import Camera
-from game.buttons import play_button, settings_button, leaderboard_button, credits_button, \
-    sounds_on_button, sounds_off_button, main_menu_button, first_button_x, first_button_y
+from game.buttons import Button
 from fonts.fonts import *
 
 from characters.player import Player
@@ -30,6 +28,7 @@ from creepers.fish import Fish
 
 from interactives.base_pickup import PickUp
 
+from settings.menu_settings import DISPLAY
 from settings.enemy_settings import SKULL_COLLECTOR, RUSHER
 from settings.creeper_settings import BAT, FISH
 from settings.interactives_settings import HEALTH_POTION
@@ -44,11 +43,16 @@ base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 class Game:
     def __init__(self):
+        # Characters
+        self.player = Player(sound_is_on=False)
+
         # Screen
         self.screen = screen
         # Backgrounds
         self.background = pygame.image.load(GENERAL["background_path"]).convert_alpha()
         self.menu_background = pygame.image.load(GENERAL["menu_background_path"]).convert_alpha()
+        # Camera
+        self.camera = Camera(background=self.background)
         # Clock
         self.clock = pygame.time.Clock()
         # Fonts
@@ -59,13 +63,96 @@ class Game:
         self.font_color = FONT_COLOR
 
         # Buttons
-        self.play_button = play_button
-        self.settings_button = settings_button
-        self.leaderboard_button = leaderboard_button
-        self.credits_button = credits_button
-        self.sounds_on_button = sounds_on_button
-        self.sounds_off_button = sounds_off_button
-        self.main_menu_button = main_menu_button
+        self.first_menu_button_x = 0.62 * GENERAL["width"]
+        self.first_menu_button_y = 0.144 * GENERAL["width"]
+
+        self.play_button_image = pygame.image.load(DISPLAY["play_btn_img"]).convert_alpha()
+        self.play_button = Button(x=self.first_menu_button_x,
+                                  y=self.first_menu_button_y,
+                                  image=self.play_button_image,
+                                  scale=1,
+                                  name="play",
+                                  player=self.player)
+
+        self.settings_button_image = pygame.image.load(DISPLAY["settings_btn_img"]).convert_alpha()
+        self.settings_button = Button(x=self.first_menu_button_x,
+                                      y=self.first_menu_button_y + 90,
+                                      image=self.settings_button_image,
+                                      scale=1,
+                                      name="settings",
+                                      player=self.player)
+
+        self.leaderboard_button_image = pygame.image.load(
+            DISPLAY["leaderboard_btn_img"]).convert_alpha()
+        self.leaderboard_button = Button(x=self.first_menu_button_x,
+                                         y=self.first_menu_button_y + 180,
+                                         image=self.leaderboard_button_image,
+                                         scale=1,
+                                         name="leaderboard",
+                                         player=self.player)
+
+        self.credits_button_image = pygame.image.load(
+            DISPLAY["credits_btn_img"]).convert_alpha()
+        self.credits_button = Button(x=self.first_menu_button_x,
+                                     y=self.first_menu_button_y + 270,
+                                     image=self.credits_button_image,
+                                     scale=1,
+                                     name="credits",
+                                     player=self.player)
+
+        self.sounds_on_button_image = pygame.image.load(
+            DISPLAY["sounds_on_btn_img"]).convert_alpha()
+        self.sounds_on_button = Button(x=self.first_menu_button_x,
+                                       y=self.first_menu_button_y + 360,
+                                       image=self.sounds_on_button_image,
+                                       scale=1,
+                                       name="sounds_on",
+                                       player=self.player)
+
+        self.sounds_off_button_image = pygame.image.load(
+            DISPLAY["sounds_off_btn_img"]).convert_alpha()
+        self.sounds_off_button = Button(x=self.first_menu_button_x,
+                                        y=self.first_menu_button_y + 360,
+                                        image=self.sounds_off_button_image,
+                                        scale=1,
+                                        name="sounds_off",
+                                        player=self.player)
+
+        self.main_menu_button_image = pygame.image.load(
+            DISPLAY["main_menu_btn_img"]).convert_alpha()
+        self.main_menu_button = Button(x=self.first_menu_button_x,
+                                       y=self.first_menu_button_y + 360,
+                                       image=self.main_menu_button_image,
+                                       scale=1,
+                                       name="main",
+                                       player=self.player)
+
+        self.continue_button_image = pygame.image.load(
+            DISPLAY["continue_btn_img"]).convert_alpha()
+        self.continue_button = Button(x=self.first_menu_button_x,
+                                      y=self.first_menu_button_y,
+                                      image=self.continue_button_image,
+                                      scale=1,
+                                      name="continue",
+                                      player=self.player)
+
+        self.restart_button_image = pygame.image.load(
+            DISPLAY["restart_btn_img"]).convert_alpha()
+        self.restart_button = Button(x=self.first_menu_button_x,
+                                     y=self.first_menu_button_y + 180,
+                                     image=self.restart_button_image,
+                                     scale=1,
+                                     name="restart",
+                                     player=self.player)
+
+        self.back_button_image = pygame.image.load(
+            DISPLAY["back_btn_img"]).convert_alpha()
+        self.back_button = Button(x=self.first_menu_button_x,
+                                  y=self.first_menu_button_y + 360,
+                                  image=self.back_button_image,
+                                  scale=1,
+                                  name="return",
+                                  player=self.player)
 
         # Button images
         self.btn_q = BUTTON_Q_CAMERA_IMAGE
@@ -77,11 +164,10 @@ class Game:
         self.mouse_l = MOUSE_L_CAMERA_IMAGE
         self.mouse_r = MOUSE_R_CAMERA_IMAGE
 
-        # Characters
-        self.player = Player()
-
-        # Camera
-        self.camera = Camera(background=self.background)
+        # Sounds
+        self.sound_is_on = False
+        self.buy_sound = pygame.mixer.Sound(GENERAL["buy_sound_path"])
+        self.buy_sound.set_volume(0.2)
 
         # States
         self.game_is_running = True
@@ -92,10 +178,8 @@ class Game:
         self.credits_menu_shown = False
         self.pause_menu_shown = False
 
-        self.sound_is_on = False
-
         # Trackers
-        self.tick = 0
+        self.test_tick = 0
         self.wave_pause_ticks = 0
         self.wave_pause = GENERAL["wave_pause"]  # how long is the buy period
         self.buy_tick = GENERAL["buy_tick"]  # to prevent double buys
@@ -104,15 +188,36 @@ class Game:
 
         # Misc
         self.credits = GENERAL["credits"]
+        self.before_settings_menu = "home"
 
     def reset_game(self):
-        pass
+        for sprite in all_sprites:
+            sprite.kill()
+        all_sprites.empty()
+
+        self.player = Player(player=self.player)
+        # States
+        self.game_is_running = True
+        self.is_playing_game = False
+        self.main_menu_shown = True
+        self.settings_menu_shown = False
+        self.credits_menu_shown = False
+        self.pause_menu_shown = False
+        self.sound_is_on = False
+
+        # Trackers
+        self.test_tick = 0
+        self.wave_pause_ticks = 0
+        self.wave_pause = GENERAL["wave_pause"]  # how long is the buy period
+        self.buy_tick = GENERAL["buy_tick"]  # to prevent double buys
+        self.bonus_ticks = self.bonus_ticks_list[0]
 
     def listen_for_events(self):
         """
         Active keys:
             'escape': closes game.
             'space-bar': pauses game.
+            'backspace': exit to main menu
             '1': buy option.
             '2': buy option.
             '3': buy option.
@@ -134,13 +239,8 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 # Pause and resume with space-bar
                 if event.key == pygame.K_SPACE and self.is_playing_game:
-                    self.pause_menu_shown = not self.pause_menu_shown
-                # Go to main menu with backspace
-                if event.key == pygame.K_BACKSPACE and self.pause_menu_shown:
-                    self.pause_menu_shown = False
-                    self.turn_off_menus()
-                    self.main_menu_shown = True
-                    self.rest_game()
+                    self.pause_menu_shown = True
+
                 # Kill all enemies with k
                 if event.key == pygame.K_k and self.is_playing_game:
                     for enemy in enemy_sprites:
@@ -154,20 +254,28 @@ class Game:
 
                     # Buy Bullet upgrade with '1'
                     if event.key == K_1:
-                        buy_bullet_upgrade(game=self,
-                                           bullet_stats=BULLET)
+                        if buy_bullet_upgrade(game=self,
+                                              bullet_stats=BULLET):
+                            if self.sound_is_on:
+                                self.buy_sound.play()
                     # Buy Bomb upgrade with '2'
                     elif event.key == K_2:
-                        buy_bomb_upgrade(game=self,
-                                         bomb_stats=BOMB)
+                        if buy_bomb_upgrade(game=self,
+                                            bomb_stats=BOMB):
+                            if self.sound_is_on:
+                                self.buy_sound.play()
                     # Buy Bomb with '3'
                     elif event.key == K_3:
-                        buy_bomb(game=self,
-                                 player=self.player)
+                        if buy_bomb(game=self,
+                                    player=self.player):
+                            if self.sound_is_on:
+                                self.buy_sound.play()
                     # Buy Teleport with '4'
                     elif event.key == K_4:
-                        buy_portal(game=self,
-                                   player=self.player)
+                        if buy_portal(game=self,
+                                      player=self.player):
+                            if self.sound_is_on:
+                                self.buy_sound.play()
 
     def turn_off_menus(self):
         """
@@ -192,6 +300,7 @@ class Game:
         elif self.settings_button.draw(self.screen):
             self.turn_off_menus()
             self.settings_menu_shown = True
+            self.before_settings_menu = "home"
 
         elif self.leaderboard_button.draw(self.screen):
             print(": test")
@@ -203,67 +312,111 @@ class Game:
         if not self.sound_is_on:
             if self.sounds_off_button.draw(self.screen):
                 self.sound_is_on = True
-                time.sleep(0.1)
+                self.player.sound_is_on = True
 
         elif self.sound_is_on:
             if self.sounds_on_button.draw(self.screen):
                 self.sound_is_on = False
-                time.sleep(0.1)
+                self.player.sound_is_on = False
+
+    def display_pause_menu(self):
+        """
+        Displays pause menu on screen.
+        """
+        self.screen.blit(self.menu_background, (0, 0))
+
+        # Menu buttons
+        if self.continue_button.draw(self.screen):
+            self.turn_off_menus()
+            self.is_playing_game = True
+            self.pause_menu_shown = False
+
+        elif self.settings_button.draw(self.screen):
+            self.turn_off_menus()
+            self.settings_menu_shown = True
+            self.before_settings_menu = "pause"
+
+        elif self.restart_button.draw(self.screen):
+            self.reset_game()
+            self.turn_off_menus()
+            self.is_playing_game = True
+
+        elif self.main_menu_button.draw(self.screen):
+            self.reset_game()
+            self.turn_off_menus()
+            self.main_menu_shown = True
 
     def display_settings_menu(self):
         self.screen.blit(self.menu_background, (0, 0))
 
         screen.blit(self.btn_w,
-                    (first_button_x - 0.02 * GENERAL["width"], first_button_y))
+                    (self.first_menu_button_x - 0.02 * GENERAL["width"], self.first_menu_button_y))
         text = self.small_font.render("forwards", True, self.font_color)
         self.screen.blit(text, (
-            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 10))
+            self.first_menu_button_x - 0.02 * GENERAL["width"] + 75, self.first_menu_button_y + 10))
 
         screen.blit(self.btn_s,
-                    (first_button_x - 0.02 * GENERAL["width"], first_button_y + 40))
+                    (self.first_menu_button_x - 0.02 * GENERAL["width"],
+                     self.first_menu_button_y + 40))
         text = self.small_font.render("backwards", True, self.font_color)
         self.screen.blit(text, (
-            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 50))
+            self.first_menu_button_x - 0.02 * GENERAL["width"] + 75, self.first_menu_button_y + 50))
 
         screen.blit(self.btn_a,
-                    (first_button_x - 0.02 * GENERAL["width"], first_button_y + 80))
+                    (self.first_menu_button_x - 0.02 * GENERAL["width"],
+                     self.first_menu_button_y + 80))
         text = self.small_font.render("left", True, self.font_color)
         self.screen.blit(text, (
-            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 90))
+            self.first_menu_button_x - 0.02 * GENERAL["width"] + 75, self.first_menu_button_y + 90))
 
         screen.blit(self.btn_d,
-                    (first_button_x - 0.02 * GENERAL["width"], first_button_y + 120))
+                    (self.first_menu_button_x - 0.02 * GENERAL["width"],
+                     self.first_menu_button_y + 120))
         text = self.small_font.render("right", True, self.font_color)
         self.screen.blit(text, (
-            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 130))
+            self.first_menu_button_x - 0.02 * GENERAL["width"] + 75,
+            self.first_menu_button_y + 130))
 
         screen.blit(self.btn_q,
-                    (first_button_x - 0.02 * GENERAL["width"], first_button_y + 160))
+                    (self.first_menu_button_x - 0.02 * GENERAL["width"],
+                     self.first_menu_button_y + 160))
         text = self.small_font.render("use potion", True, self.font_color)
         self.screen.blit(text, (
-            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 170))
+            self.first_menu_button_x - 0.02 * GENERAL["width"] + 75,
+            self.first_menu_button_y + 170))
 
         screen.blit(self.btn_e,
-                    (first_button_x - 0.02 * GENERAL["width"], first_button_y + 200))
+                    (self.first_menu_button_x - 0.02 * GENERAL["width"],
+                     self.first_menu_button_y + 200))
         text = self.small_font.render("use portal", True, self.font_color)
         self.screen.blit(text, (
-            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 210))
+            self.first_menu_button_x - 0.02 * GENERAL["width"] + 75,
+            self.first_menu_button_y + 210))
 
         screen.blit(self.mouse_l,
-                    (first_button_x - 0.02 * GENERAL["width"], first_button_y + 250))
+                    (self.first_menu_button_x - 0.02 * GENERAL["width"],
+                     self.first_menu_button_y + 250))
         text = self.small_font.render("shoot bullet", True, self.font_color)
         self.screen.blit(text, (
-            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 260))
+            self.first_menu_button_x - 0.02 * GENERAL["width"] + 75,
+            self.first_menu_button_y + 260))
 
         screen.blit(self.mouse_r,
-                    (first_button_x - 0.02 * GENERAL["width"], first_button_y + 300))
+                    (self.first_menu_button_x - 0.02 * GENERAL["width"],
+                     self.first_menu_button_y + 300))
         text = self.small_font.render("throw bomb", True, self.font_color)
         self.screen.blit(text, (
-            first_button_x - 0.02 * GENERAL["width"] + 75, first_button_y + 310))
+            self.first_menu_button_x - 0.02 * GENERAL["width"] + 75,
+            self.first_menu_button_y + 310))
 
-        if self.main_menu_button.draw(self.screen):
-            self.turn_off_menus()
-            self.main_menu_shown = True
+        if self.back_button.draw(self.screen):
+            if self.before_settings_menu == "pause":
+                self.turn_off_menus()
+                self.pause_menu_shown = True
+
+            elif self.before_settings_menu == "home":
+                self.turn_off_menus()
+                self.main_menu_shown = True
 
     def display_credit_menu(self):
         """
@@ -274,12 +427,13 @@ class Game:
         for i, credit in enumerate(self.credits):
             text = self.tiny_font.render(credit, True, self.font_color)
             self.screen.blit(text, (
-                first_button_x - 0.02 * GENERAL["width"], first_button_y + i * 22))
+                self.first_menu_button_x - 0.02 * GENERAL["width"],
+                self.first_menu_button_y + i * 18))
         # BLit Main Menu button
-        if self.main_menu_button.draw(self.screen):
+        if self.back_button.draw(self.screen):
             self.turn_off_menus()
             self.main_menu_shown = True
-            time.sleep(0.1)  # to prevent doudle click on sound
+            # time.sleep(0.1)  # to prevent double click on sound
 
     def spawn_test_enemies(self, ticks):
         """
@@ -287,20 +441,21 @@ class Game:
 
         :param ticks: Number of game ticks after which Enemies and Creepers are spawned (int).
         """
-        self.tick += 1
-        if self.tick == ticks:
-            Bat(player=self.player,
-                creeper_name=BAT)
-            Fish(player=self.player,
-                 creeper_name=FISH)
-
-            SkullCollector(player=self.player,
-                           position=choice(SKULL_COLLECTOR["start_position"]),
-                           character=SKULL_COLLECTOR)
-            Rusher(player=self.player,
-                   position=choice(RUSHER["start_position"]),
-                   character=RUSHER)
-            self.tick = 0
+        self.test_tick += 1
+        if self.test_tick == ticks:
+            # Bat(player=self.player,
+            #     creeper_name=BAT)
+            # Fish(player=self.player,
+            #      creeper_name=FISH)
+            #
+            # SkullCollector(player=self.player,
+            #                position=choice(SKULL_COLLECTOR["start_position"]),
+            #                character=SKULL_COLLECTOR)
+            # Rusher(player=self.player,
+            #        position=choice(RUSHER["start_position"]),
+            #        character=RUSHER)
+            print(self.clock.get_fps())
+            self.test_tick = 0
 
     def spawn_waves(self):
         """
@@ -333,7 +488,8 @@ class Game:
 
     def end_of_wave_spawns(self):
         for _ in range(self.player.wave_level):
-            PickUp(pickup_name=HEALTH_POTION,
+            PickUp(player=self.player,
+                   pickup_name=HEALTH_POTION,
                    position=None)
 
     def outline_hitboxes(self):
@@ -386,19 +542,7 @@ class Game:
 
             # Pause menu
             if self.pause_menu_shown:
-                pause_text = self.small_font.render("Game paused", True, self.font_color)
-                self.screen.blit(pause_text,
-                                 (GENERAL["half_width"] // 6, GENERAL["half_height"] // 1.5))
-
-                resume_text = self.small_font.render("Space-bar to continue", True,
-                                                      self.font_color)
-                self.screen.blit(resume_text,
-                                 (GENERAL["half_width"] // 6, GENERAL["half_height"] // 1.5 + 75))
-
-                exit_text = self.small_font.render("Backspace to quit", True,
-                                                    self.font_color)
-                self.screen.blit(exit_text,
-                                 (GENERAL["half_width"] // 6, GENERAL["half_height"] // 1.5 + 150))
+                self.display_pause_menu()
 
             # Settings menu
             elif self.settings_menu_shown:
@@ -431,7 +575,7 @@ class Game:
                     self.end_of_wave_spawns()
 
                 # Tests
-                # self.spawn_test_enemies(20)
+                self.spawn_test_enemies(30)
                 # print("*****")
                 # print(self.clock.get_fps())
                 # print(len(all_sprites.sprites()))

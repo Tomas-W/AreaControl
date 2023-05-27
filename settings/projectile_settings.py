@@ -81,7 +81,7 @@ BOMB = {
     "sprite": BOMB_SPRITES[0],
 
     # sounds
-    "spawn_sound_path": None,
+    "spawn_sound_path": os.path.join(base_dir, "sounds/bomb_throw_sound.mp3"),
     "death_sound_path": os.path.join(base_dir, "sounds/bomb_explosion_sound.mp3"),
 
 

@@ -43,6 +43,7 @@ GENERAL = {
     "button_hover_sound_path": os.path.join(base_dir, "sounds/button_hover_sound.mp3"),
     "button_click_sound_path": os.path.join(base_dir, "sounds/button_click_sound.mp3"),
     "play_game_sound_path": os.path.join(base_dir, "sounds/play_game_sound.mp3"),
+    "buy_sound_path": os.path.join(base_dir, "sounds/coin_pickup_sound.mp3"),
 
     # colors
     "black": (0, 0, 0),

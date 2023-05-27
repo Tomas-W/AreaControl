@@ -63,7 +63,7 @@ class Projectile(pygame.sprite.Sprite):
         self.image_ticks = projectile_name["image_ticks"]
 
         # play spawn sound
-        if self.spawn_sound is not None:
+        if self.spawn_sound is not None and self.player.sound_is_on:
             self.spawn_sound.play()
 
         # add to correct sprite list
@@ -79,7 +79,7 @@ class Projectile(pygame.sprite.Sprite):
     def kill_self(self):
         # bomb has its own death and sound manager because of animation
         # play sound if it exists
-        if self.death_sound is not None and not self.name == "bomb":
+        if self.death_sound is not None and not self.name == "bomb" and self.player.sound_is_on:
             self.death_sound.play()
 
         self.kill()

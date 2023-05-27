@@ -114,7 +114,8 @@ class Rusher(Enemy):
         """
         Deal strike damage to Player.
         """
-        self.attack_sound.play()
+        if self.player.sound_is_on:
+            self.attack_sound.play()
         self.player.health -= self.damage
 
     def manage_death_state(self):
@@ -132,7 +133,8 @@ class Rusher(Enemy):
         # Kill Rusher and place Energy
         if self.frame == self.death_frame:
             PickUp(position=self.rect.center,
-                   pickup_name=ENERGY)
+                   pickup_name=ENERGY,
+                   player=self.player)
             # Rusher(player=self.player,
             #        position=choice(RUSHER["start_position"]),
             #        character=RUSHER)

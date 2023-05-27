@@ -6,7 +6,6 @@ import pygame
 import soundfile as sf
 import numpy as np
 
-
 from settings.general_settings import GENERAL
 
 all_sprites = pygame.sprite.Group()
@@ -62,6 +61,7 @@ def buy_bullet_upgrade(game, bullet_stats):
         bullet_stats["damage"] *= 1.05
         bullet_stats["speed"] *= 1.05
         PLAYER["shoot_cooldown"] -= 0.4
+        return True
 
 
 def buy_bomb_upgrade(game, bomb_stats):
@@ -72,6 +72,8 @@ def buy_bomb_upgrade(game, bomb_stats):
         game.buy_tick = game.wave_pause_ticks
         game.player.buy_multiplier += game.player.buy_multiplier_addition
         bomb_stats["damage"] *= 1.07
+        return True
+    return False
 
 
 def buy_bomb(game, player):
@@ -82,6 +84,8 @@ def buy_bomb(game, player):
         game.buy_tick = game.wave_pause_ticks
         game.player.buy_multiplier += game.player.buy_multiplier_addition
         player.total_bombs += 1
+        return True
+    return False
 
 
 def buy_portal(game, player):
@@ -92,6 +96,8 @@ def buy_portal(game, player):
         game.buy_tick = game.wave_pause_ticks
         game.player.buy_multiplier += game.player.buy_multiplier_addition
         player.total_portals += 1
+        return True
+    return False
 
 
 def handle_pickups():
@@ -152,8 +158,9 @@ def handle_outgoing_bombs():
     """
     for bomb in bomb_sprites:
         if bomb.explode and not bomb.dealt_damage:
-
             # Because of small offset trigger detonation by distance
+
+            # Enemies
             for enemy in enemy_sprites:
                 distance = get_distance(enemy.rect.center,
                                         bomb.rect.center)
@@ -162,6 +169,17 @@ def handle_outgoing_bombs():
                     old_enemy_health = enemy.health
                     enemy.health -= bomb.damage - (bomb.damage / bomb.damage_radius * distance)
                     bomb.damage -= old_enemy_health
+
+            # Creepers
+            for creeper in all_creeper_sprites:
+                distance = get_distance(creeper.rect.center,
+                                        bomb.rect.center)
+                # Only deal damage if Bomb has damage left
+                if distance < bomb.damage_radius and bomb.damage > 0:
+                    old_creeper_health = creeper.health
+                    creeper.health -= bomb.damage - (bomb.damage / bomb.damage_radius * distance)
+                    bomb.damage -= old_creeper_health
+
             # Disable bomb damage
             bomb.dealt_damage = True
 

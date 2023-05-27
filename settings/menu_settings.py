@@ -15,6 +15,7 @@ DISPLAY = {
     "restart_btn_img":  os.path.join(base_dir, "images/game/btn_restart.png"),
     "game_over_btn_img":  os.path.join(base_dir, "images/game/btn_game_over.png"),
     "main_menu_btn_img":  os.path.join(base_dir, "images/game/btn_main_menu.png"),
+    "back_btn_img":  os.path.join(base_dir, "images/game/btn_back.png"),
 
     # offsets
     "health_bar_x_offset": 750,

@@ -180,10 +180,11 @@ class Creeper(pygame.sprite.Sprite):
 
     def kill_self(self):
         # Play sound
-        if not self.played_death_sound:
+        if not self.played_death_sound and self.player.sound_is_on:
             self.death_sound.play()
 
-        PickUp(position=self.rect.center,
+        PickUp(player=self.player,
+               position=self.rect.center,
                pickup_name=COIN)
         self.kill()
 

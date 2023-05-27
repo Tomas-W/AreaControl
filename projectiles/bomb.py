@@ -52,12 +52,8 @@ class Bomb(Projectile):
         # Offset explosion because of scaling
         self.rect.centerx = self.bomb_location[0] - 25
         self.rect.centery = self.bomb_location[1] - 25
-        print(self.frame)
-        print(self.frame_ticks)
-        print("**********")
-        print("**********")
 
-        if self.frame == 0 and self.frame_ticks == 1:
+        if self.frame == 0 and self.frame_ticks == 1 and self.player.sound_is_on:
             self.death_sound.play()
 
         self.frame_ticks += 1
@@ -88,4 +84,3 @@ class Bomb(Projectile):
 
         else:
             self.manage_explosion()
-
