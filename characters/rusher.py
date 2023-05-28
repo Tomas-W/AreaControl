@@ -1,5 +1,3 @@
-from random import choice
-
 from characters.base_enemy import Enemy
 from interactives.base_pickup import PickUp
 
@@ -20,7 +18,7 @@ class Rusher(Enemy):
         self.image_opacity = 10
 
     def manage_spawn_state(self):
-        """"
+        """
         Controls spawn behaviour of the Rusher.
         Places Rusher in random location,
             plays appear in cage animation and
@@ -132,12 +130,14 @@ class Rusher(Enemy):
 
         # Kill Rusher and place Energy
         if self.frame == self.death_frame:
+            # Spawn PickUp
             PickUp(position=self.rect.center,
                    pickup_name=ENERGY,
                    player=self.player)
-            # Rusher(player=self.player,
-            #        position=choice(RUSHER["start_position"]),
-            #        character=RUSHER)
+
+            # Update Player kills
+            self.player.kills[self.name] += 1
+
             self.kill()
 
     def update(self):

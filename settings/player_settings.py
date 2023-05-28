@@ -41,6 +41,12 @@ PLAYER = {
     "total_health_potions": 22,
     "health_potion_boost": 250,  # linked with health_potion settings
 
+    # kill points
+    "skull_collector_points": 65,
+    "rusher_points": 50,
+    "bat_points": 30,
+    "fish_points": 35,
+
     # buy menu
     "buy_multiplier": 1.1,
     "buy_multiplier_addition": 0.25,

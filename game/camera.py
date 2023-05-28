@@ -378,6 +378,95 @@ class Camera(pygame.sprite.Group):
         screen.blit(bonus_timer_text, (base_x + 650,
                                        base_y + 50))
 
+    def display_game_over(self, screen, player):
+        screen.fill((35, 35, 35))
+
+        # Calculate base position
+        base_position = (player.rect.centerx - DISPLAY["game_over_x_offset"],
+                         player.rect.centery - DISPLAY["game_over_y_offset"])
+        new_base_position = base_position - self.offset
+        base_x = new_base_position[0]
+        base_y = new_base_position[1]
+
+        # Gam over text
+        game_over_text = self.large_font.render("Game Over", True,
+                                                GENERAL["white"])
+        screen.blit(game_over_text, (base_x + 300,
+                                     base_y))
+
+        # SkullCollector image
+        screen.blit(self.skull_collector_image, (base_x + 250,
+                                                 base_y + 100))
+        # SkullCollectors killed
+        skull_collectors_killed_text = self.small_font.render(
+            f"{player.kills['skull_collector']}", True, GENERAL["white"])
+        screen.blit(skull_collectors_killed_text, (base_x + 350,
+                                                   base_y + 135))
+        # SkullCollectors points
+        skull_collectors_killed_text = self.small_font.render(
+            f"=  {player.kill_points['skull_collector'] * player.kills['skull_collector']}", True, GENERAL["white"])
+        screen.blit(skull_collectors_killed_text, (base_x + 650,
+                                                   base_y + 135))
+
+        # Rusher image
+        screen.blit(self.rusher_image, (base_x + 250,
+                                        base_y + 200))
+        # Rushers killed
+        rushers_killed_text = self.small_font.render(
+            f"{player.kills['rusher']}", True, GENERAL["white"])
+        screen.blit(rushers_killed_text, (base_x + 350,
+                                          base_y + 235))
+        # Rusher points
+        rushers_killed_text = self.small_font.render(
+            f"=  {player.kill_points['rusher'] * player.kills['rusher']}", True, GENERAL["white"])
+        screen.blit(rushers_killed_text, (base_x + 650,
+                                          base_y + 235))
+
+        # Bat image
+        screen.blit(self.bat_image, (base_x + 250,
+                                     base_y + 300))
+        # Bats killed
+        bats_killed_text = self.small_font.render(
+            f"{player.kills['bat']}", True, GENERAL["white"])
+        screen.blit(bats_killed_text, (base_x + 350,
+                                       base_y + 355))
+        # Bat points
+        bats_killed_text = self.small_font.render(
+            f"=  {player.kill_points['bat'] * player.kills['bat']}", True, GENERAL["white"])
+        screen.blit(bats_killed_text, (base_x + 650,
+                                       base_y + 355))
+
+        # Fish image
+        screen.blit(self.fish_image, (base_x + 250,
+                                      base_y + 400))
+        # Fish killed
+        fish_killed_text = self.small_font.render(
+            f"{player.kills['fish']}", True, GENERAL["white"])
+        screen.blit(fish_killed_text, (base_x + 350,
+                                       base_y + 455))
+        # Fish points
+        fish_killed_text = self.small_font.render(
+            f"=  {player.kill_points['fish'] * player.kills['fish']}", True, GENERAL["white"])
+        screen.blit(fish_killed_text, (base_x + 650,
+                                       base_y + 455))
+
+        # Divider
+        pygame.draw.rect(screen,
+                         GENERAL["white"],
+                         (base_x + 650, base_y + 510,
+                          125, 4))
+
+        # Total text
+        total_text = self.medium_font.render("Total", True,
+                                             GENERAL["white"])
+        screen.blit(total_text, (base_x + 250,
+                                 base_y + 600))
+        # Total points
+        total_points = self.medium_font.render(
+            f"=  {(player.kill_points['skull_collector'] * player.kills['skull_collector']) + (player.kill_points['rusher'] * player.kills['rusher']) + (player.kill_points['bat'] * player.kills['bat']) + (player.kill_points['fish'] * player.kills['fish'])}", True, GENERAL["white"])
+        screen.blit(total_points, (base_x + 575,
+                                   base_y + 600))
+
     @staticmethod
     def show_hitboxes(screen, player=None, skull_collector=False, rusher=False,
                       bat=False, fish=False,

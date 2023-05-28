@@ -133,12 +133,14 @@ class SkullCollector(Enemy):
 
         # Place Skull and kill SkullCollector
         if self.frame == self.death_frame:
+            # Spawn PickUp
             PickUp(position=self.rect.center,
                    pickup_name=SKULL,
                    player=self.player)
-            # SkullCollector(player=self.player,
-            #                position=(choice(SKULL_COLLECTOR["start_position"])),
-            #                character=SKULL_COLLECTOR)
+
+            # Update Player kills
+            self.player.kills[self.name] += 1
+
             self.kill()
 
     def update(self):

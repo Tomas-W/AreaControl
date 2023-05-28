@@ -31,8 +31,8 @@ SKULL_COLLECTOR = {
     # attributes
     "health": 260,
     "damage": None,
-    "speed": 3,
-    "walk_speed": 4,
+    "speed": 4,
+    "walk_speed": 3,
     "run_speed": None,
     "wave_spawns": [2, 3, 8, 3, 7, 7, 14],
 

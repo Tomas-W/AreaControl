@@ -30,4 +30,7 @@ DISPLAY = {
 
     "countdown_x_offset": 60,
     "countdown_y_offset": 30,
+
+    "game_over_x_offset": 500,
+    "game_over_y_offset": 300,
 }

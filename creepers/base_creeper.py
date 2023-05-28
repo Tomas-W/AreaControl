@@ -183,9 +183,13 @@ class Creeper(pygame.sprite.Sprite):
         if not self.played_death_sound and self.player.sound_is_on:
             self.death_sound.play()
 
+        # Spawn PickUp
         PickUp(player=self.player,
                position=self.rect.center,
                pickup_name=COIN)
+
+        # Update Player ills
+        self.player.kills[self.name] += 1
         self.kill()
 
     def move_to_player(self):
