@@ -115,7 +115,7 @@ class Player(pygame.sprite.Sprite):
         # Distance between player and mouse
         self.dx_mouse_player = (self.mouse_position[0] - GENERAL["half_width"])  # noqa
         self.dy_mouse_player = (self.mouse_position[1] - GENERAL["half_height"])  # noqa
-        # Pythagoras to get angle
+        # Get angle
         self.angle = math.degrees(math.atan2(self.dy_mouse_player,  # noqa
                                    self.dx_mouse_player))
 
@@ -154,7 +154,7 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_s] and self.hitbox.bottom < GENERAL["level_bottom_y"]:
             self.velocity_y = self.speed  # noqa
 
-        # Vertical movement adjust with Pythagoras
+        # Vertical movement adjust
         if self.velocity_x != 0 and self.velocity_y != 0:
             self.velocity_x /= math.sqrt(2)
             self.velocity_x /= math.sqrt(2)
@@ -333,7 +333,7 @@ class Player(pygame.sprite.Sprite):
                 self.is_invincible = False
                 self.invincible_ticks = 0
 
-    def manage_activate_items(self):
+    def manage_health_potions(self):
         keys = pygame.key.get_pressed()
         # Consume health potion
         if keys[pygame.K_q]:
@@ -378,7 +378,7 @@ class Player(pygame.sprite.Sprite):
         self.manage_invincibility()
 
         # Items
-        self.manage_activate_items()
+        self.manage_health_potions()
         if self.item_ticks > 0:
             self.item_ticks -= 1
 

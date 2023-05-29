@@ -77,49 +77,12 @@ class Rusher(Enemy):
             self.strike = False
             self.current_state = "idle"
 
-    def manage_idle_state(self):
-        """
-        Applies Rusher idle state and image properties.
-        """
-        self.set_idle_image()
-
-    def manage_move_state(self):
-        """
-        Applies Rusher move state and image properties.
-        """
-        self.move_to_player()
-        self.set_run_image()
-
-    def manage_strike_state(self):
-        """
-        Applies Rusher strike state and image properties.
-        """
-        if self.is_allowed_to_strike():
-            self.strike_player()
-
-        self.set_strike_image()
-
-    def is_allowed_to_strike(self):
-        """
-        Checks if Rusher is allowed to strike Player.
-
-        :return: Returns True if conditions are met (bool).
-        """
-        return self.frame == self.strike_frame and self.frame_ticks == (
-                    self.strike_ticks // 2) and not self.player.is_invincible
-
-    def strike_player(self):
-        """
-        Deal strike damage to Player.
-        """
-        if self.player.sound_is_on:
-            self.attack_sound.play()
-        self.player.health -= self.damage
-
     def manage_death_state(self):
         """
         Applies Rusher death state and image properties.
         """
+        self.play_death_sound()
+
         self.frame_ticks += 1
 
         self.set_death_image()

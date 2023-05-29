@@ -38,10 +38,10 @@ SKULL_COLLECTOR = {
 
     # states
     "spawn": True,
-    "idle": False,
+    "idle": None,
     "walk": False,
-    "run": False,
-    "strike": False,
+    "run": None,
+    "strike": None,
     "shoot": False,
     "death": False,
     # state duration
@@ -125,10 +125,10 @@ RUSHER = {
     # states
     "spawn": True,
     "idle": False,
-    "walk": False,
+    "walk": None,
     "run": False,
     "strike": False,
-    "shoot": False,
+    "shoot": None,
     "death": False,
     # state duration
     "idle_duration": None,

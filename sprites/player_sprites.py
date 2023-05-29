@@ -18,3 +18,15 @@ PLAYER_SHOOT_SPRITE = pygame.transform.rotozoom(
                 os.path.join(base_dir, "./images/player/player_pistol_fire.png")).convert_alpha(),
             False,
             PLAYER_SIZE)
+
+# PLAYER_SPRITE = pygame.transform.rotozoom(
+#             pygame.image.load(
+#                 os.path.join(base_dir, "./images/player/player_pistol.png")).convert_alpha(),
+#             False,
+#             PLAYER_SIZE)
+#
+# PLAYER_SHOOT_SPRITE = pygame.transform.rotozoom(
+#             pygame.image.load(
+#                 os.path.join(base_dir, "./images/player/player_pistol_fire.png")).convert_alpha(),
+#             False,
+#             PLAYER_SIZE)

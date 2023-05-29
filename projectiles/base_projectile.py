@@ -35,7 +35,7 @@ class Projectile(pygame.sprite.Sprite):
         # Sounds
         if projectile_name["spawn_sound_path"] is not None:
             self.spawn_sound = pygame.mixer.Sound(projectile_name["spawn_sound_path"])
-            self.spawn_sound.set_volume(0.15)
+            self.spawn_sound.set_volume(0.2)
         else:
             self.spawn_sound = None
         if projectile_name["death_sound_path"] is not None:
@@ -62,7 +62,7 @@ class Projectile(pygame.sprite.Sprite):
         # ticks per frame
         self.image_ticks = projectile_name["image_ticks"]
 
-        # play spawn sound
+        # PLAY SPAWN SOUND
         if self.spawn_sound is not None and self.player.sound_is_on:
             self.spawn_sound.play()
 

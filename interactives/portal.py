@@ -88,8 +88,6 @@ class Portal(pygame.sprite.Sprite):
     def reset_portal(self):
         """
         Creates a new Portal and self-destructs.
-
-        :return: New Portal instance.
         """
         if self.portal_ticks == PLAYER["new_location_tick"] - 1:
             Portal(player=self.player,

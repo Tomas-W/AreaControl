@@ -25,7 +25,7 @@ FLAMING_SKULL = {
     "sprite": FLAMING_SKULL_SPRITE,
 
     # sounds
-    "spawn_sound_path": None,
+    "spawn_sound_path": os.path.join(base_dir, "sounds/flaming_skull_sound.mp3"),
     "death_sound_path": None,
 
     "hitbox": (0, (10 * FLAMING_SKULL_SIZE),

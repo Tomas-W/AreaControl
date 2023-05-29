@@ -27,6 +27,7 @@ class Creeper(pygame.sprite.Sprite):
 
         # Image
         self.image = creeper_name["image"].copy()
+        self.image.set_alpha(0)
         # Rect
         self.rect = self.image.get_rect()
         self.rect.center = choice(creeper_name["start_position"])
@@ -92,6 +93,9 @@ class Creeper(pygame.sprite.Sprite):
         elif self.name == "fish":
             fish_sprites.add(self)
 
+        # Misc
+        self.spawned = True
+
     def set_hitbox(self):
         """
         Aligns hitbox with rect.
@@ -100,10 +104,16 @@ class Creeper(pygame.sprite.Sprite):
         self.hitbox.top = self.rect.top + self.hitbox_offset_y
 
     def set_state(self):
+        # Hide in first frame to allow setting position
+        if not self.spawned:
+            self.image.set_alpha(255)
+        if self.spawned:
+            self.spawned = False
 
         if self.health <= 0:
             self.kill_self()
 
+        # Once a Creeper chases, it chases indefinitely
         if not self.chase:
             distance_to_player = get_distance(location_a=self.player.hitbox.center,
                                               location_b=self.hitbox.center)
@@ -144,7 +154,7 @@ class Creeper(pygame.sprite.Sprite):
 
     def circle_location(self):
         """
-        Moves Creeper in circular motion around a position.
+        Moves Creeper in circular motion around its spawn position.
         """
         angle_radians = self.angle * pi / 180
 
@@ -175,6 +185,7 @@ class Creeper(pygame.sprite.Sprite):
         return self.hitbox.colliderect(self.player.hitbox) and not self.player.is_invincible
 
     def strike_player(self):
+        # No points when Player kills Creeper
         self.player.health -= self.damage
         self.kill()
 
@@ -188,7 +199,7 @@ class Creeper(pygame.sprite.Sprite):
                position=self.rect.center,
                pickup_name=COIN)
 
-        # Update Player ills
+        # Update Player kills
         self.player.kills[self.name] += 1
         self.kill()
 

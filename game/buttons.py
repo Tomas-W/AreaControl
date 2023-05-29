@@ -8,7 +8,7 @@ clicked_time = time.time()
 
 
 class Button:
-    def __init__(self, x, y, image, scale, name, player):
+    def __init__(self, x, y, image, scale, name):
         width = image.get_width()
         height = image.get_height()
         self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale)))
@@ -25,22 +25,22 @@ class Button:
         self.play_game_sound.set_volume(0.3)
 
         self.name = name
-        self.player = player
 
-    def draw(self, surface):
+    def draw(self, surface, sound_is_on):
         global clicked_time
-
         action = False
-        # get mouse position
+
         pos = pygame.mouse.get_pos()
 
-        # check mouseover and clicked conditions
+        # Collision with Button
         if self.rect.collidepoint(pos):
-            # Hover sound
-            if self.image.get_alpha() < 255 and self.player.sound_is_on:
+
+            # Hover
+            if self.image.get_alpha() < 255 and sound_is_on:
                 self.button_hover_sound.play()
             self.image.set_alpha(255)
 
+            # Click
             if pygame.mouse.get_pressed()[0] == 1 and not self.clicked:
                 if time.time() - clicked_time > 0.5:
                     clicked_time = time.time()
@@ -49,21 +49,21 @@ class Button:
 
                     # Play correct sound
                     if self.name == "play" or self.name == "restart":
-                        if self.player.sound_is_on:
+                        if sound_is_on:
                             self.play_game_sound.play()
                         time.sleep(0.5)
 
                     else:
-                        if self.player.sound_is_on:
+                        if not sound_is_on:
                             self.button_click_sound.play()
 
         else:
+            # Button not selected
             self.image.set_alpha(175)
 
         if not pygame.mouse.get_pressed()[0]:
             self.clicked = False
 
-        # draw button on screen
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
         return action

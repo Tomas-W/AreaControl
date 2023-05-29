@@ -64,6 +64,7 @@ class PickUp(pygame.sprite.Sprite):
     def kill_self(self):
         if self.player.sound_is_on:
             self.pick_up_sound.play()
+
         self.kill()
 
     def update(self):
