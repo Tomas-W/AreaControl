@@ -1,3 +1,7 @@
+import time
+
+import pygame
+
 from settings.general_settings import GENERAL
 from settings.menu_settings import DISPLAY
 from settings.player_settings import PLAYER
@@ -404,7 +408,8 @@ class Camera(pygame.sprite.Group):
                                                    base_y + 135))
         # SkullCollectors points
         skull_collectors_killed_text = self.small_font.render(
-            f"=  {player.kill_points['skull_collector'] * player.kills['skull_collector']}", True, GENERAL["white"])
+            f"=  {player.kill_points['skull_collector'] * player.kills['skull_collector']}", True,
+            GENERAL["white"])
         screen.blit(skull_collectors_killed_text, (base_x + 650,
                                                    base_y + 135))
 
@@ -460,12 +465,37 @@ class Camera(pygame.sprite.Group):
         total_text = self.medium_font.render("Total", True,
                                              GENERAL["white"])
         screen.blit(total_text, (base_x + 250,
-                                 base_y + 600))
+                                 base_y + 575))
         # Total points
         total_points = self.medium_font.render(
-            f"=  {(player.kill_points['skull_collector'] * player.kills['skull_collector']) + (player.kill_points['rusher'] * player.kills['rusher']) + (player.kill_points['bat'] * player.kills['bat']) + (player.kill_points['fish'] * player.kills['fish'])}", True, GENERAL["white"])
+            f"=  {(player.kill_points['skull_collector'] * player.kills['skull_collector']) + (player.kill_points['rusher'] * player.kills['rusher']) + (player.kill_points['bat'] * player.kills['bat']) + (player.kill_points['fish'] * player.kills['fish'])}",
+            True, GENERAL["white"])
         screen.blit(total_points, (base_x + 575,
-                                   base_y + 600))
+                                   base_y + 575))
+
+        # Enter name text
+        enter_name_text = self.medium_font.render("Name:", True,
+                                                  GENERAL["white"])
+        screen.blit(enter_name_text, (base_x + 255,
+                                      base_y + 650))
+        # # Enter name
+        # name_text = ""
+        # while True:
+        #     for event in pygame.event.get():
+        #         if event.type == pygame.KEYDOWN:
+        #             print(name_text)
+        #
+        #             if event.key == pygame.K_BACKSPACE:
+        #                 name_text = name_text[:-1]
+        #
+        #             else:
+        #                 name_text += event.unicode
+
+                # name_text_render = self.medium_font.render(
+                #     f"{name_text}",
+                #     True, GENERAL["white"])
+                # screen.blit(name_text_render, (base_x + 575,
+                #                                base_y + 650))
 
     @staticmethod
     def show_hitboxes(screen, player=None, skull_collector=False, rusher=False,

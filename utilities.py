@@ -1,7 +1,7 @@
 import colorsys
-from random import randint
-
+import csv
 import pygame
+from random import randint
 
 import soundfile as sf
 import numpy as np
@@ -309,3 +309,52 @@ def get_sprites(sheet, number_sprites, width, height, scale, color):
         sprites.append(image)
 
     return sprites
+
+
+def get_player_score(player):
+    return (player.kill_points['skull_collector'] * player.kills['skull_collector']) + (
+                player.kill_points['rusher'] * player.kills['rusher']) + (
+                player.kill_points['bat'] * player.kills['bat']) + (
+                player.kill_points['fish'] * player.kills['fish'])
+
+
+def get_leaderboard_scores():
+    scores = []
+    with open("C:\Coding\Projects\Game\highscores.csv", "r") as f:
+        reader = csv.reader(f)
+        next(reader)  # Skip the header row
+        scores = list(reader)
+
+    # Sort the scores by descending order of score
+    scores.sort(key=lambda x: int(x[1]), reverse=True)
+
+    # Get the top 10 entries or all if less than 10
+    top_scores = scores[:10]
+
+    # Convert the entries to tuples
+    top_scores = [(entry[0], int(entry[1])) for entry in top_scores]
+
+    return top_scores
+
+
+def save_player_score(player):
+    # Read existing data from the CSV file
+    scores = []
+    with open("C:\Coding\Projects\Game\highscores.csv", "r") as f:
+        reader = csv.reader(f)
+        header = next(reader)  # Skip the header row
+        scores = list(reader)
+
+    # Score
+    score = get_player_score(player)
+    # Append the new player's score to the existing data
+    scores.append([player.highscore_name, str(score)])
+
+    # Sort the data by score in descending order
+    scores.sort(key=lambda x: int(x[1]), reverse=True)
+
+    # Save the sorted data back to the CSV file
+    with open("C:\Coding\Projects\Game\highscores.csv", "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        writer.writerows(scores)

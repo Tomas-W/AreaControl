@@ -25,6 +25,7 @@ class Button:
         self.play_game_sound.set_volume(0.3)
 
         self.name = name
+        self.image.set_alpha(175)
 
     def draw(self, surface, sound_is_on):
         global clicked_time
@@ -54,7 +55,7 @@ class Button:
                         time.sleep(0.5)
 
                     else:
-                        if not sound_is_on:
+                        if sound_is_on:
                             self.button_click_sound.play()
 
         else:

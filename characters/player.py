@@ -94,6 +94,7 @@ class Player(pygame.sprite.Sprite):
             "bat": PLAYER["bat_points"],
             "fish": PLAYER["fish_points"],
         }
+        self.highscore_name = ""
 
     # ################################################################ #
     # ############################ MOVING ############################ #
@@ -353,6 +354,20 @@ class Player(pygame.sprite.Sprite):
             self.add_health_sound.play()
 
         self.health_checker = self.health
+
+    def get_score(self):
+        """
+        G
+        Returns Players final score after game has ended.
+        Multiplies Enemy kills with theirs corresponding points.
+
+        :return: Players total score (int).
+        """
+        player_score = 0
+        for (key, val), (key2, val2) in zip(self.kills.items(), self.kill_points.items()):
+            player_score += val * val2
+
+        return player_score
 
     def update(self):
         # Move (do not change order)

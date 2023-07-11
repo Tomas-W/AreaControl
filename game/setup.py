@@ -36,7 +36,7 @@ from settings.projectile_settings import BULLET, BOMB
 
 from utilities import handle_incoming_projectiles, handle_outgoing_projectiles, handle_pickups, \
     all_sprites, handle_outgoing_bombs, enemy_sprites, all_creeper_sprites, buy_bullet_upgrade, \
-    buy_bomb_upgrade, buy_bomb, buy_portal
+    buy_bomb_upgrade, buy_bomb, buy_portal, save_player_score, get_leaderboard_scores
 
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
@@ -144,6 +144,14 @@ class Game:
                                   scale=1,
                                   name="back")
 
+        self.back_button_lb_image = pygame.image.load(
+            DISPLAY["back_btn_img"]).convert_alpha()
+        self.back_button_lb = Button(x=700,
+                                     y=790,
+                                     image=self.back_button_image,
+                                     scale=1,
+                                     name="back")
+
         # Settings button images
         self.btn_q = BUTTON_Q_CAMERA_IMAGE
         self.btn_w = BUTTON_W_CAMERA_IMAGE
@@ -162,20 +170,20 @@ class Game:
         # States
         self.game_is_running = True
         self.is_playing_game = False
+        self.game_is_over = False
 
         self.main_menu_shown = True
         self.settings_menu_shown = False
+        self.leaderboard_menu_shown = False
         self.credits_menu_shown = False
         self.pause_menu_shown = False
-
-        self.game_is_over = False
 
         # Trackers
         self.test_tick = 0
         self.wave_pause_ticks = 0
         self.wave_pause = GENERAL["wave_pause"]  # how long is the buy period
         self.buy_tick = GENERAL["buy_tick"]  # to prevent double buys
-        self.bonus_ticks_list = [2000, 2100, 2600, 3000, 3000, 3500, 4000]
+        self.bonus_ticks_list = [2000, 2100, 2600, 3000, 3000, 3500, 4000]  # time per wave
         self.bonus_ticks = self.bonus_ticks_list[0]
 
         # Misc
@@ -202,8 +210,8 @@ class Game:
         # Trackers
         self.test_tick = 0
         self.wave_pause_ticks = 0
-        self.wave_pause = GENERAL["wave_pause"]  # how long is the buy period
-        self.buy_tick = GENERAL["buy_tick"]  # to prevent double buys
+        self.wave_pause = GENERAL["wave_pause"]
+        self.buy_tick = GENERAL["buy_tick"]
         self.bonus_ticks = self.bonus_ticks_list[0]
 
         # Settings
@@ -296,6 +304,7 @@ class Game:
         """
         self.main_menu_shown = False
         self.settings_menu_shown = False
+        self.leaderboard_menu_shown = False
         self.credits_menu_shown = False
         self.pause_menu_shown = False
 
@@ -307,6 +316,9 @@ class Game:
 
         # Menu buttons
         if self.play_button.draw(self.screen, self.sound_is_on):
+            temp_name = self.player.highscore_name
+            self.reset_game()
+            self.player.highscore_name = temp_name
             self.turn_off_menus()
             self.is_playing_game = True
 
@@ -316,7 +328,8 @@ class Game:
             self.before_settings_menu = "home"
 
         elif self.leaderboard_button.draw(self.screen, self.sound_is_on):
-            print(": test")
+            self.turn_off_menus()
+            self.leaderboard_menu_shown = True
 
         elif self.credits_button.draw(self.screen, self.sound_is_on):
             self.turn_off_menus()
@@ -386,6 +399,43 @@ class Game:
             elif self.before_settings_menu == "home":
                 self.turn_off_menus()
                 self.main_menu_shown = True
+
+    def display_leaderboad_menu(self):
+        screen.fill((35, 35, 35))
+
+        # Calculate base position
+        base_x = 300
+        base_y = 150
+
+        # Get scores
+        top_scores = get_leaderboard_scores()
+
+        # Gam over text
+        leaderboard_text = self.large_font.render("Leaderboard", True,
+                                                  GENERAL["white"])
+        screen.blit(leaderboard_text, (base_x + 300,
+                                       base_y))
+
+        for i, item in enumerate(top_scores):
+            name = self.small_font.render(
+                f"{item[0]}", True, GENERAL["white"])
+            screen.blit(name, (base_x + 350,
+                               base_y + 135 + (i * 50)))
+
+            score = self.small_font.render(
+                f"{item[1]}", True, GENERAL["white"])
+            screen.blit(score, (base_x + 650,
+                                base_y + 135 + (i * 50)))
+
+            # Back Button
+            if self.back_button_lb.draw(self.screen, self.sound_is_on):
+                if self.before_settings_menu == "pause":
+                    self.turn_off_menus()
+                    self.pause_menu_shown = True
+
+                elif self.before_settings_menu == "home":
+                    self.turn_off_menus()
+                    self.main_menu_shown = True
 
     def display_credit_menu(self):
         """
@@ -517,10 +567,40 @@ class Game:
             # Events (key presses)
             self.operate_special_keys()
 
+            # Check death
+            if self.player.health < 0 and self.is_playing_game:
+                self.game_is_over = True
+                self.is_playing_game = False
+
             # Game over menu
             if self.game_is_over:
-                self.camera.display_game_over(screen=self.screen,
-                                              player=self.player)
+                self.camera.display_game_over(screen=self.screen, player=self.player)
+
+                # Calculate base position
+                base_x = 300
+                base_y = 150
+
+                # Enter name
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        print(f"name: {self.player.highscore_name}")
+
+                        if event.key == pygame.K_BACKSPACE:
+                            self.player.highscore_name = self.player.highscore_name[:-1]
+
+                        if event.key == pygame.K_RETURN:
+                            save_player_score(self.player)
+                            self.turn_off_menus()
+                            self.game_is_over = False
+                            self.main_menu_shown = True
+
+                        else:
+                            self.player.highscore_name += event.unicode
+
+                name_text_render = self.medium_font.render(
+                    f"{self.player.highscore_name}",
+                    True, GENERAL["white"])
+                screen.blit(name_text_render, (base_x + 575, base_y + 650))
 
             # Pause menu
             elif self.pause_menu_shown:
@@ -529,6 +609,10 @@ class Game:
             # Settings menu
             elif self.settings_menu_shown:
                 self.display_settings_menu()
+
+            # Leaderboard menu
+            elif self.leaderboard_menu_shown:
+                self.display_leaderboad_menu()
 
             # Credits menu
             elif self.credits_menu_shown:
@@ -547,7 +631,8 @@ class Game:
 
                     if self.wave_pause_ticks == self.wave_pause:
                         # Start wave after buy phase
-                        self.bonus_ticks = self.bonus_ticks_list[self.player.wave_level]  # Set bonus timer
+                        self.bonus_ticks = self.bonus_ticks_list[
+                            self.player.wave_level]  # Set bonus timer
                         self.wave_pause_ticks = 0
                         self.spawn_waves()
                         self.player.wave_level += 1
