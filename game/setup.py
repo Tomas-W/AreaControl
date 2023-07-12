@@ -4,6 +4,8 @@ from random import choice
 import pygame
 from pygame.locals import *
 
+from game.buttons import Button
+from game.camera import Camera
 from settings.general_settings import GENERAL
 from sprites.camera_sprites import BUTTON_Q_CAMERA_IMAGE, BUTTON_E_CAMERA_IMAGE, \
     BUTTON_W_CAMERA_IMAGE, BUTTON_S_CAMERA_IMAGE, MOUSE_L_CAMERA_IMAGE, BUTTON_A_CAMERA_IMAGE, \
@@ -16,8 +18,6 @@ screen = pygame.display.set_mode((GENERAL["width"],
 pygame.display.set_caption(GENERAL["title"])
 pygame.event.set_allowed([QUIT, K_w, K_s, K_a, K_d, MOUSEBUTTONDOWN])
 
-from game.camera import Camera
-from game.buttons import Button
 from fonts.fonts import *
 
 from characters.player import Player

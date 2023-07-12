@@ -346,11 +346,11 @@ def save_player_score(player):
     score = get_player_score(player)
     scores.append([player.highscore_name, str(score)])
 
-    # Sort top 10 in descending order
-    scores[:10].sort(key=lambda x: int(x[1]), reverse=True)
+    # Sort in descending order
+    scores.sort(key=lambda x: int(x[1]), reverse=True)
 
-    # Save the sorted data
+    # Save the top 10
     with open(HIGHSCORES_PATH, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(header)
-        writer.writerows(scores)
+        writer.writerows(scores[:10])
