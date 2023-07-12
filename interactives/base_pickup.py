@@ -2,7 +2,7 @@ from random import choice
 
 import pygame
 
-from utilities.helpers import all_sprites, energy_sprites, skull_sprites, coin_sprites, \
+from utilities.sprite_groups import all_sprites, energy_sprites, skull_sprites, coin_sprites, \
     health_potion_sprites
 
 

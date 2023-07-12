@@ -38,9 +38,11 @@ from settings.enemy_settings import SKULL_COLLECTOR, RUSHER
 from settings.creeper_settings import BAT, FISH
 
 
-from utilities.helpers import handle_incoming_projectiles, handle_outgoing_projectiles, handle_pickups, \
-    all_sprites, handle_outgoing_bombs, enemy_sprites, all_creeper_sprites, save_player_score, \
-    buy_bullet_upgrade, buy_bomb_upgrade, buy_bomb, buy_portal
+from utilities.sprite_groups import all_sprites, enemy_sprites, all_creeper_sprites
+from utilities.general import save_player_score
+from utilities.game_interactions import handle_incoming_projectiles, handle_outgoing_projectiles, handle_outgoing_bombs
+from utilities.player_interactions import buy_bullet_upgrade, buy_bomb, buy_bomb_upgrade, \
+    buy_portal, handle_pickups
 
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 

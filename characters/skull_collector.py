@@ -4,7 +4,7 @@ from interactives.base_pickup import PickUp
 from settings.general_settings import GENERAL
 from settings.interactives_settings import SKULL
 
-from utilities.helpers import get_distance
+from utilities.game_physics import get_distance
 
 from settings.enemy_settings import SKULL_COLLECTOR
 

@@ -5,7 +5,7 @@ import pygame
 
 from settings.general_settings import FLAMING_SKULL_SIZE, BULLET_SIZE, BOMB_SPRITE_WIDTH, \
     BOMB_SPRITE_HEIGHT, BOMB_SIZE, GENERAL
-from utilities.helpers import get_sprites
+from utilities.general import get_sprites
 
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 

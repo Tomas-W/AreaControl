@@ -5,7 +5,7 @@ import pygame
 
 from settings.general_settings import BAT_SPRITE_WIDTH, BAT_SPRITE_HEIGHT, BAT_SIZE, GENERAL, \
     FISH_SPRITE_WIDTH, FISH_SPRITE_HEIGHT, FISH_SIZE
-from utilities.helpers import get_sprites
+from utilities.general import get_sprites
 
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 

@@ -7,7 +7,7 @@ from settings.creeper_settings import BAT, FISH
 from sprites.camera_sprites import *
 from fonts.fonts import *
 
-from utilities.helpers import get_health_color_list
+from utilities.general import get_health_color_list
 
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 

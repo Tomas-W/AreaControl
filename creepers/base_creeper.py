@@ -5,8 +5,9 @@ import pygame
 
 from interactives.base_pickup import PickUp
 from settings.interactives_settings import COIN
-from utilities.helpers import all_sprites, get_distance, get_direction, bat_sprites, fish_sprites, \
+from utilities.sprite_groups import all_sprites, bat_sprites, fish_sprites, \
     all_creeper_sprites
+from utilities.game_physics import get_distance, get_direction
 
 
 class Creeper(pygame.sprite.Sprite):

@@ -3,7 +3,8 @@ import pygame
 from settings.interactives_settings import PORTAL
 from settings.player_settings import PLAYER
 from sprites.interactives_sprites import PORTAL_SPRITES
-from utilities import all_sprites, get_new_portal_center, portal_sprites
+from utilities.sprite_groups import all_sprites, portal_sprites
+from utilities.game_physics import get_new_portal_center
 
 
 class Portal(pygame.sprite.Sprite):

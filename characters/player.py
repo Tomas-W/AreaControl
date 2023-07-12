@@ -5,7 +5,7 @@ import pygame
 from projectiles.bomb import Bomb
 from projectiles.bullet import Bullet
 
-from utilities.helpers import player_sprite, all_sprites
+from utilities.sprite_groups import player_sprite, all_sprites
 
 from settings.general_settings import GENERAL, PLAYER_SIZE
 from settings.player_settings import PLAYER

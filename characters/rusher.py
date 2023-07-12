@@ -3,7 +3,7 @@ from interactives.base_pickup import PickUp
 
 from settings.interactives_settings import ENERGY
 
-from utilities.helpers import get_distance
+from utilities.game_physics import get_distance
 
 from settings.enemy_settings import RUSHER
 

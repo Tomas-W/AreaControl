@@ -7,7 +7,7 @@ from settings.general_settings import GENERAL, ENERGY_SIZE, PORTAL_SIZE, PORTAL_
     SKULL_SPRITE_WIDTH, SKULL_SPRITE_HEIGHT, ENERGY_SPRITE_HEIGHT, ENERGY_SPRITE_WIDTH, \
     PORTAL_SPRITE_HEIGHT, SKULL_SIZE, COIN_SPRITE_WIDTH, COIN_SPRITE_HEIGHT, COIN_SIZE, \
     HEALTH_POTION_SPRITE_WIDTH, HEALTH_POTION_SPRITE_HEIGHT, HEALTH_POTION_SIZE
-from utilities.helpers import get_sprites
+from utilities.general import get_sprites
 
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 

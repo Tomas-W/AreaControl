@@ -7,7 +7,7 @@ from settings.enemy_settings import SKULL_COLLECTOR_SIZE, RUSHER_SIZE, GOLEM_SIZ
 from settings.general_settings import GENERAL, SKULL_COLLECTOR_SPRITE_WIDTH, \
     SKULL_COLLECTOR_SPRITE_HEIGHT, RUSHER_SPRITE_WIDTH, RUSHER_SPRITE_HEIGHT, GOLEM_SPRITE_WIDTH, \
     GOLEM_SPRITE_HEIGHT
-from utilities.helpers import get_sprites
+from utilities.general import get_sprites
 
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 

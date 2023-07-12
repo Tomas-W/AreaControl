@@ -8,7 +8,7 @@ from fonts.fonts import *
 
 from settings.menu_settings import DISPLAY
 
-from utilities.helpers import get_leaderboard_scores
+from utilities.general import get_leaderboard_scores
 
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
