@@ -38,7 +38,7 @@ from settings.enemy_settings import SKULL_COLLECTOR, RUSHER
 from settings.creeper_settings import BAT, FISH
 
 
-from utilities import handle_incoming_projectiles, handle_outgoing_projectiles, handle_pickups, \
+from utilities.helpers import handle_incoming_projectiles, handle_outgoing_projectiles, handle_pickups, \
     all_sprites, handle_outgoing_bombs, enemy_sprites, all_creeper_sprites, save_player_score, \
     buy_bullet_upgrade, buy_bomb_upgrade, buy_bomb, buy_portal
 
@@ -121,7 +121,7 @@ class GameSetup:
 
     def operate_special_keys(self):
         """
-        Listens for key presses while playing game.
+        Listens for key presses while playing utilities.
         User can:
             Pause
             Exit
@@ -340,11 +340,11 @@ class GameSetup:
 
     def run_game(self):
         """
-        Runs the game.
+        Runs the utilities.
 
         Listens for events.
         Checks if menu's should be displayed.
-        Checks if game is running.
+        Checks if utilities is running.
         Checks wave spawns.
         Calls utility handlers.
         Draws sprites.
@@ -398,7 +398,7 @@ class GameSetup:
                     True, GENERAL["white"])
                 screen.blit(name_text_render, (base_x + 575, base_y + 650))
 
-            # Play game
+            # Play utilities
             elif self.is_playing_game:
                 # Events (key presses)
                 self.operate_special_keys()

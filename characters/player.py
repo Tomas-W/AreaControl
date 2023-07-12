@@ -5,7 +5,7 @@ import pygame
 from projectiles.bomb import Bomb
 from projectiles.bullet import Bullet
 
-from utilities import player_sprite, all_sprites
+from utilities.helpers import player_sprite, all_sprites
 
 from settings.general_settings import GENERAL, PLAYER_SIZE
 from settings.player_settings import PLAYER
@@ -358,7 +358,7 @@ class Player(pygame.sprite.Sprite):
     def get_score(self):
         """
         G
-        Returns Players final score after game has ended.
+        Returns Players final score after utilities has ended.
         Multiplies Enemy kills with theirs corresponding points.
 
         :return: Players total score (int).

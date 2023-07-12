@@ -7,7 +7,7 @@ from settings.general_settings import GENERAL
 clicked_time = time.time()
 
 
-class Button:
+class DisplayButtons:
     def __init__(self, x, y, image, scale, name):
         width = image.get_width()
         height = image.get_height()

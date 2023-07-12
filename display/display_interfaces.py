@@ -7,14 +7,14 @@ from settings.creeper_settings import BAT, FISH
 from sprites.camera_sprites import *
 from fonts.fonts import *
 
-from utilities import get_health_color_list
+from utilities.helpers import get_health_color_list
 
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 
 class DisplayInterfaces(pygame.sprite.Group):
     """
-    Blits in-game information to screen e.g.
+    Blits in-utilities information to screen e.g.
         items, wave info, buy info
     """
 
@@ -59,7 +59,7 @@ class DisplayInterfaces(pygame.sprite.Group):
     def show_stats(self):
         """
         Displays player attributes to the screen.
-        Includes health and skill game.
+        Includes health and skill utilities.
         """
         # Calculate base position (health-bar)
         base_position = (self.player.rect.centerx - DISPLAY["health_bar_x_offset"] ,
@@ -332,7 +332,7 @@ class DisplayInterfaces(pygame.sprite.Group):
     def show_hud(self):
         """
         Displays player attributes to the screen.
-        Includes health and skill game.
+        Includes health and skill utilities.
         """
         # Calculate base position (health-bar)
         base_position = (self.player.rect.centerx - DISPLAY["health_bar_x_offset"],

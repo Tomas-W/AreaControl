@@ -2,7 +2,7 @@ import math
 
 import pygame
 
-from utilities import all_sprites, all_projectile_sprites, player_projectile_sprites, \
+from utilities.helpers import all_sprites, all_projectile_sprites, player_projectile_sprites, \
     enemy_projectile_sprites, bomb_sprites
 
 

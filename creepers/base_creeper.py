@@ -5,7 +5,7 @@ import pygame
 
 from interactives.base_pickup import PickUp
 from settings.interactives_settings import COIN
-from utilities import all_sprites, get_distance, get_direction, bat_sprites, fish_sprites, \
+from utilities.helpers import all_sprites, get_distance, get_direction, bat_sprites, fish_sprites, \
     all_creeper_sprites
 
 

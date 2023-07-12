@@ -3,7 +3,7 @@ import math
 import pygame as pygame
 
 from projectiles.flaming_skull import FlamingSkull
-from utilities import all_sprites, enemy_sprites, get_direction
+from utilities.helpers import all_sprites, enemy_sprites, get_direction
 
 
 class Enemy(pygame.sprite.Sprite):

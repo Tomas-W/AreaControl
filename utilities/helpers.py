@@ -31,7 +31,7 @@ health_potion_sprites = pygame.sprite.Group()
 all_interactives_sprites = pygame.sprite.Group()
 portal_sprites = pygame.sprite.Group()
 
-HIGHSCORES_PATH = "C:\\Coding\\Projects\\Game\\highscores.csv"
+HIGHSCORES_PATH = "./highscores.csv"
 
 
 def shorten_audio(source_file, destination_file, desired_duration):

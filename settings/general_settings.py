@@ -16,7 +16,7 @@ GENERAL = {
     "half_height": 450,
 
     # level
-    "background_path": os.path.join(base_dir, "./images/game/level_medium.png"),
+    "background_path": os.path.join(base_dir, "images/game/level_medium.png"),
     "menu_background_path": os.path.join(base_dir, "./images/game/menu_background.png"),
 
     "left_x_min": 900,

@@ -1,7 +1,7 @@
 from projectiles.base_projectile import Projectile
 from settings.projectile_settings import BOMB
 from sprites.projectile_sprites import BOMB_EXPLOSION_SPRITES
-from utilities import get_distance
+from utilities.helpers import get_distance
 
 
 class Bomb(Projectile):

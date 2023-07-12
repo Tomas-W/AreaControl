@@ -1,4 +1,4 @@
-from game.buttons import Button
+from display.display_buttons import DisplayButtons
 from settings.general_settings import GENERAL
 from sprites.camera_sprites import BUTTON_Q_CAMERA_IMAGE, BUTTON_E_CAMERA_IMAGE, \
     BUTTON_W_CAMERA_IMAGE, BUTTON_S_CAMERA_IMAGE, MOUSE_L_CAMERA_IMAGE, BUTTON_A_CAMERA_IMAGE, \
@@ -8,7 +8,7 @@ from fonts.fonts import *
 
 from settings.menu_settings import DISPLAY
 
-from utilities import get_leaderboard_scores
+from utilities.helpers import get_leaderboard_scores
 
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
@@ -36,90 +36,90 @@ class DisplayMenus:
         self.first_menu_button_y = 0.144 * GENERAL["width"]
 
         self.play_button_image = pygame.image.load(DISPLAY["play_btn_img"]).convert_alpha()
-        self.play_button = Button(x=self.first_menu_button_x,
-                                  y=self.first_menu_button_y,
-                                  image=self.play_button_image,
-                                  scale=1,
-                                  name="play")
+        self.play_button = DisplayButtons(x=self.first_menu_button_x,
+                                          y=self.first_menu_button_y,
+                                          image=self.play_button_image,
+                                          scale=1,
+                                          name="play")
 
         self.settings_button_image = pygame.image.load(DISPLAY["settings_btn_img"]).convert_alpha()
-        self.settings_button = Button(x=self.first_menu_button_x,
-                                      y=self.first_menu_button_y + 90,
-                                      image=self.settings_button_image,
-                                      scale=1,
-                                      name="settings")
+        self.settings_button = DisplayButtons(x=self.first_menu_button_x,
+                                              y=self.first_menu_button_y + 90,
+                                              image=self.settings_button_image,
+                                              scale=1,
+                                              name="settings")
 
         self.leaderboard_button_image = pygame.image.load(
             DISPLAY["leaderboard_btn_img"]).convert_alpha()
-        self.leaderboard_button = Button(x=self.first_menu_button_x,
-                                         y=self.first_menu_button_y + 180,
-                                         image=self.leaderboard_button_image,
-                                         scale=1,
-                                         name="leaderboard")
+        self.leaderboard_button = DisplayButtons(x=self.first_menu_button_x,
+                                                 y=self.first_menu_button_y + 180,
+                                                 image=self.leaderboard_button_image,
+                                                 scale=1,
+                                                 name="leaderboard")
 
         self.credits_button_image = pygame.image.load(
             DISPLAY["credits_btn_img"]).convert_alpha()
-        self.credits_button = Button(x=self.first_menu_button_x,
-                                     y=self.first_menu_button_y + 270,
-                                     image=self.credits_button_image,
-                                     scale=1,
-                                     name="credits")
+        self.credits_button = DisplayButtons(x=self.first_menu_button_x,
+                                             y=self.first_menu_button_y + 270,
+                                             image=self.credits_button_image,
+                                             scale=1,
+                                             name="credits")
 
         self.sounds_on_button_image = pygame.image.load(
             DISPLAY["sounds_on_btn_img"]).convert_alpha()
-        self.sounds_on_button = Button(x=self.first_menu_button_x,
-                                       y=self.first_menu_button_y + 360,
-                                       image=self.sounds_on_button_image,
-                                       scale=1,
-                                       name="sounds_on")
+        self.sounds_on_button = DisplayButtons(x=self.first_menu_button_x,
+                                               y=self.first_menu_button_y + 360,
+                                               image=self.sounds_on_button_image,
+                                               scale=1,
+                                               name="sounds_on")
 
         self.sounds_off_button_image = pygame.image.load(
             DISPLAY["sounds_off_btn_img"]).convert_alpha()
-        self.sounds_off_button = Button(x=self.first_menu_button_x,
-                                        y=self.first_menu_button_y + 360,
-                                        image=self.sounds_off_button_image,
-                                        scale=1,
-                                        name="sounds_off")
+        self.sounds_off_button = DisplayButtons(x=self.first_menu_button_x,
+                                                y=self.first_menu_button_y + 360,
+                                                image=self.sounds_off_button_image,
+                                                scale=1,
+                                                name="sounds_off")
 
         self.main_menu_button_image = pygame.image.load(
             DISPLAY["main_menu_btn_img"]).convert_alpha()
-        self.main_menu_button = Button(x=self.first_menu_button_x,
-                                       y=self.first_menu_button_y + 360,
-                                       image=self.main_menu_button_image,
-                                       scale=1,
-                                       name="main")
+        self.main_menu_button = DisplayButtons(x=self.first_menu_button_x,
+                                               y=self.first_menu_button_y + 360,
+                                               image=self.main_menu_button_image,
+                                               scale=1,
+                                               name="main")
 
         self.continue_button_image = pygame.image.load(
             DISPLAY["continue_btn_img"]).convert_alpha()
-        self.continue_button = Button(x=self.first_menu_button_x,
-                                      y=self.first_menu_button_y,
-                                      image=self.continue_button_image,
-                                      scale=1,
-                                      name="continue")
+        self.continue_button = DisplayButtons(x=self.first_menu_button_x,
+                                              y=self.first_menu_button_y,
+                                              image=self.continue_button_image,
+                                              scale=1,
+                                              name="continue")
 
         self.restart_button_image = pygame.image.load(
             DISPLAY["restart_btn_img"]).convert_alpha()
-        self.restart_button = Button(x=self.first_menu_button_x,
-                                     y=self.first_menu_button_y + 180,
-                                     image=self.restart_button_image,
-                                     scale=1,
-                                     name="restart")
+        self.restart_button = DisplayButtons(x=self.first_menu_button_x,
+                                             y=self.first_menu_button_y + 180,
+                                             image=self.restart_button_image,
+                                             scale=1,
+                                             name="restart")
 
         self.back_button_image = pygame.image.load(
             DISPLAY["back_btn_img"]).convert_alpha()
-        self.back_button = Button(x=self.first_menu_button_x,
-                                  y=self.first_menu_button_y + 360,
-                                  image=self.back_button_image,
-                                  scale=1,
-                                  name="back")
+        self.back_button = DisplayButtons(x=self.first_menu_button_x,
+                                          y=self.first_menu_button_y + 360,
+                                          image=self.back_button_image,
+                                          scale=1,
+                                          name="back")
 
         self.back_button_lb_image = pygame.image.load(
             DISPLAY["back_btn_img"]).convert_alpha()
-        self.back_button_lb = Button(x=700,
-                                     y=790,
-                                     image=self.back_button_image,
-                                     scale=1,
-                                     name="back")
+        self.back_button_lb = DisplayButtons(x=700,
+                                             y=790,
+                                             image=self.back_button_image,
+                                             scale=1,
+                                             name="back")
 
         # Settings button images
         self.btn_q = BUTTON_Q_CAMERA_IMAGE

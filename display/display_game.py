@@ -2,7 +2,7 @@ import os
 import pygame
 import sys
 
-from utilities import all_sprites
+from utilities.helpers import all_sprites
 
 from settings.general_settings import GENERAL
 

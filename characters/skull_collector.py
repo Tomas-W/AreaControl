@@ -1,13 +1,10 @@
-import math
-
 from characters.base_enemy import Enemy
 from interactives.base_pickup import PickUp
-from projectiles.flaming_skull import FlamingSkull
 
 from settings.general_settings import GENERAL
 from settings.interactives_settings import SKULL
 
-from utilities import get_distance
+from utilities.helpers import get_distance
 
 from settings.enemy_settings import SKULL_COLLECTOR
 
