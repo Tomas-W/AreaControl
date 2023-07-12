@@ -49,10 +49,14 @@ class Button:
                     action = True
 
                     # Play correct sound
-                    if self.name == "play" or self.name == "restart":
+                    if self.name in ["play", "restart"]:
                         if sound_is_on:
                             self.play_game_sound.play()
                         time.sleep(0.5)
+
+                    elif self.name in ["sounds_on", "sounds_off"]:
+                        if not sound_is_on:
+                            self.button_click_sound.play()
 
                     else:
                         if sound_is_on:

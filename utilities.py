@@ -31,6 +31,8 @@ health_potion_sprites = pygame.sprite.Group()
 all_interactives_sprites = pygame.sprite.Group()
 portal_sprites = pygame.sprite.Group()
 
+HIGHSCORES_PATH = "C:\\Coding\\Projects\\Game\\highscores.csv"
+
 
 def shorten_audio(source_file, destination_file, desired_duration):
     # Read the audio file
@@ -320,41 +322,35 @@ def get_player_score(player):
 
 def get_leaderboard_scores():
     scores = []
-    with open("C:\Coding\Projects\Game\highscores.csv", "r") as f:
+    with open(HIGHSCORES_PATH, "r") as f:
         reader = csv.reader(f)
         next(reader)  # Skip the header row
         scores = list(reader)
 
-    # Sort the scores by descending order of score
+    # Sort scores descending
     scores.sort(key=lambda x: int(x[1]), reverse=True)
 
-    # Get the top 10 entries or all if less than 10
     top_scores = scores[:10]
-
-    # Convert the entries to tuples
     top_scores = [(entry[0], int(entry[1])) for entry in top_scores]
 
     return top_scores
 
 
 def save_player_score(player):
-    # Read existing data from the CSV file
     scores = []
-    with open("C:\Coding\Projects\Game\highscores.csv", "r") as f:
+    with open(HIGHSCORES_PATH, "r") as f:
         reader = csv.reader(f)
         header = next(reader)  # Skip the header row
         scores = list(reader)
 
-    # Score
     score = get_player_score(player)
-    # Append the new player's score to the existing data
     scores.append([player.highscore_name, str(score)])
 
-    # Sort the data by score in descending order
-    scores.sort(key=lambda x: int(x[1]), reverse=True)
+    # Sort top 10 in descending order
+    scores[:10].sort(key=lambda x: int(x[1]), reverse=True)
 
-    # Save the sorted data back to the CSV file
-    with open("C:\Coding\Projects\Game\highscores.csv", "w", newline="") as f:
+    # Save the sorted data
+    with open(HIGHSCORES_PATH, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(header)
         writer.writerows(scores)

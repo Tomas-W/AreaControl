@@ -11,7 +11,7 @@ class Enemy(pygame.sprite.Sprite):
     Base class to create Enemies.
 
     Contains all sprites, attributes and trackers.
-    To create a new Enemy, pass in a dictionary.
+    To create a new Enemy, pass in a settings dictionary.
     """
     def __init__(self, player, position, character):
         super().__init__(all_sprites, enemy_sprites)

@@ -1,3 +1,4 @@
+import time
 from random import choice
 
 import pygame
@@ -189,6 +190,90 @@ class Game:
         # Misc
         self.credits = GENERAL["credits"]
         self.before_settings_menu = "home"
+        self.buy_moment = time.time()
+        self.buy_delay = 0.15
+
+    def display_main_menu(self):
+        """
+        Displays main menu on screen.
+        """
+        self.screen.blit(self.menu_background, (0, 0))
+
+        # Menu buttons
+        if self.play_button.draw(self.screen, self.sound_is_on):
+            temp_name = self.player.highscore_name
+            self.reset_game()
+            self.player.highscore_name = temp_name
+            self.turn_off_menus()
+            self.is_playing_game = True
+
+        elif self.settings_button.draw(self.screen, self.sound_is_on):
+            self.turn_off_menus()
+            self.settings_menu_shown = True
+            self.before_settings_menu = "home"
+
+        elif self.leaderboard_button.draw(self.screen, self.sound_is_on):
+            self.turn_off_menus()
+            self.leaderboard_menu_shown = True
+
+        elif self.credits_button.draw(self.screen, self.sound_is_on):
+            self.turn_off_menus()
+            self.credits_menu_shown = True
+
+        if not self.sound_is_on:
+            if self.sounds_off_button.draw(self.screen, self.sound_is_on):
+                self.sound_is_on = True
+                self.player.sound_is_on = True
+
+        elif self.sound_is_on:
+            if self.sounds_on_button.draw(self.screen, self.sound_is_on):
+                self.sound_is_on = False
+                self.player.sound_is_on = False
+
+    def display_settings_menu(self):
+        self.screen.blit(self.menu_background, (0, 0))
+
+        buttons = [self.btn_w, self.btn_s, self.btn_a, self.btn_d, self.btn_q, self.btn_q,
+                   self.mouse_l, self.mouse_r]
+        descriptions = ["forwards", "backwards", "left", "right", "use potion", "use portal",
+                        "shot bullet", "throw bomb"]
+
+        for i, (button, description) in enumerate(zip(buttons, descriptions)):
+            self.screen.blit(button,
+                             (self.first_menu_button_x - 0.02 * GENERAL["width"],
+                              self.first_menu_button_y + (i * 45))
+                             )
+            text = self.small_font.render(description, True, self.font_color)
+            self.screen.blit(text,
+                             (self.first_menu_button_x - 0.02 * GENERAL["width"] + 75,
+                              self.first_menu_button_y + (i * 45 + 10)))
+
+        # Back Button
+        if self.back_button.draw(self.screen, self.sound_is_on):
+            if self.before_settings_menu == "pause":
+                self.turn_off_menus()
+                self.pause_menu_shown = True
+
+            elif self.before_settings_menu == "home":
+                self.turn_off_menus()
+                self.main_menu_shown = True
+
+    def display_credit_menu(self):
+        """
+        Displays credit menu with credits and a Main Menu button.
+        """
+        self.screen.blit(self.menu_background, (0, 0))
+        # Loop over credits and blit them
+        for i, credit in enumerate(self.credits):
+            text = self.tiny_font.render(credit, True, self.font_color)
+            self.screen.blit(text, (
+                self.first_menu_button_x - 0.02 * GENERAL["width"],
+                self.first_menu_button_y + i * 18))
+
+        # Blit Main Menu button
+        if self.back_button.draw(self.screen, self.sound_is_on):
+            self.turn_off_menus()
+            self.main_menu_shown = True
 
     def reset_game(self):
         """
@@ -253,7 +338,7 @@ class Game:
 
                 # Pause and resume with space-bar
                 if event.key == pygame.K_SPACE and self.is_playing_game:
-                    self.pause_menu_shown = True
+                    self.pause_menu_shown = not self.pause_menu_shown
 
                 # Kill all enemies with k
                 if event.key == pygame.K_k and self.is_playing_game:
@@ -267,36 +352,39 @@ class Game:
         Listens for key presses while buy menu is shown inbetween waves.
         Calls function according to the keypress
         """
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
+        keys = pygame.key.get_pressed()
 
-                # Buy Bullet upgrade with '1'
-                if event.key == K_1:
-                    if buy_bullet_upgrade(game=self,
-                                          bullet_stats=BULLET):
-                        if self.sound_is_on:
-                            self.buy_sound.play()
+        if keys[pygame.K_1] and time.time() - self.buy_moment > self.buy_delay:
+            if buy_bullet_upgrade(game=self,
+                                  bullet_stats=BULLET):
+                if self.sound_is_on:
+                    self.buy_sound.play()
 
-                # Buy Bomb upgrade with '2'
-                elif event.key == K_2:
-                    if buy_bomb_upgrade(game=self,
-                                        bomb_stats=BOMB):
-                        if self.sound_is_on:
-                            self.buy_sound.play()
+            self.buy_moment = time.time()
 
-                # Buy Bomb with '3'
-                elif event.key == K_3:
-                    if buy_bomb(game=self,
-                                player=self.player):
-                        if self.sound_is_on:
-                            self.buy_sound.play()
+        if keys[pygame.K_2] and time.time() - self.buy_moment > self.buy_delay:
+            if buy_bomb_upgrade(game=self,
+                                bomb_stats=BOMB):
+                if self.sound_is_on:
+                    self.buy_sound.play()
 
-                # Buy Teleport with '4'
-                elif event.key == K_4:
-                    if buy_portal(game=self,
-                                  player=self.player):
-                        if self.sound_is_on:
-                            self.buy_sound.play()
+            self.buy_moment = time.time()
+
+        if keys[pygame.K_3] and time.time() - self.buy_moment > self.buy_delay:
+            if buy_bomb(game=self,
+                        player=self.player):
+                if self.sound_is_on:
+                    self.buy_sound.play()
+
+            self.buy_moment = time.time()
+
+        if keys[pygame.K_4] and time.time() - self.buy_moment > self.buy_delay:
+            if buy_portal(game=self,
+                          player=self.player):
+                if self.sound_is_on:
+                    self.buy_sound.play()
+
+            self.buy_moment = time.time()
 
     def turn_off_menus(self):
         """
@@ -308,42 +396,7 @@ class Game:
         self.credits_menu_shown = False
         self.pause_menu_shown = False
 
-    def display_main_menu(self):
-        """
-        Displays main menu on screen.
-        """
-        self.screen.blit(self.menu_background, (0, 0))
 
-        # Menu buttons
-        if self.play_button.draw(self.screen, self.sound_is_on):
-            temp_name = self.player.highscore_name
-            self.reset_game()
-            self.player.highscore_name = temp_name
-            self.turn_off_menus()
-            self.is_playing_game = True
-
-        elif self.settings_button.draw(self.screen, self.sound_is_on):
-            self.turn_off_menus()
-            self.settings_menu_shown = True
-            self.before_settings_menu = "home"
-
-        elif self.leaderboard_button.draw(self.screen, self.sound_is_on):
-            self.turn_off_menus()
-            self.leaderboard_menu_shown = True
-
-        elif self.credits_button.draw(self.screen, self.sound_is_on):
-            self.turn_off_menus()
-            self.credits_menu_shown = True
-
-        if not self.sound_is_on:
-            if self.sounds_off_button.draw(self.screen, self.sound_is_on):
-                self.sound_is_on = True
-                self.player.sound_is_on = True
-
-        elif self.sound_is_on:
-            if self.sounds_on_button.draw(self.screen, self.sound_is_on):
-                self.sound_is_on = False
-                self.player.sound_is_on = False
 
     def display_pause_menu(self):
         """
@@ -372,33 +425,24 @@ class Game:
             self.turn_off_menus()
             self.main_menu_shown = True
 
-    def display_settings_menu(self):
-        self.screen.blit(self.menu_background, (0, 0))
 
-        buttons = [self.btn_w, self.btn_s, self.btn_a, self.btn_d, self.btn_q, self.btn_q,
-                   self.mouse_l, self.mouse_r]
-        descriptions = ["forwards", "backwards", "left", "right", "use potion", "use portal",
-                        "shot bullet", "throw bomb"]
 
-        for i, (button, description) in enumerate(zip(buttons, descriptions)):
-            self.screen.blit(button,
-                             (self.first_menu_button_x - 0.02 * GENERAL["width"],
-                              self.first_menu_button_y + (i * 45))
-                             )
-            text = self.small_font.render(description, True, self.font_color)
-            self.screen.blit(text,
-                             (self.first_menu_button_x - 0.02 * GENERAL["width"] + 75,
-                              self.first_menu_button_y + (i * 45 + 10)))
+    def get_highscore_input(self):
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
 
-        # Back Button
-        if self.back_button.draw(self.screen, self.sound_is_on):
-            if self.before_settings_menu == "pause":
-                self.turn_off_menus()
-                self.pause_menu_shown = True
+                if event.key == pygame.K_BACKSPACE:
+                    self.player.highscore_name = self.player.highscore_name[:-1]
 
-            elif self.before_settings_menu == "home":
-                self.turn_off_menus()
-                self.main_menu_shown = True
+                elif event.key == pygame.K_RETURN:
+                    save_player_score(self.player)
+                    self.turn_off_menus()
+                    self.game_is_over = False
+                    self.main_menu_shown = True
+
+                else:
+                    if len(self.player.highscore_name) < 11:
+                        self.player.highscore_name += event.unicode
 
     def display_leaderboad_menu(self):
         screen.fill((35, 35, 35))
@@ -427,32 +471,17 @@ class Game:
             screen.blit(score, (base_x + 650,
                                 base_y + 135 + (i * 50)))
 
-            # Back Button
-            if self.back_button_lb.draw(self.screen, self.sound_is_on):
-                if self.before_settings_menu == "pause":
-                    self.turn_off_menus()
-                    self.pause_menu_shown = True
+        # Back Button
+        if self.back_button_lb.draw(self.screen, self.sound_is_on):
+            if self.before_settings_menu == "pause":
+                self.turn_off_menus()
+                self.pause_menu_shown = True
 
-                elif self.before_settings_menu == "home":
-                    self.turn_off_menus()
-                    self.main_menu_shown = True
+            elif self.before_settings_menu == "home":
+                self.turn_off_menus()
+                self.main_menu_shown = True
 
-    def display_credit_menu(self):
-        """
-        Displays credit menu with credits and a Main Menu button.
-        """
-        self.screen.blit(self.menu_background, (0, 0))
-        # Loop over credits and blit them
-        for i, credit in enumerate(self.credits):
-            text = self.tiny_font.render(credit, True, self.font_color)
-            self.screen.blit(text, (
-                self.first_menu_button_x - 0.02 * GENERAL["width"],
-                self.first_menu_button_y + i * 18))
 
-        # Blit Main Menu button
-        if self.back_button.draw(self.screen, self.sound_is_on):
-            self.turn_off_menus()
-            self.main_menu_shown = True
 
     def spawn_test_enemies(self, ticks):
         """
@@ -567,6 +596,26 @@ class Game:
             # Events (key presses)
             self.operate_special_keys()
 
+            # Main menu
+            if self.main_menu_shown:
+                self.display_main_menu()
+
+            # Settings menu
+            elif self.settings_menu_shown:
+                self.display_settings_menu()
+
+            # Leaderboard menu
+            elif self.leaderboard_menu_shown:
+                self.display_leaderboad_menu()
+
+            # Credits menu
+            elif self.credits_menu_shown:
+                self.display_credit_menu()
+
+            # Pause menu
+            elif self.pause_menu_shown:
+                self.display_pause_menu()
+
             # Check death
             if self.player.health < 0 and self.is_playing_game:
                 self.game_is_over = True
@@ -581,49 +630,17 @@ class Game:
                 base_y = 150
 
                 # Enter name
-                for event in pygame.event.get():
-                    if event.type == pygame.KEYDOWN:
-                        print(f"name: {self.player.highscore_name}")
-
-                        if event.key == pygame.K_BACKSPACE:
-                            self.player.highscore_name = self.player.highscore_name[:-1]
-
-                        if event.key == pygame.K_RETURN:
-                            save_player_score(self.player)
-                            self.turn_off_menus()
-                            self.game_is_over = False
-                            self.main_menu_shown = True
-
-                        else:
-                            self.player.highscore_name += event.unicode
+                self.get_highscore_input()
 
                 name_text_render = self.medium_font.render(
                     f"{self.player.highscore_name}",
                     True, GENERAL["white"])
                 screen.blit(name_text_render, (base_x + 575, base_y + 650))
 
-            # Pause menu
-            elif self.pause_menu_shown:
-                self.display_pause_menu()
-
-            # Settings menu
-            elif self.settings_menu_shown:
-                self.display_settings_menu()
-
-            # Leaderboard menu
-            elif self.leaderboard_menu_shown:
-                self.display_leaderboad_menu()
-
-            # Credits menu
-            elif self.credits_menu_shown:
-                self.display_credit_menu()
-
-            # Main menu
-            elif self.main_menu_shown:
-                self.display_main_menu()
-
             # Play game
             elif self.is_playing_game:
+                # Events (key presses)
+                self.operate_special_keys()
 
                 # Start wave countdown if no enemies present
                 if not len(enemy_sprites) and not len(all_creeper_sprites):

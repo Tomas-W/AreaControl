@@ -392,11 +392,17 @@ class Camera(pygame.sprite.Group):
         base_x = new_base_position[0]
         base_y = new_base_position[1]
 
-        # Gam over text
+        # Game over text
         game_over_text = self.large_font.render("Game Over", True,
                                                 GENERAL["white"])
         screen.blit(game_over_text, (base_x + 300,
-                                     base_y))
+                                     base_y - 50))
+
+        # Continue text
+        continue_text = self.small_font.render("press 'enter' to continue'", True,
+                                               GENERAL["white"])
+        screen.blit(continue_text, (base_x + 303,
+                                    base_y + 25))
 
         # SkullCollector image
         screen.blit(self.skull_collector_image, (base_x + 250,
@@ -478,6 +484,16 @@ class Camera(pygame.sprite.Group):
                                                   GENERAL["white"])
         screen.blit(enter_name_text, (base_x + 255,
                                       base_y + 650))
+
+        digits = int(str(pygame.time.get_ticks())[-3:-1])
+        border_color = (255 - digits,
+                        255 - digits,
+                        255 - digits)
+
+        pygame.draw.rect(screen,
+                         border_color,
+                         (base_x + 560, base_y + 640, 357, 53),
+                         2)
         # # Enter name
         # name_text = ""
         # while True:
@@ -491,11 +507,11 @@ class Camera(pygame.sprite.Group):
         #             else:
         #                 name_text += event.unicode
 
-                # name_text_render = self.medium_font.render(
-                #     f"{name_text}",
-                #     True, GENERAL["white"])
-                # screen.blit(name_text_render, (base_x + 575,
-                #                                base_y + 650))
+        # name_text_render = self.medium_font.render(
+        #     f"{name_text}",
+        #     True, GENERAL["white"])
+        # screen.blit(name_text_render, (base_x + 575,
+        #                                base_y + 650))
 
     @staticmethod
     def show_hitboxes(screen, player=None, skull_collector=False, rusher=False,
