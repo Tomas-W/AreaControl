@@ -1,20 +1,24 @@
 import math
-
-import pygame as pygame
+import pygame
 
 from projectiles.flaming_skull import FlamingSkull
+
 from utilities.sprite_groups import all_sprites, enemy_sprites
 from utilities.game_physics import get_direction
 
 
-class Enemy(pygame.sprite.Sprite):
+class BaseEnemy(pygame.sprite.Sprite):
     """
-    Base class to create Enemies.
-
-    Contains all sprites, attributes and trackers.
-    To create a new Enemy, pass in a settings dictionary.
+    Base class to create an Enemy character.
+    Contains all base attributes and methods.
+    BaseEnemy instance is added to all_sprites and enemy_sprites ( pygam.sprite.Group() ).
     """
     def __init__(self, player, position, character):
+        """
+        :param player: Player() instance.
+        :param position: Enemy spawn location Tuple(x, y) from settings dictionary.
+        :param character: Settings dictionary.
+        """
         super().__init__(all_sprites, enemy_sprites)
         # References
         self.player = player
@@ -65,7 +69,7 @@ class Enemy(pygame.sprite.Sprite):
         self.shoot_offset_x = character["shoot_offset_x"]
         self.shoot_offset_y = character["shoot_offset_y"]
 
-        # States
+        # States (active state)
         self.spawn = character["spawn"]
         self.idle = character["idle"]
         self.walk = character["walk"]
@@ -77,21 +81,22 @@ class Enemy(pygame.sprite.Sprite):
         self.current_state = character["current_state"]
         self.last_state = character["last_state"]
 
-        # State attributes
+        # State duration (fixed ime in ms, currently not used)
         self.idle_duration = character["idle_duration"]
         self.walk_duration = character["walk_duration"]
         self.run_duration = character["run_duration"]
 
+        # State distance (trigger states by distance to Player)
         self.walk_distance = character["walk_distance"]
         self.run_distance = character["run_distance"]
         self.strike_distance = character["strike_distance"]
         self.shoot_distance = character["shoot_distance"]
 
         # Frame attributes
-        self.frame = character["frame"]
-        self.frame_ticks = character["frame_ticks"]
-        self.spawn_ticks = character["spawn_ticks"]
+        self.frame = character["frame"]                 # current frame
+        self.frame_ticks = character["frame_ticks"]     # frame 'clock'
         # How many ticks frames per frame
+        self.spawn_ticks = character["spawn_ticks"]
         self.idle_ticks = character["idle_ticks"]
         self.walk_ticks = character["walk_ticks"]
         self.run_ticks = character["run_ticks"]
@@ -104,16 +109,18 @@ class Enemy(pygame.sprite.Sprite):
         self.death_frame = character["death_frame"]
         self.flip_image = character["flip_image"]
 
-        # Attributes
+        # Properties
         self.name = character["name"]
+
         self.position = pygame.math.Vector2(position)
         self.direction = pygame.math.Vector2()
         self.velocity = pygame.math.Vector2()
+
         self.health = character["health"]
         self.damage = character["damage"]
+        self.speed = character["speed"]
         self.walk_speed = character["walk_speed"]
         self.run_speed = character["run_speed"]
-        self.speed = character["speed"]
 
     def set_hitbox(self):
         """
@@ -141,6 +148,7 @@ class Enemy(pygame.sprite.Sprite):
         """
         if self.rect.centerx > self.player.rect.centerx:
             self.flip_image = True
+
         else:
             self.flip_image = False
 
@@ -166,12 +174,12 @@ class Enemy(pygame.sprite.Sprite):
         """
         Move towards Player by one unit of speed.
         """
-        # Get vectors
         self.direction = get_direction(location_a=self.player.hitbox.center,
                                        location_b=self.rect.center)
-        # Move SkullCollector
+
         self.velocity = self.direction * self.speed
         self.position += self.velocity
+
         self.rect.centerx = self.position.x
         self.rect.centery = self.position.y
 
@@ -186,12 +194,13 @@ class Enemy(pygame.sprite.Sprite):
 
     def is_allowed_to_strike(self):
         """
-        Checks if Rusher is allowed to strike Player.
+        Checks if Rusher is allowed to strike Player depending on self.strike_frame.
 
         :return: Returns True if conditions are met (bool).
         """
-        return self.frame == self.strike_frame and self.frame_ticks == (
-                    self.strike_ticks // 2) and not self.player.is_invincible
+        return self.frame == self.strike_frame\
+            and self.frame_ticks == (self.strike_ticks // 2)\
+            and not self.player.is_invincible
 
     def strike_player(self):
         """
@@ -199,6 +208,7 @@ class Enemy(pygame.sprite.Sprite):
         """
         if self.player.sound_is_on:
             self.attack_sound.play()
+
         self.player.health -= self.damage
 
     def manage_shoot_state(self):
@@ -212,11 +222,12 @@ class Enemy(pygame.sprite.Sprite):
 
     def is_allowed_to_shoot(self):
         """
-        Checks if SkullCollector is allowed to shoot Player.
+        Checks if SkullCollector is allowed to shoot Player depending on self.shoot_frame.
 
         :return: Returns True if conditions are met (bool).
         """
-        return self.frame == self.shoot_frame and self.frame_ticks == (self.shoot_ticks // 2)
+        return self.frame == self.shoot_frame\
+            and self.frame_ticks == (self.shoot_ticks // 2)
 
     def shoot_player(self):
         """
@@ -225,8 +236,10 @@ class Enemy(pygame.sprite.Sprite):
         # Set projectile in right spot on the SkullCollector image
         if self.flip_image:
             projectile_x = self.rect.centerx - self.shoot_offset_x
+
         else:
             projectile_x = self.rect.centerx + self.shoot_offset_x
+
         projectile_y = self.rect.centery + self.shoot_offset_y
 
         # Calculate angle to Player
@@ -244,9 +257,12 @@ class Enemy(pygame.sprite.Sprite):
 
     def play_death_sound(self):
         """
-        Played death sound if sound is on.
+        Played death sound if Player.sound_is_on is True.
         """
-        if self.death and not self.played_death_sound and self.player.sound_is_on:
+        if self.death \
+                and self.player.sound_is_on\
+                and not self.played_death_sound:
+
             self.death_sound.play()
             self.played_death_sound = True
 
@@ -254,17 +270,20 @@ class Enemy(pygame.sprite.Sprite):
         """
         Sets correct image depending on animation length,
             frames per animation and
-            flip_image.
+            self.flip_image.
         """
+        # Resetting ticks
         if self.frame_ticks == self.idle_ticks:
             self.frame += 1
             self.frame_ticks = 0
 
+        # Resetting animation
         if self.frame > len(self.idle_sprites) - 1:
             self.frame = 0
 
         if self.flip_image:
             self.image = self.idle_sprites_flipped[self.frame]
+
         else:
             self.image = self.idle_sprites[self.frame]
 
@@ -272,17 +291,20 @@ class Enemy(pygame.sprite.Sprite):
         """
         Sets correct image depending on animation length,
             frames per animation and
-            flip_image.
+            self.flip_image.
         """
+        # Resetting ticks
         if self.frame_ticks == self.walk_ticks:
             self.frame += 1
             self.frame_ticks = 0
 
+        # Resetting animation
         if self.frame > len(self.walk_sprites) - 1:
             self.frame = 0
 
         if self.flip_image:
             self.image = self.walk_sprites_flipped[self.frame]
+
         else:
             self.image = self.walk_sprites[self.frame]
 
@@ -290,17 +312,20 @@ class Enemy(pygame.sprite.Sprite):
         """
         Sets correct image depending on animation length,
             frames per animation and
-            flip_image.
+            self.flip_image.
         """
+        # Resetting ticks
         if self.frame_ticks == self.run_ticks:
             self.frame += 1
             self.frame_ticks = 0
 
+        # Resetting animation
         if self.frame > len(self.run_sprites) - 1:
             self.frame = 0
 
         if self.flip_image:
             self.image = self.run_sprites_flipped[self.frame]
+
         else:
             self.image = self.run_sprites[self.frame]
 
@@ -308,17 +333,20 @@ class Enemy(pygame.sprite.Sprite):
         """
         Sets correct image depending on animation length,
             frames per animation and
-            flip_image.
+            self.flip_image.
         """
+        # Resetting ticks
         if self.frame_ticks == self.strike_ticks:
             self.frame += 1
             self.frame_ticks = 0
 
+        # Resetting animation
         if self.frame > len(self.strike_sprites) - 1:
             self.frame = 0
 
         if self.flip_image:
             self.image = self.strike_sprites_flipped[self.frame]
+
         else:
             self.image = self.strike_sprites[self.frame]
 
@@ -326,17 +354,20 @@ class Enemy(pygame.sprite.Sprite):
         """
         Sets correct image depending on animation length,
             frames per animation and
-            flip_image.
+            self.flip_image.
         """
+        # Resetting ticks
         if self.frame_ticks == self.shoot_ticks:
             self.frame += 1
             self.frame_ticks = 0
 
+        # Resetting animation
         if self.frame > len(self.shoot_sprites) - 1:
             self.frame = 0
 
         if self.flip_image:
             self.image = self.shoot_sprites_flipped[self.frame]
+
         else:
             self.image = self.shoot_sprites[self.frame]
 
@@ -344,9 +375,10 @@ class Enemy(pygame.sprite.Sprite):
         """
         Sets correct image depending on animation length,
             frames per animation and
-            flip_image.
+            self.flip_image.
         """
         if self.flip_image:
             self.image = self.death_sprites_flipped[self.frame]
+
         else:
             self.image = self.death_sprites[self.frame]

@@ -1,5 +1,4 @@
 import math
-
 import pygame
 
 from projectiles.bomb import Bomb
@@ -12,7 +11,15 @@ from settings.player_settings import PLAYER
 
 
 class Player(pygame.sprite.Sprite):
+    """
+    Base class used to play the game.
+    Player instance is added to all_sprites and player_sprite ( pygame.sprite.Group() and GroupSingle() ).  # noqa
+    """
+
     def __init__(self, sound_is_on):
+        """
+        :param sound_is_on: Player selected in-game setting.
+        """
         super().__init__(all_sprites, player_sprite)
         # Starting position
         self.position = pygame.math.Vector2(PLAYER["start_position"])
@@ -31,16 +38,16 @@ class Player(pygame.sprite.Sprite):
 
         # Sounds
         self.sound_is_on = sound_is_on
-        self.hit_sound = pygame.mixer.Sound(PLAYER["hit_sound_path"])
-        self.hit_sound.set_volume(0.2)
+        self.lose_health_sound = pygame.mixer.Sound(PLAYER["lose_health_sound_path"])
+        self.lose_health_sound.set_volume(0.2)
 
-        self.add_health_sound = pygame.mixer.Sound(PLAYER["add_health_sound_path"])
-        self.add_health_sound.set_volume(0.2)
+        self.gain_health_sound = pygame.mixer.Sound(PLAYER["gain_health_sound_path"])
+        self.gain_health_sound.set_volume(0.2)
 
         self.death_sound = pygame.mixer.Sound(PLAYER["death_sound_path"])
         self.death_sound.set_volume(0.2)
 
-        # States
+        # States (active state)
         self.shoot = PLAYER["shoot"]
         self.bomb = PLAYER["bomb"]
         self.is_invincible = PLAYER["is_invincible"]
@@ -48,12 +55,13 @@ class Player(pygame.sprite.Sprite):
         self.shoot_cooldown = PLAYER["shoot_cooldown"]
         self.muzzle_flash_cooldown = PLAYER["muzzle_flash_cooldown"]
         self.bomb_cooldown = PLAYER["bomb_cooldown"]
+
+        # Portal attributes
+        self.new_location = PLAYER["new_location"]
+        self.teleport_location = PLAYER["teleport_location"]
         self.new_location_ticks = 0
         self.invincible_ticks = 0
         self.invincible_image_ticks = 0
-        # State attributes
-        self.new_location = PLAYER["new_location"]
-        self.teleport_location = PLAYER["teleport_location"]
 
         # Buy menu
         self.buy_multiplier = PLAYER["buy_multiplier"]
@@ -63,9 +71,14 @@ class Player(pygame.sprite.Sprite):
         self.buy_bomb_cost = PLAYER["buy_bomb_cost"]
         self.buy_portal_cost = PLAYER["buy_portal_cost"]
 
-        # Attributes
+        # Properties
         self.name = PLAYER["name"]
         self.speed = PLAYER["speed"]
+        self.velocity_x = None
+        self.velocity_y = None
+        self.dx_mouse_player = None
+        self.dy_mouse_player = None
+        self.angle = None
         self.health = PLAYER["health"]
         self.max_health = PLAYER["max_health"]
         self.health_potion_boost = PLAYER["health_potion_boost"]
@@ -79,9 +92,10 @@ class Player(pygame.sprite.Sprite):
         self.total_health_potions = PLAYER["total_health_potions"]
 
         # Misc
-        self.item_ticks = 0  # To add buy delay
+        self.mouse_position = None
+        self.item_ticks = 0  # To add use delay
         self.shooting_offset = PLAYER["sprite_width"] * PLAYER_SIZE // 2.5
-        self.health_checker = self.health
+        self.health_checker = self.health  # Used for playing damage sound
         self.kills = {
             "skull_collector": 0,
             "rusher": 0,
@@ -112,17 +126,17 @@ class Player(pygame.sprite.Sprite):
         """
         Calculates and sets angle towards mouse.
         """
-        self.mouse_position = pygame.mouse.get_pos()  # noqa
+        self.mouse_position = pygame.mouse.get_pos()
         # Distance between player and mouse
-        self.dx_mouse_player = (self.mouse_position[0] - GENERAL["half_width"])  # noqa
-        self.dy_mouse_player = (self.mouse_position[1] - GENERAL["half_height"])  # noqa
-        # Get angle
-        self.angle = math.degrees(math.atan2(self.dy_mouse_player,  # noqa
-                                   self.dx_mouse_player))
+        self.dx_mouse_player = (self.mouse_position[0] - GENERAL["half_width"])
+        self.dy_mouse_player = (self.mouse_position[1] - GENERAL["half_height"])
+        # Save angle
+        self.angle = math.degrees(math.atan2(self.dy_mouse_player,
+                                             self.dx_mouse_player))
 
     def rotate_player_image(self):
         """
-        Rotates Player image towards mouse.
+        Rotates Player image by self.angle.
         """
         if self.muzzle_flash_cooldown == 0:
             # Normal image
@@ -147,13 +161,13 @@ class Player(pygame.sprite.Sprite):
             self.velocity_x = -self.speed
 
         if keys[pygame.K_d] and self.hitbox.right < GENERAL["level_right_x"]:
-            self.velocity_x = self.speed  # noqa
+            self.velocity_x = self.speed
 
         if keys[pygame.K_w] and self.hitbox.top > GENERAL["level_top_y"]:
             self.velocity_y = -self.speed
 
         if keys[pygame.K_s] and self.hitbox.bottom < GENERAL["level_bottom_y"]:
-            self.velocity_y = self.speed  # noqa
+            self.velocity_y = self.speed
 
         # Vertical movement adjust
         if self.velocity_x != 0 and self.velocity_y != 0:
@@ -335,30 +349,40 @@ class Player(pygame.sprite.Sprite):
                 self.invincible_ticks = 0
 
     def manage_health_potions(self):
+        """
+        Consumes a HealthPotion PickUp() if conditions are met.
+        Checks key press,
+            nr of HealthPotions,
+            if no double buy and
+            if health not full.
+        """
         keys = pygame.key.get_pressed()
         # Consume health potion
         if keys[pygame.K_q]:
-            if self.total_health_potions > 0 and self.item_ticks == 0 and self.health < self.max_health:
+            if self.total_health_potions > 0 \
+                    and self.item_ticks == 0 \
+                    and self.health < self.max_health:
                 self.total_health_potions -= 1
                 self.health = min(self.health + self.health_potion_boost,
                                   self.max_health)
                 self.item_ticks = 15
 
-    def manage_hit_sounds(self):
+    def manage_lose_health_sound(self):
+        """
+        Plays self.lose_health_sound if health is lost.
+        """
         if self.health < self.health_checker and self.sound_is_on:
-            # Player has been hit
-            self.hit_sound.play()
+            self.lose_health_sound.play()
 
-        elif self.health > self.health_checker and self.sound_is_on:
-            # Player used health potion
-            self.add_health_sound.play()
-
-        self.health_checker = self.health
+    def manage_gain_health_sound(self):
+        """
+        Plays self.gain_health_sound if health is gained.
+        """
+        if self.health > self.health_checker and self.sound_is_on:
+            self.gain_health_sound.play()
 
     def get_score(self):
         """
-        G
-        Returns Players final score after utilities has ended.
         Multiplies Enemy kills with theirs corresponding points.
 
         :return: Players total score (int).
@@ -392,13 +416,16 @@ class Player(pygame.sprite.Sprite):
         # Manage invincibility after Portal use
         self.manage_invincibility()
 
-        # Items
+        # Health potion
         self.manage_health_potions()
         if self.item_ticks > 0:
             self.item_ticks -= 1
 
         # Sounds
-        self.manage_hit_sounds()
+        self.manage_lose_health_sound()
+        self.manage_gain_health_sound()
+
+        self.health_checker = self.health
 
     def set_invincibility_image(self):
         """

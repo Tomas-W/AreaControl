@@ -1,4 +1,4 @@
-from characters.base_enemy import Enemy
+from characters.base_enemy import BaseEnemy
 from interactives.base_pickup import PickUp
 
 from settings.interactives_settings import ENERGY
@@ -8,7 +8,7 @@ from utilities.game_physics import get_distance
 from settings.enemy_settings import RUSHER
 
 
-class Rusher(Enemy):
+class Rusher(BaseEnemy):
     def __init__(self, player, position, character):
         super().__init__(player=player,
                          position=position,

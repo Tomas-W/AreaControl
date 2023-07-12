@@ -1,4 +1,4 @@
-from characters.base_enemy import Enemy
+from characters.base_enemy import BaseEnemy
 from interactives.base_pickup import PickUp
 
 from settings.general_settings import GENERAL
@@ -9,7 +9,7 @@ from utilities.game_physics import get_distance
 from settings.enemy_settings import SKULL_COLLECTOR
 
 
-class SkullCollector(Enemy):
+class SkullCollector(BaseEnemy):
     def __init__(self, player, position, character):
         super().__init__(player=player,
                          position=position,

@@ -73,7 +73,7 @@ PLAYER = {
     "sprite_height": 220,
 
     # sounds
-    "hit_sound_path": os.path.join(base_dir, "sounds/player_hit_sound.mp3"),
-    "add_health_sound_path": os.path.join(base_dir, "sounds/player_add_health_sound.mp3"),
+    "lose_health_sound_path": os.path.join(base_dir, "sounds/player_hit_sound.mp3"),
+    "gain_health_sound_path": os.path.join(base_dir, "sounds/player_add_health_sound.mp3"),
     "death_sound_path": os.path.join(base_dir, "sounds/player_death_sound.mp3"),
 }
