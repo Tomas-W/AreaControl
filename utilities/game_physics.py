@@ -1,3 +1,4 @@
+import random
 from random import randint
 
 import pygame
@@ -23,6 +24,13 @@ def get_distance(location_a, location_b):
                                    vector_b)
 
     return distance
+
+
+def get_safe_spawn(player_loc, enemy_spawns: list):
+    while True:
+        enemy_loc = random.choice(enemy_spawns)
+        if get_distance(player_loc, enemy_loc) > 400:
+            return enemy_loc
 
 
 def get_direction(location_a, location_b):

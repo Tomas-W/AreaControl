@@ -37,8 +37,20 @@ def handle_outgoing_projectiles():
 def handle_outgoing_bombs():
     """
     Checks for damage caused by Player Bomb.
+    Auto explodes on wall collision.
     """
     for bomb in bomb_sprites:
+
+        # Wall collision
+        if bomb.rect.left < GENERAL["level_left_x"] or bomb.rect.right > \
+                GENERAL[
+                    "level_right_x"] or \
+                bomb.rect.top < GENERAL["level_top_y"] or bomb.rect.bottom > \
+                GENERAL["level_bottom_y"]:
+            bomb.explode = True
+            bomb.bomb_location = bomb.x, bomb.y
+
+        # Landing explosion
         if bomb.explode and not bomb.dealt_damage:
             # Because of small offset trigger detonation by distance
 

@@ -1,18 +1,20 @@
 import time
-from random import choice
+import random
 
 from settings.general_settings import GENERAL
 
 import pygame
 
+from utilities.game_physics import get_safe_spawn
+
 pygame.init()
 from pygame.locals import *
+
 screen = pygame.display.set_mode((GENERAL["width"],
                                   GENERAL["height"]),
                                  16)
 pygame.display.set_caption(GENERAL["title"])
 pygame.event.set_allowed([QUIT, K_w, K_s, K_a, K_d, MOUSEBUTTONDOWN])
-
 
 from characters.rusher import Rusher
 from characters.skull_collector import SkullCollector
@@ -37,10 +39,10 @@ from characters.player import Player
 from settings.enemy_settings import SKULL_COLLECTOR, RUSHER
 from settings.creeper_settings import BAT, FISH
 
-
 from utilities.sprite_groups import all_sprites, enemy_sprites, all_creeper_sprites
 from utilities.general import save_player_score
-from utilities.game_interactions import handle_incoming_projectiles, handle_outgoing_projectiles, handle_outgoing_bombs
+from utilities.game_interactions import handle_incoming_projectiles, handle_outgoing_projectiles, \
+    handle_outgoing_bombs
 from utilities.player_interactions import buy_bullet_upgrade, buy_bomb, buy_bomb_upgrade, \
     buy_portal, handle_pickups
 
@@ -114,6 +116,7 @@ class GameSetup:
         self.buy_tick = GENERAL["buy_tick"]  # to prevent double buys
         self.bonus_ticks_list = [2000, 2100, 2600, 3000, 3000, 3500, 4000]  # time per wave
         self.bonus_ticks = self.bonus_ticks_list[0]
+        self.level_completed = False
 
         # Misc
         self.credits = GENERAL["credits"]
@@ -149,8 +152,10 @@ class GameSetup:
 
                 # Kill all enemies with k
                 if event.key == pygame.K_k and self.is_playing_game:
-                    enemy_sprites.empty()
-                    all_creeper_sprites.empty()
+                    for sprite in enemy_sprites:
+                        sprite.kill()
+                    for sprite in all_creeper_sprites:
+                        sprite.kill()
 
     def operate_buy_menu(self):
         """
@@ -227,20 +232,28 @@ class GameSetup:
         # Spawn SkullCollectors
         for _ in range(SKULL_COLLECTOR["wave_spawns"][self.player.wave_level]):
             SkullCollector(player=self.player,
-                           position=choice(SKULL_COLLECTOR["start_position"]),
+                           position=random.choice(SKULL_COLLECTOR["start_position"]),
                            character=SKULL_COLLECTOR)
         # Spawn Rushers
         for _ in range(RUSHER["wave_spawns"][self.player.wave_level]):
+            spawn_pos = get_safe_spawn(player_loc=self.player.rect.center,
+                                       enemy_spawns=RUSHER["start_position"])
             Rusher(player=self.player,
-                   position=choice(RUSHER["start_position"]),
+                   position=spawn_pos,
                    character=RUSHER)
         # Spawn Bats
         for _ in range(BAT["wave_spawns"][self.player.wave_level]):
+            spawn_pos = get_safe_spawn(player_loc=self.player.rect.center,
+                                       enemy_spawns=BAT["start_position"])
             Bat(player=self.player,
+                position=spawn_pos,
                 creeper_name=BAT)
         # Spawn Fish
         for _ in range(FISH["wave_spawns"][self.player.wave_level]):
+            spawn_pos = get_safe_spawn(player_loc=self.player.rect.center,
+                                       enemy_spawns=FISH["start_position"])
             Fish(player=self.player,
+                 position=spawn_pos,
                  creeper_name=FISH)
 
     def end_of_wave_spawns(self):
@@ -272,6 +285,7 @@ class GameSetup:
         self.player.buy_portal_cost = PLAYER["buy_portal_cost"]
 
         # Attributes
+        self.player.position = pygame.math.Vector2(PLAYER["start_position"])
         self.player.speed = PLAYER["speed"]
         self.player.health = PLAYER["health"]
         self.player.max_health = PLAYER["max_health"]
@@ -340,6 +354,71 @@ class GameSetup:
 
         SKULL_COLLECTOR["speed"] = 3
 
+    def show_menu_screens(self):
+        # Main menu
+        if self.main_menu_shown:
+            self.display_menus.display_main_menu(game_setup=self)
+
+        # Settings menu
+        elif self.settings_menu_shown:
+            self.display_menus.display_settings_menu(game_setup=self)
+
+        # Leaderboard menu
+        elif self.leaderboard_menu_shown:
+            self.display_menus.display_leaderboad_menu(game_setup=self)
+
+        # Credits menu
+        elif self.credits_menu_shown:
+            self.display_menus.display_credit_menu(game_setup=self)
+
+        # Pause menu
+        elif self.pause_menu_shown:
+            self.display_menus.display_pause_menu(game_setup=self)
+
+    def check_player_death(self):
+        if self.player.health < 0 and self.is_playing_game:
+            self.game_is_over = True
+            self.is_playing_game = False
+
+    def show_game_over_screen(self):
+        if self.game_is_over:
+            self.display_interfaces.display_game_over()
+
+            # Calculate base position
+            base_x = 300
+            base_y = 150
+
+            # Enter name
+            self.get_highscore_input()
+
+            name_text_render = self.medium_font.render(
+                f"{self.player.highscore_name}",
+                True, GENERAL["white"])
+            screen.blit(name_text_render, (base_x + 575, base_y + 650))
+
+    def check_new_round_start(self):
+        if not len(enemy_sprites) and not len(all_creeper_sprites):
+            self.wave_pause_ticks += 1
+
+            if self.wave_pause_ticks == self.wave_pause:
+                # Start wave after buy phase
+                self.bonus_ticks = self.bonus_ticks_list[
+                    self.player.wave_level]  # Set bonus timer
+                self.wave_pause_ticks = 0
+                self.spawn_waves()
+                self.level_completed = False
+                self.player.wave_level += 1
+
+    def check_time_bonus(self):
+        if not len(enemy_sprites) \
+                and not len(all_creeper_sprites) \
+                and self.wave_pause_ticks == 1 \
+                and not self.level_completed \
+                and not self.player.wave_level == 0 \
+                and self.bonus_ticks > 0:
+            print(f"bonus lvl {self.player.wave_level}")
+            self.level_completed = True
+
     def run_game(self):
         """
         Runs the utilities.
@@ -359,63 +438,23 @@ class GameSetup:
             # Events (key presses)
             self.operate_special_keys()
 
-            # Main menu
-            if self.main_menu_shown:
-                self.display_menus.display_main_menu(game_setup=self)
-
-            # Settings menu
-            elif self.settings_menu_shown:
-                self.display_menus.display_settings_menu(game_setup=self)
-
-            # Leaderboard menu
-            elif self.leaderboard_menu_shown:
-                self.display_menus.display_leaderboad_menu(game_setup=self)
-
-            # Credits menu
-            elif self.credits_menu_shown:
-                self.display_menus.display_credit_menu(game_setup=self)
-
-            # Pause menu
-            elif self.pause_menu_shown:
-                self.display_menus.display_pause_menu(game_setup=self)
+            # Menus
+            self.show_menu_screens()
 
             # Check death
-            if self.player.health < 0 and self.is_playing_game:
-                self.game_is_over = True
-                self.is_playing_game = False
+            self.check_player_death()
 
-            # Game over menu
+            # Game over screen
             if self.game_is_over:
-                self.display_interfaces.display_game_over()
+                self.show_game_over_screen()
 
-                # Calculate base position
-                base_x = 300
-                base_y = 150
-
-                # Enter name
-                self.get_highscore_input()
-
-                name_text_render = self.medium_font.render(
-                    f"{self.player.highscore_name}",
-                    True, GENERAL["white"])
-                screen.blit(name_text_render, (base_x + 575, base_y + 650))
-
-            # Play utilities
+            # Play
             elif self.is_playing_game:
                 # Events (key presses)
                 self.operate_special_keys()
 
                 # Start wave countdown if no enemies present
-                if not len(enemy_sprites) and not len(all_creeper_sprites):
-                    self.wave_pause_ticks += 1
-
-                    if self.wave_pause_ticks == self.wave_pause:
-                        # Start wave after buy phase
-                        self.bonus_ticks = self.bonus_ticks_list[
-                            self.player.wave_level]  # Set bonus timer
-                        self.wave_pause_ticks = 0
-                        self.spawn_waves()
-                        self.player.wave_level += 1
+                self.check_new_round_start()
 
                 # Spawn items after wave completed
                 if self.wave_pause_ticks == 1:
@@ -428,22 +467,27 @@ class GameSetup:
                 handle_pickups()
 
                 # Camera offset
+                # self.display_game.blit_level_objects()
                 self.display_game.blit_all_sprites()
 
                 # Hitboxes
-                self.display_game.show_hitboxes(screen=self.screen,
-                                                player=self.player,
-                                                skull_collector=True,
-                                                rusher=True,
-                                                bat=True,
-                                                fish=True)
+                # self.display_game.show_hitboxes(screen=self.screen,
+                #                                 player=self.player,
+                #                                 skull_collector=True,
+                #                                 rusher=True,
+                #                                 bat=True,
+                #                                 fish=True)
 
                 # Screen info (health, items..)
                 self.display_interfaces.show_stats()
 
+                # Time bonus
+                self.check_time_bonus()
+
                 # Bonus timer
-                if self.bonus_ticks > 0:
+                if self.bonus_ticks > 0 and self.wave_pause_ticks == 0:
                     self.bonus_ticks -= 1
+
                 self.display_interfaces.show_bonus_timer(ticks=self.bonus_ticks)
 
                 # Display buy menu text

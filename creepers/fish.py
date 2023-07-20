@@ -2,8 +2,9 @@ from creepers.base_creeper import Creeper
 
 
 class Fish(Creeper):
-    def __init__(self, player, creeper_name):
+    def __init__(self, player, position, creeper_name):
         super().__init__(player=player,
+                         position=position,
                          creeper_name=creeper_name)
 
     def update(self):

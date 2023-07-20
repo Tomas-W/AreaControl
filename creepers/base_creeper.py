@@ -17,7 +17,7 @@ class Creeper(pygame.sprite.Sprite):
     When Player is in range, they go in chase mode and deal damage when colliding.
     If Player kills a Creeper, it drops a coin. Not when it suicides.
     """
-    def __init__(self, player, creeper_name):
+    def __init__(self, player, position, creeper_name):
         super().__init__(all_sprites, all_creeper_sprites)
         # Reference to Player
         self.player = player
@@ -31,7 +31,7 @@ class Creeper(pygame.sprite.Sprite):
         self.image.set_alpha(0)
         # Rect
         self.rect = self.image.get_rect()
-        self.rect.center = choice(creeper_name["start_position"])
+        self.rect.center = position
         # Hitbox
         self.hitbox = pygame.Rect(creeper_name["hitbox"])
 

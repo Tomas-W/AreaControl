@@ -1,7 +1,10 @@
 import math
+import random
+
 import pygame
 
 from projectiles.flaming_skull import FlamingSkull
+from settings.creeper_settings import FISH
 
 from utilities.sprite_groups import all_sprites, enemy_sprites
 from utilities.game_physics import get_direction

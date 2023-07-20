@@ -1,12 +1,15 @@
 import colorsys
 import csv
+import os
+import sys
 
 import numpy as np
 import pygame
 import soundfile as sf
 
 
-HIGHSCORES_PATH = "./highscores.csv"
+base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+HIGHSCORES_PATH = "highscores.csv"
 
 
 def get_sprites(sheet, number_sprites, width, height, scale, color):
@@ -42,7 +45,7 @@ def get_player_score(player):
 
 def get_leaderboard_scores():
     scores = []
-    with open(HIGHSCORES_PATH, "r") as f:
+    with open(os.path.join(base_dir, HIGHSCORES_PATH), "r") as f:
         reader = csv.reader(f)
         next(reader)  # Skip the header row
         scores = list(reader)
@@ -58,7 +61,7 @@ def get_leaderboard_scores():
 
 def save_player_score(player):
     scores = []
-    with open(HIGHSCORES_PATH, "r") as f:
+    with open(os.path.join(base_dir, HIGHSCORES_PATH), "r") as f:
         reader = csv.reader(f)
         header = next(reader)  # Skip the header row
         scores = list(reader)

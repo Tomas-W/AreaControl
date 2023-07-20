@@ -30,7 +30,7 @@ class SkullCollector(BaseEnemy):
         self.frame_ticks += 1
 
         # Move towards play area
-        if self.rect.centery < GENERAL["y_min"]:
+        if self.rect.centery < GENERAL["y_min"] + 10:  # Offset for shooting
             self.rect.y += 1
         if self.rect.centery > GENERAL["y_max"]:
             self.rect.y -= 1
