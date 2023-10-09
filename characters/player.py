@@ -86,6 +86,13 @@ class Player(pygame.sprite.Sprite):
         self.skull_level = PLAYER["skull_level"]
         self.energy_level = PLAYER["energy_level"]
         self.coin_level = PLAYER["coin_level"]
+
+        self.collected_keys = {
+            "key_red": 0,
+            "key_blue": 0,
+            "key_green": 0,
+            "key_yellow": 0,
+        }
         self.wave_level = PLAYER["wave_level"]
         self.total_bombs = PLAYER["total_bombs"]
         self.total_portals = PLAYER["total_portals"]

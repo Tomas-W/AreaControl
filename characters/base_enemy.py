@@ -7,7 +7,7 @@ from projectiles.flaming_skull import FlamingSkull
 from settings.creeper_settings import FISH
 
 from utilities.sprite_groups import all_sprites, enemy_sprites
-from utilities.game_physics import get_direction
+from utilities.game_physics import get_direction, get_distance
 
 
 class BaseEnemy(pygame.sprite.Sprite):
@@ -16,6 +16,7 @@ class BaseEnemy(pygame.sprite.Sprite):
     Contains all base attributes and methods.
     BaseEnemy instance is added to all_sprites and enemy_sprites ( pygam.sprite.Group() ).
     """
+
     def __init__(self, player, position, character):
         """
         :param player: Player() instance.
@@ -96,8 +97,8 @@ class BaseEnemy(pygame.sprite.Sprite):
         self.shoot_distance = character["shoot_distance"]
 
         # Frame attributes
-        self.frame = character["frame"]                 # current frame
-        self.frame_ticks = character["frame_ticks"]     # frame 'clock'
+        self.frame = character["frame"]  # current frame
+        self.frame_ticks = character["frame_ticks"]  # frame 'clock'
         # How many ticks frames per frame
         self.spawn_ticks = character["spawn_ticks"]
         self.idle_ticks = character["idle_ticks"]
@@ -118,6 +119,8 @@ class BaseEnemy(pygame.sprite.Sprite):
         self.position = pygame.math.Vector2(position)
         self.direction = pygame.math.Vector2()
         self.velocity = pygame.math.Vector2()
+        self.next_location = random.choice(FISH["start_position"])
+        self.chase_state = character["chase_state"]
 
         self.health = character["health"]
         self.damage = character["damage"]
@@ -165,7 +168,11 @@ class BaseEnemy(pygame.sprite.Sprite):
         """
         Applies Rusher move state and image properties.
         """
-        self.move_to_player()
+        if self.chase_state == "player":
+            self.move_to_player()
+
+        elif self.chase_state == "random":
+            self.move_to_random_location()
 
         if self.walk:
             self.set_walk_image()
@@ -186,6 +193,27 @@ class BaseEnemy(pygame.sprite.Sprite):
         self.rect.centerx = self.position.x
         self.rect.centery = self.position.y
 
+    def move_to_random_location(self):
+        """
+        Move to self.next_location if distance > 50.
+        If closer set new random location.
+        :return:
+        """
+        if get_distance(location_a=self.next_location,
+                        location_b=self.rect.center) > 50:
+
+            self.direction = get_direction(location_a=self.next_location,
+                                           location_b=self.rect.center)
+
+            self.velocity = self.direction * self.speed
+            self.position += self.velocity
+
+            self.rect.centerx = self.position.x
+            self.rect.centery = self.position.y
+
+        else:
+            self.next_location = random.choice(FISH["start_position"] + [self.player.rect.center for _ in range(125)])
+
     def manage_strike_state(self):
         """
         Applies Rusher strike state and image properties.
@@ -201,8 +229,8 @@ class BaseEnemy(pygame.sprite.Sprite):
 
         :return: Returns True if conditions are met (bool).
         """
-        return self.frame == self.strike_frame\
-            and self.frame_ticks == (self.strike_ticks // 2)\
+        return self.frame == self.strike_frame \
+            and self.frame_ticks == (self.strike_ticks // 2) \
             and not self.player.is_invincible
 
     def strike_player(self):
@@ -229,7 +257,7 @@ class BaseEnemy(pygame.sprite.Sprite):
 
         :return: Returns True if conditions are met (bool).
         """
-        return self.frame == self.shoot_frame\
+        return self.frame == self.shoot_frame \
             and self.frame_ticks == (self.shoot_ticks // 2)
 
     def shoot_player(self):
@@ -263,9 +291,8 @@ class BaseEnemy(pygame.sprite.Sprite):
         Played death sound if Player.sound_is_on is True.
         """
         if self.death \
-                and self.player.sound_is_on\
+                and self.player.sound_is_on \
                 and not self.played_death_sound:
-
             self.death_sound.play()
             self.played_death_sound = True
 

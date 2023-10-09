@@ -9,3 +9,4 @@ game.run_game()
 # TODO: Refactor BaseEnemy() self.attack_sound
 # TODO: Refactor pygame.K_
 # TODO: Reapply Portal
+# TODO: Add pygame.sprite.groupcollide for collisions

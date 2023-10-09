@@ -123,6 +123,7 @@ class GameSetup:
         self.before_settings_menu = "home"
         self.buy_moment = time.time()
         self.buy_delay = 0.15
+        self.key_list = ["key_red", "key_blue", "key_green", "key_yellow"]
 
     def operate_special_keys(self):
         """
@@ -408,6 +409,7 @@ class GameSetup:
                 self.spawn_waves()
                 self.level_completed = False
                 self.player.wave_level += 1
+                self.display_interfaces.current_key = random.choice(self.display_interfaces.key_list)
 
     def check_time_bonus(self):
         if not len(enemy_sprites) \
@@ -417,7 +419,9 @@ class GameSetup:
                 and not self.player.wave_level == 0 \
                 and self.bonus_ticks > 0:
             print(f"bonus lvl {self.player.wave_level}")
+            self.player.collected_keys[self.display_interfaces.current_key[1]] += 1
             self.level_completed = True
+            print(self.player.collected_keys)
 
     def run_game(self):
         """

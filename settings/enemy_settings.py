@@ -34,6 +34,7 @@ SKULL_COLLECTOR = {
     "speed": 4,
     "walk_speed": 3,
     "run_speed": None,
+    "chase_state": "random",
     "wave_spawns": [2, 3, 8, 3, 7, 7, 14],
 
     # states
@@ -120,6 +121,7 @@ RUSHER = {
     "speed": 7,
     "walk_speed": None,
     "run_speed": 7,
+    "chase_state": "player",
     "wave_spawns": [3, 7, 3, 6, 7, 11, 4],
 
     # states
@@ -202,6 +204,7 @@ GOLEM = {
     "speed": 1,
     "walk_speed": 1,
     "run_speed": 3,
+    "chase_state": "player",
     "health": 720,
     "damage": 150,
 
@@ -282,6 +285,7 @@ ARCHER = {
     "speed": 2,
     "walk_speed": 2,
     "run_speed": 3,
+    "chase_state": "player",
 
     # states
     "spawn": True,
